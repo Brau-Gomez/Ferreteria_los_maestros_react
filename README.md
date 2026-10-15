@@ -105,4 +105,3 @@ por lo que **el sitio HTML original y esta versión comparten los mismos datos**
 *Proyecto académico — DSY1104 Desarrollo Fullstack II, Evaluación Parcial 2.*
 
 **Integrantes (Grupo 6): Alejandro Maturana - Braulio Gomez** 
-

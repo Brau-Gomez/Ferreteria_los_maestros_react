@@ -1,0 +1,258 @@
+/* ============================================================
+   Ferretería Los Maestros — tema propio sobre Bootstrap 5.3
+   ------------------------------------------------------------
+   Decisión del plan de migración (Fase 0): NO se migra el
+   styles.css de 2.218 líneas del sitio HTML original. Partimos
+   de Bootstrap y recreamos el look sobrescribiendo sus
+   variables CSS con la paleta original del proyecto HTML5.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1) Paleta original (mismos nombres y valores del styles.css
+      del proyecto HTML5) mapeada a las variables de Bootstrap.
+   ------------------------------------------------------------ */
+:root {
+  /* Paleta original */
+  --ink: #183b63; /* texto principal */
+  --deep: #0b2d4d; /* azul profundo: header, footer, hero */
+  --green: #145a9c; /* azul medio: enlaces y botones */
+  --cream: #f4f6f8; /* fondo general */
+  --paper: #fffdf8; /* fondo de tarjetas */
+  --yellow: #f7b733; /* CTA principal y acentos */
+  --coral: #d86b4d; /* acentos secundarios y foco */
+  --line: #d6dce3; /* bordes */
+  --muted: #5f6f7c; /* texto secundario */
+  --error: #a33b2f; /* mensajes de error */
+
+  /* Mapeo hacia Bootstrap */
+  --bs-body-bg: var(--cream);
+  --bs-body-color: var(--ink);
+  --bs-body-font-family: Arial, Helvetica, sans-serif;
+  --bs-border-color: var(--line);
+  --bs-secondary-color: var(--muted); /* texto .text-muted */
+  --bs-link-color: var(--green);
+  --bs-link-hover-color: var(--coral);
+  --bs-primary: var(--green);
+  --bs-danger: var(--error);
+}
+
+/* ------------------------------------------------------------
+   2) Botones
+   Bootstrap define el color de cada botón dentro de su propia
+   clase (no referencian var(--bs-primary)), por eso los tonos
+   se ajustan a nivel de componente.
+   ------------------------------------------------------------ */
+
+/* Botón azul del sitio (antes .button-outline). */
+.btn-primary {
+  --bs-btn-bg: var(--green);
+  --bs-btn-border-color: var(--green);
+  --bs-btn-hover-bg: #114a82;
+  --bs-btn-hover-border-color: #114a82;
+  --bs-btn-active-bg: #0e3f71;
+  --bs-btn-active-border-color: #0e3f71;
+  --bs-btn-disabled-bg: var(--green);
+  --bs-btn-disabled-border-color: var(--green);
+  --bs-btn-focus-shadow-rgb: 20, 90, 156;
+}
+
+/* CTA principal del sitio (antes .button-primary):
+   fondo amarillo con texto azul profundo. */
+.btn-warning {
+  --bs-btn-color: var(--deep);
+  --bs-btn-bg: var(--yellow);
+  --bs-btn-border-color: var(--yellow);
+  --bs-btn-hover-color: var(--deep);
+  --bs-btn-hover-bg: #e2a72a;
+  --bs-btn-hover-border-color: #e2a72a;
+  --bs-btn-active-color: var(--deep);
+  --bs-btn-active-bg: #d69d21;
+  --bs-btn-active-border-color: #d69d21;
+  --bs-btn-focus-shadow-rgb: 247, 183, 51;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--green);
+  --bs-btn-border-color: var(--green);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--green);
+  --bs-btn-hover-border-color: var(--green);
+  --bs-btn-active-bg: var(--green);
+  --bs-btn-active-border-color: var(--green);
+  --bs-btn-focus-shadow-rgb: 20, 90, 156;
+}
+
+.btn-danger {
+  --bs-btn-bg: var(--error);
+  --bs-btn-border-color: var(--error);
+  --bs-btn-hover-bg: #8f3127;
+  --bs-btn-hover-border-color: #8f3127;
+  --bs-btn-active-bg: #7e2b21;
+  --bs-btn-active-border-color: #7e2b21;
+  --bs-btn-focus-shadow-rgb: 163, 59, 47;
+}
+
+/* ------------------------------------------------------------
+   3) Navegación (equivalente al .site-header del original)
+   ------------------------------------------------------------ */
+.navbar-ferreteria {
+  background-color: var(--deep);
+}
+
+.navbar-ferreteria .navbar-brand {
+  color: #fff;
+}
+
+.navbar-ferreteria .navbar-brand:hover,
+.navbar-ferreteria .navbar-brand:focus {
+  color: var(--yellow);
+}
+
+.navbar-ferreteria .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar-ferreteria .nav-link:hover,
+.navbar-ferreteria .nav-link:focus {
+  color: #fff;
+}
+
+/* Página activa destacada en amarillo, como el aria-current del original. */
+.navbar-ferreteria .nav-link.active {
+  color: var(--yellow);
+}
+
+/* ------------------------------------------------------------
+   4) Tarjetas: fondo papel, como el .card del original
+   ------------------------------------------------------------ */
+.card {
+  --bs-card-bg: var(--paper);
+  --bs-card-border-color: var(--line);
+}
+
+/* ------------------------------------------------------------
+   5) Formularios: foco coral, como el :focus-visible original
+   ------------------------------------------------------------ */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--coral);
+  box-shadow: 0 0 0 0.25rem rgba(216, 107, 77, 0.25);
+}
+
+.form-check-input:checked {
+  background-color: var(--green);
+  border-color: var(--green);
+}
+
+/* ------------------------------------------------------------
+   6) Pie de página (equivalente al .site-footer del original)
+   ------------------------------------------------------------ */
+.site-footer {
+  background-color: var(--deep);
+  color: var(--cream);
+  font-size: 0.9rem;
+}
+
+/* ------------------------------------------------------------
+   8) Portada (Fase 3): portea el look del hero, Nosotros y Blog
+      del styles.css original.
+   ------------------------------------------------------------ */
+
+/* Navegación interna: scroll suave y margen para la cabecera fija,
+   como el scroll-margin-top: 90px del original (#nosotros, #blog). */
+html {
+  scroll-behavior: smooth;
+}
+
+.seccion-ancla {
+  scroll-margin-top: 90px;
+}
+
+/* Hero centrado (antes .hero-view.hero-centrado): degradado azul. */
+.hero-portada {
+  background: linear-gradient(115deg, var(--deep), #174f83);
+  color: #fff;
+  padding: 72px 1rem 68px;
+}
+
+/* Título y subtítulo con clamp, como el original. Se omite el
+   white-space: nowrap del original para no desbordar en móviles. */
+.hero-portada h1 {
+  font-size: clamp(28px, 6vw, 76px);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.hero-portada h2 {
+  font-size: clamp(22px, 3.2vw, 38px);
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.hero-portada p {
+  max-width: 680px;
+  margin-right: auto;
+  margin-left: auto;
+  color: #d8e3ef;
+  font-size: 18px;
+}
+
+/* Etiquetas antes de los títulos (antes .eyebrow). */
+.eyebrow {
+  color: var(--coral);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Marco de la foto de la fachada (antes .about-image). */
+.about-marco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 320px;
+  padding: 20px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.about-marco img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Tarjetas del blog (antes .blog-post): margen como el original. */
+.post-blog .card-body {
+  padding: 20px;
+}
+
+.post-imagen {
+  width: 100%;
+  height: 240px;
+  margin-bottom: 14px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.post-destacado .post-imagen {
+  height: 320px;
+}
+
+/* Chip de categoría (antes .blog-post .category). */
+.post-categoria {
+  color: var(--coral);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@media (min-width: 860px) {
+  .post-destacado .post-imagen {
+    height: 380px;
+  }
+}

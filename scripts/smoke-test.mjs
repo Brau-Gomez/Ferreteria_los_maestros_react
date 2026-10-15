@@ -8,7 +8,7 @@
 import { normalizarRun, runValido } from '../src/utils/run.js';
 import { formatearDinero } from '../src/utils/dinero.js';
 import { resolverImagen } from '../src/utils/imagenes.js';
-import { estadoProducto } from '../src/utils/productos.js';
+import { estadoProducto, filtrarProductos, categoriasPresentes } from '../src/utils/productos.js';
 import { huellaClave } from '../src/utils/claves.js';
 import {
   validarCorreo,
@@ -152,6 +152,65 @@ comprobar(
 comprobar(
   'la foto de Nosotros existe en public/assets',
   fs.existsSync('public/assets/img/productos/img_portada/ferreteria.png'),
+);
+
+console.log('Filtros del catálogo (Fase 4)');
+const catalogoPrueba = [
+  {
+    codigo: 'HE001',
+    nombre: 'Taladro percutor',
+    marca: 'Bosch',
+    categoria: 'Herramientas',
+    stock: 5,
+  },
+  {
+    codigo: 'PI002',
+    nombre: 'Esmalte al agua',
+    marca: 'Ceresita',
+    categoria: 'Pinturas',
+    stock: 0,
+  },
+  {
+    codigo: 'TO003',
+    nombre: 'Tornillo autoperforante',
+    marca: '',
+    categoria: 'Tornillería',
+    stock: 200,
+  },
+];
+comprobar(
+  'la búsqueda encuentra por nombre',
+  filtrarProductos(catalogoPrueba, { texto: 'taladro' }).length === 1,
+);
+comprobar(
+  'la búsqueda también cubre marca y código',
+  filtrarProductos(catalogoPrueba, { texto: 'ceresita' }).length === 1 &&
+    filtrarProductos(catalogoPrueba, { texto: 'he001' }).length === 1,
+);
+comprobar(
+  'el filtro por categoría deja solo esa categoría',
+  filtrarProductos(catalogoPrueba, { categoria: 'Pinturas' }).every(
+    (p) => p.categoria === 'Pinturas',
+  ),
+);
+comprobar(
+  '"Sólo con stock" descarta los agotados',
+  filtrarProductos(catalogoPrueba, { soloStock: true }).every(
+    (p) => p.stock > 0,
+  ),
+);
+comprobar(
+  'sin filtros se ven todos los productos',
+  filtrarProductos(catalogoPrueba).length === 3,
+);
+comprobar(
+  'una búsqueda sin coincidencias no devuelve nada',
+  filtrarProductos(catalogoPrueba, { texto: 'noexisteenelcatalogo' }).length === 0,
+);
+comprobar(
+  'las categorías del selector se derivan y ordenan',
+  JSON.stringify(categoriasPresentes(catalogoPrueba)) ===
+    JSON.stringify(['Herramientas', 'Pinturas', 'Tornillería']),
 );
 
 console.log('Validación de usuario');

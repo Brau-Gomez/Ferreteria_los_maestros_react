@@ -25,7 +25,7 @@ function PostBlog({ articulo }) {
           alt={articulo.alt}
           loading="lazy"
         />
-        <span className="post-categoria d-inline-block mt-3">
+        <span className="chip-categoria d-inline-block mt-3">
           {articulo.categoria}
         </span>
         <h3 className="h5 mb-2">{articulo.titulo}</h3>

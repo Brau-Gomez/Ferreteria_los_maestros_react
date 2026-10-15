@@ -128,6 +128,7 @@
 .card {
   --bs-card-bg: var(--paper);
   --bs-card-border-color: var(--line);
+  --bs-card-border-radius: 14px;
 }
 
 /* ------------------------------------------------------------
@@ -242,8 +243,9 @@ html {
   height: 320px;
 }
 
-/* Chip de categoría (antes .blog-post .category). */
-.post-categoria {
+/* Chip de categoría (antes .category del original, compartido por el
+   blog y las tarjetas de producto). */
+.chip-categoria {
   color: var(--coral);
   font-size: 12px;
   font-weight: 700;
@@ -255,4 +257,109 @@ html {
   .post-destacado .post-imagen {
     height: 380px;
   }
+}
+
+/* ------------------------------------------------------------
+   9) Catálogo y detalle de producto (Fase 4): portea .filter-bar,
+      .product-grid, .product-card, .detail-card, .empty y .narrow.
+   ------------------------------------------------------------ */
+
+/* Título grande de las vistas con encabezado (antes .section-heading h1). */
+.titulo-seccion {
+  font-size: clamp(34px, 6vw, 62px);
+  line-height: 1.05;
+}
+
+/* Barra de filtros (antes .filter-bar). */
+.filtro-barra {
+  padding: 18px;
+  background: #ebe8de;
+  border-radius: 14px;
+}
+
+/* Campos con el padding y borde del original (antes .filter-bar input). */
+.filtro-barra .form-control,
+.filtro-barra .form-select {
+  padding: 12px;
+  border: 1px solid #bfc9c2;
+  border-radius: 8px;
+}
+
+/* Imagen de producto (antes .product-image): contain para no recortar. */
+.producto-imagen {
+  display: block;
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 8px;
+}
+
+/* Respaldo cuando la imagen falta o falla (antes .product-image-fallback). */
+.producto-imagen-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  margin: 0;
+  background: #eef1ed;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* El precio se pega al fondo de la tarjeta (antes .product-card .price). */
+.tarjeta-precio {
+  margin-top: auto;
+  color: var(--ink);
+  font-size: 22px;
+}
+
+/* Botones de las tarjetas (antes .small-button). */
+.btn-chico {
+  padding: 11px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+/* Estado vacío del catálogo (antes .empty). */
+.sin-resultados {
+  padding: 30px;
+  border: 1px dashed #b7c2bb;
+  border-radius: 12px;
+  background: var(--paper);
+  text-align: center;
+}
+
+/* Vistas angostas como el detalle (antes .narrow). */
+.pagina-angosta {
+  max-width: 700px;
+}
+
+/* Ficha del producto (antes .detail-card): separación pareja. */
+.ficha-producto .card-body {
+  padding: 20px;
+  display: grid;
+  gap: 18px;
+}
+
+/* Nombre y precio agrandados (antes .detail-card h1 y .detail-price). */
+.ficha-titulo {
+  font-size: 40px;
+}
+
+.ficha-precio {
+  font-size: 32px;
+}
+
+/* Botones +/− y campo del selector (antes .cart-qty-button/.quantity-input). */
+.boton-cantidad {
+  width: 38px;
+}
+
+.cantidad-input {
+  max-width: 80px;
+  text-align: center;
 }

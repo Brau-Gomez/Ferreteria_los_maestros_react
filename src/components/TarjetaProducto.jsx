@@ -34,7 +34,7 @@ function TarjetaProducto({ producto, onAgregar, className = '' }) {
         <div className="d-flex gap-2">
           <Button
             as={Link}
-            to={`/productos/${producto.codigo}`}
+            to={`/productos/${encodeURIComponent(producto.codigo)}`}
             variant="primary"
             className="btn-chico flex-grow-1"
           >

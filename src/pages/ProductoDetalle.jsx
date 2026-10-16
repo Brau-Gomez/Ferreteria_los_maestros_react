@@ -4,7 +4,7 @@
 // El código llega por la URL (/productos/:codigo), como el ?codigo= original,
 // así el detalle se puede recargar y compartir.
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -15,16 +15,41 @@ import { formatearDinero } from '../utils/dinero.js';
 import ImagenProducto from '../components/ImagenProducto.jsx';
 import SelectorCantidad from '../components/SelectorCantidad.jsx';
 
-function ProductoDetalle() {
-  const { codigo } = useParams();
+function DetalleProductoConCodigo({ codigo }) {
+  const { pathname } = useLocation();
   const { productos } = useProductos();
-  const { agregar } = useCarrito();
-  const [cantidad, setCantidad] = useState(1);
+  const { agregar, items } = useCarrito();
   const [aviso, setAviso] = useState(null);
 
   // Normaliza como parametroPagina().trim().toUpperCase() del original.
-  const codigoBuscado = String(codigo || '').trim().toUpperCase();
+  const codigoCodificado = pathname.slice('/productos/'.length).replace(/\/$/, '');
+  let codigoDecodificado = '';
+  try {
+    codigoDecodificado = decodeURIComponent(codigoCodificado || codigo || '');
+  } catch (error) {
+    if (!(error instanceof URIError)) throw error;
+    console.warn('El código del producto en la URL tiene una codificación inválida.', error);
+  }
+  const codigoBuscado = codigoDecodificado.trim().toUpperCase();
+  const [seleccionCantidad, setSeleccionCantidad] = useState({
+    codigo: codigoBuscado,
+    cantidad: 1,
+  });
+  const cantidadSeleccionada =
+    seleccionCantidad.codigo === codigoBuscado
+      ? seleccionCantidad.cantidad
+      : 1;
   const producto = productos.find((p) => p.codigo === codigoBuscado);
+  const cantidadEnCarrito = producto
+    ? items.find((item) => item.codigo === producto.codigo)?.cantidad || 0
+    : 0;
+  const stockRestante = producto
+    ? Math.max(0, Math.floor(producto.stock) - cantidadEnCarrito)
+    : 0;
+  const cantidad = Math.min(
+    cantidadSeleccionada,
+    Math.max(1, stockRestante),
+  );
 
   // El original ajustaba document.title al nombre del producto; al
   // desmontar la vista se restaura el título general del sitio.
@@ -50,7 +75,7 @@ function ProductoDetalle() {
     );
   }
 
-  const sinStock = producto.stock < 1;
+  const sinStock = stockRestante < 1;
 
   function agregarAlCarrito() {
     setAviso(agregar(producto.codigo, cantidad));
@@ -85,8 +110,13 @@ function ProductoDetalle() {
           </p>
           <SelectorCantidad
             cantidad={cantidad}
-            onCambiar={setCantidad}
-            tope={Math.max(1, producto.stock)}
+            onCambiar={(nuevaCantidad) =>
+              setSeleccionCantidad({
+                codigo: codigoBuscado,
+                cantidad: nuevaCantidad,
+              })
+            }
+            tope={Math.max(1, stockRestante)}
             disabled={sinStock}
           />
           <Button
@@ -95,7 +125,7 @@ function ProductoDetalle() {
             disabled={sinStock}
             onClick={agregarAlCarrito}
           >
-            Agregar al carrito
+            {sinStock ? 'Stock completo en el carrito' : 'Agregar al carrito'}
           </Button>
           {aviso && (
             <Alert
@@ -111,6 +141,11 @@ function ProductoDetalle() {
       </Card>
     </Container>
   );
+}
+
+function ProductoDetalle() {
+  const { codigo } = useParams();
+  return <DetalleProductoConCodigo key={codigo} codigo={codigo} />;
 }
 
 export default ProductoDetalle;

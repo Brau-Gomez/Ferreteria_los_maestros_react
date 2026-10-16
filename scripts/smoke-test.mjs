@@ -180,24 +180,32 @@ const catalogoPrueba = [
 ];
 comprobar(
   'la búsqueda encuentra por nombre',
-  filtrarProductos(catalogoPrueba, { texto: 'taladro' }).length === 1,
+  filtrarProductos(catalogoPrueba, { texto: 'taladro' }).map((p) => p.codigo)
+    .join() === 'HE001',
 );
 comprobar(
   'la búsqueda también cubre marca y código',
-  filtrarProductos(catalogoPrueba, { texto: 'ceresita' }).length === 1 &&
-    filtrarProductos(catalogoPrueba, { texto: 'he001' }).length === 1,
+  filtrarProductos(catalogoPrueba, { texto: 'ceresita' })
+    .map((p) => p.codigo)
+    .join() === 'PI002' &&
+    filtrarProductos(catalogoPrueba, { texto: 'he001' })
+      .map((p) => p.codigo)
+      .join() === 'HE001',
 );
+const productosPinturas = filtrarProductos(catalogoPrueba, {
+  categoria: 'Pinturas',
+});
 comprobar(
   'el filtro por categoría deja solo esa categoría',
-  filtrarProductos(catalogoPrueba, { categoria: 'Pinturas' }).every(
-    (p) => p.categoria === 'Pinturas',
-  ),
+  productosPinturas.length > 0 &&
+    productosPinturas.every((p) => p.categoria === 'Pinturas'),
 );
+const productosConStock = filtrarProductos(catalogoPrueba, {
+  soloStock: true,
+});
 comprobar(
   '"Sólo con stock" descarta los agotados',
-  filtrarProductos(catalogoPrueba, { soloStock: true }).every(
-    (p) => p.stock > 0,
-  ),
+  productosConStock.length > 0 && productosConStock.every((p) => p.stock > 0),
 );
 comprobar(
   'sin filtros se ven todos los productos',

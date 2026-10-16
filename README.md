@@ -84,7 +84,7 @@ por lo que **el sitio HTML original y esta versión comparten los mismos datos**
 | 1 | Módulos base: datos, utilidades, validaciones, persistencia | ✅ Listo |
 | 2 | Contextos de sesión y carrito, hooks, rutas y layout reactivo | ✅ Listo |
 | 3 | Portada: hero, Nosotros y blog | ✅ Listo |
-| 4 | Catálogo con filtros + detalle de producto | 🔜 En curso |
+| 4 | Catálogo con filtros + detalle de producto | 🟡 Implementada, pendiente de verificación |
 | 5 | Carrito, panel lateral y checkout (con éxito/fallo de compra) | 🔜 Pendiente |
 | 6 | Ingreso y Registro con validaciones | 🔜 Pendiente |
 | 7 | Mi cuenta (perfil, pedidos, cuenta corriente) | 🔜 Pendiente |

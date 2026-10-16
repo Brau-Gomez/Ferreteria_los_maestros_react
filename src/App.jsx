@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ScrollManager from './components/ScrollManager';
 import Home from './pages/Home';
 import Productos from './pages/Productos';
+import ProductoDetalle from './pages/ProductoDetalle';
 import Carrito from './pages/Carrito';
 import Ingreso from './pages/Ingreso';
 import Registro from './pages/Registro';
@@ -30,6 +31,11 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/productos" element={<Productos />} />
+                {/* Detalle por código: antes producto-detalle.html?codigo=XXX */}
+                <Route
+                  path="/productos/:codigo"
+                  element={<ProductoDetalle />}
+                />
                 <Route path="/carrito" element={<Carrito />} />
                 <Route path="/ingreso" element={<Ingreso />} />
                 <Route path="/registro" element={<Registro />} />

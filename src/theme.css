@@ -529,6 +529,100 @@ html {
 }
 
 /* ------------------------------------------------------------
+   12) Contacto y artículos de blog (Fase 8): recrea el formulario,
+       la ficha de tienda y el detalle angosto del sitio original.
+   ------------------------------------------------------------ */
+.contacto-grid {
+  align-items: start;
+}
+
+.contacto-formulario {
+  max-width: 560px;
+}
+
+.contacto-datos {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.contacto-datos h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.contacto-dato {
+  margin-bottom: 18px;
+}
+
+.contacto-dato h3 {
+  margin-bottom: 6px;
+  color: var(--green);
+  font-size: 15px;
+}
+
+.contacto-dato p {
+  margin: 2px 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.blog-detalle {
+  max-width: 700px;
+}
+
+.blog-detalle .eyebrow {
+  margin-top: 20px;
+}
+
+.blog-detalle-bajada {
+  margin-bottom: 22px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.blog-detalle-imagen {
+  width: 100%;
+  max-height: 420px;
+  margin-bottom: 28px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.blog-detalle h2 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.blog-detalle p,
+.blog-detalle li {
+  color: var(--muted);
+  line-height: 1.65;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.blog-detalle ol,
+.blog-detalle ul {
+  padding-left: 22px;
+}
+
+.blog-detalle li {
+  margin-bottom: 10px;
+}
+
+.blog-detalle-cierre {
+  margin-top: 30px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+}
+
+/* ------------------------------------------------------------
    11) Mi cuenta (Fase 7): porta perfil, pedidos y cuenta corriente
        desde las clases originales de tienda/cuenta.html.
    ------------------------------------------------------------ */

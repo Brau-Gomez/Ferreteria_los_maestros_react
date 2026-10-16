@@ -527,3 +527,235 @@ html {
     grid-column: 1 / -1;
   }
 }
+
+/* ------------------------------------------------------------
+   11) Mi cuenta (Fase 7): porta perfil, pedidos y cuenta corriente
+       desde las clases originales de tienda/cuenta.html.
+   ------------------------------------------------------------ */
+.cuenta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.tarjeta-cuenta .card-body {
+  padding: 20px;
+}
+
+.cuenta-ancha {
+  grid-column: 1 / -1;
+}
+
+.perfil-encabezado {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.perfil-avatar {
+  display: flex;
+  flex: 0 0 52px;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.perfil-rol {
+  color: var(--coral);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.perfil-fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.perfil-fila:last-child {
+  border-bottom: 0;
+}
+
+.perfil-fila dt,
+.perfil-fila dd {
+  margin: 0;
+  font-size: 14px;
+}
+
+.perfil-fila dt {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.perfil-fila dd {
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.pedido-card {
+  padding: 16px;
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.pedido-encabezado,
+.pedido-total,
+.cuenta-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pedido-encabezado {
+  align-items: flex-start;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pedido-encabezado h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.pedido-fecha {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pedido-entrega,
+.cuenta-estado {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pedido-lista {
+  margin: 12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pedido-lista li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  padding: 5px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.pedido-cantidad {
+  font-weight: 700;
+}
+
+.pedido-total {
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.cuenta-descripcion {
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  text-align: center;
+}
+
+.resumen-grid div {
+  padding: 14px 8px;
+  border-radius: 10px;
+  background: var(--cream);
+}
+
+.resumen-grid b,
+.resumen-grid small {
+  display: block;
+}
+
+.resumen-grid b {
+  color: var(--green);
+  font-size: 20px;
+}
+
+.resumen-grid small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.cuenta-estado-pendiente {
+  background: #fdeceb;
+  color: var(--error);
+}
+
+.tabla-scroll {
+  overflow-x: auto;
+}
+
+.tabla-cuenta {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabla-cuenta th,
+.tabla-cuenta td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tabla-cuenta th {
+  border-bottom-width: 2px;
+  color: var(--green);
+}
+
+.tabla-cuenta td {
+  color: var(--muted);
+}
+
+.tabla-cuenta td:last-child {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+@media (max-width: 575.98px) {
+  .cuenta-grid,
+  .resumen-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pedido-lista li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .pedido-lista li span:last-child {
+    grid-column: 1 / -1;
+    text-align: right;
+  }
+}

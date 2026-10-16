@@ -3,7 +3,7 @@
 // js/compartido/utilidades.js original: la tarjeta sigue siendo legible
 // aunque la imagen no exista (el <img> en error se reemplazaba por texto).
 import { useState } from 'react';
-import { resolverImagen } from '../utils/imagenes.js';
+import { resolverImagen } from '../../utils/imagenes.js';
 
 function ImagenProductoCargable({ producto, ruta, className }) {
   const [fallida, setFallida] = useState(false);

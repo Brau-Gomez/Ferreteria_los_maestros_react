@@ -13,8 +13,8 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
-import { useSesion } from '../hooks/useSesion.js';
-import { useCarrito } from '../hooks/useCarrito.js';
+import { useSesion } from '../../hooks/useSesion.js';
+import { useCarrito } from '../../hooks/useCarrito.js';
 
 function Header() {
   const { usuario, salir } = useSesion();

@@ -4,9 +4,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider.jsx';
 import { CartProvider } from './context/CartProvider.jsx';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import PanelCarrito from './components/PanelCarrito';
+// Componentes por nivel atómico (lineamiento EP2): organisms son las
+// secciones visuales; ProtectedRoute y ScrollManager son piezas de
+// comportamiento/ruta, por eso quedan en la raíz de components/.
+import Header from './components/organisms/Header';
+import Footer from './components/organisms/Footer';
+import PanelCarrito from './components/organisms/PanelCarrito';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollManager from './components/ScrollManager';
 import Home from './pages/Home';

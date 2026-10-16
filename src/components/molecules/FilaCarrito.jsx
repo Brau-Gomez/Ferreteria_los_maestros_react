@@ -3,8 +3,8 @@
 // para actualizar la cantidad en el CartContext.
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import ImagenProducto from './ImagenProducto.jsx';
-import { formatearDinero } from '../utils/dinero.js';
+import ImagenProducto from '../atoms/ImagenProducto.jsx';
+import { formatearDinero } from '../../utils/dinero.js';
 
 function FilaCarrito({ producto, onCambiarCantidad, onQuitar }) {
   const subtotal = producto.precioVenta * producto.cantidad;

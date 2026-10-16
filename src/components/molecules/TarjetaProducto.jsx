@@ -5,8 +5,8 @@
 import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import ImagenProducto from './ImagenProducto.jsx';
-import { formatearDinero } from '../utils/dinero.js';
+import ImagenProducto from '../atoms/ImagenProducto.jsx';
+import { formatearDinero } from '../../utils/dinero.js';
 
 function TarjetaProducto({ producto, onAgregar, className = '' }) {
   const sinStock = producto.stock < 1;

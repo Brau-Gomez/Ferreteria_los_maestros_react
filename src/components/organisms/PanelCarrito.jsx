@@ -5,10 +5,10 @@
 import { Link } from 'react-router-dom';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Button from 'react-bootstrap/Button';
-import ImagenProducto from './ImagenProducto.jsx';
-import ControlCantidadCarrito from './ControlCantidadCarrito.jsx';
-import { useCarrito } from '../hooks/useCarrito.js';
-import { formatearDinero } from '../utils/dinero.js';
+import ImagenProducto from '../atoms/ImagenProducto.jsx';
+import ControlCantidadCarrito from '../molecules/ControlCantidadCarrito.jsx';
+import { useCarrito } from '../../hooks/useCarrito.js';
+import { formatearDinero } from '../../utils/dinero.js';
 
 function PanelCarrito() {
   const {

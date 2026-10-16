@@ -14,6 +14,7 @@ import {
   leerListaGuardada,
   obtenerProductos,
 } from '../services/almacenamiento.js';
+import { cantidadCarrito, totalCarrito } from '../utils/carrito.js';
 
 // Equivalente a actualizarDatosCarrito() del original: al operar se usan
 // precios y stock actuales del catálogo.
@@ -146,16 +147,72 @@ export function CartProvider({ children }) {
 
   // "Vaciar carrito" del panel lateral (data-cart-clear del original).
   function vaciar() {
-    persistir([]);
+    if (!persistir([])) {
+      return {
+        ok: false,
+        mensaje: 'No se pudo guardar el carrito en este navegador.',
+      };
+    }
     return { ok: true, mensaje: '' };
   }
 
+  // Confirma el pedido de la página Carrito. Porta el submit de
+  // js/tienda/carrito.js: valida sesión/entrega, guarda primero el pedido
+  // en ep1-orders y solo después vacía ep1-cart. Si falla el segundo paso,
+  // restaura los pedidos anteriores para no dejar datos inconsistentes.
+  function confirmarPedido(usuario, entrega) {
+    if (!usuario) {
+      return {
+        ok: false,
+        mensaje: 'Inicia sesión antes de confirmar el pedido. Tu carrito se conserva.',
+      };
+    }
+    if (entrega !== 'Retiro en tienda' && entrega !== 'Despacho') {
+      return { ok: false, mensaje: 'Selecciona un tipo de entrega válido.' };
+    }
+
+    const carrito = revalidarItems(
+      leerListaGuardada(clavesDatos.carrito) || [],
+      obtenerProductos(),
+    );
+    if (!carrito.length) {
+      return {
+        ok: false,
+        mensaje: 'No quedan productos disponibles en el carrito.',
+      };
+    }
+
+    const anteriores = leerListaGuardada(clavesDatos.pedidos) || [];
+    const pedidos = [
+      {
+        id: 'PED-' + Date.now(),
+        runUsuario: usuario.run,
+        total: totalCarrito(carrito),
+        delivery: entrega,
+        productos: carrito,
+      },
+      ...anteriores,
+    ];
+    if (!guardarDato(clavesDatos.pedidos, pedidos)) {
+      return {
+        ok: false,
+        mensaje: 'No se pudo guardar el pedido. El carrito se conserva.',
+      };
+    }
+    if (!persistir([])) {
+      guardarDato(clavesDatos.pedidos, anteriores);
+      return {
+        ok: false,
+        mensaje: 'No se pudo guardar el carrito en este navegador.',
+      };
+    }
+    setPanelAbierto(false);
+    return { ok: true, mensaje: 'Pedido recibido.' };
+  }
+
   // Valores derivados que consumen el Navbar y las páginas.
-  const contador = items.reduce((suma, item) => suma + item.cantidad, 0);
-  const total = items.reduce(
-    (suma, item) => suma + item.precioVenta * item.cantidad,
-    0,
-  );
+  const contador = cantidadCarrito(items);
+  const total = totalCarrito(items);
 
   const valor = {
     items,
@@ -168,6 +225,7 @@ export function CartProvider({ children }) {
     cambiarCantidad,
     quitar,
     vaciar,
+    confirmarPedido,
   };
   return (
     <ContextoCarrito.Provider value={valor}>

@@ -363,3 +363,167 @@ html {
   max-width: 80px;
   text-align: center;
 }
+
+/* ------------------------------------------------------------
+   10) Carrito (Fase 5): portea .cart-layout, .cart-item,
+       .summary-card y .cart-panel con componentes Bootstrap.
+   ------------------------------------------------------------ */
+
+/* Miniatura de cada fila de la página (antes .cart-item-thumb). */
+.producto-imagen.miniatura-carrito,
+.producto-imagen-fallback.miniatura-carrito {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+}
+
+/* Acciones alineadas a la derecha (antes .cart-item-actions). */
+.acciones-fila-carrito {
+  display: grid;
+  justify-items: end;
+  gap: 9px;
+}
+
+.acciones-fila-carrito strong {
+  white-space: nowrap;
+}
+
+.input-cantidad-carrito {
+  width: 75px;
+}
+
+.enlace-quitar {
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* Resumen de pedido (antes .summary-card). */
+.resumen-pedido {
+  height: max-content;
+}
+
+.total-resumen {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 22px;
+}
+
+.resumen-pedido fieldset {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Offcanvas sin backdrop, como el panel no bloqueante del original. */
+.panel-carrito {
+  width: min(400px, 88vw) !important;
+  background: var(--paper);
+  border-left: 1px solid var(--line);
+  box-shadow: -8px 0 24px rgba(14, 48, 43, 0.18);
+}
+
+.panel-carrito .offcanvas-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-carrito .offcanvas-title {
+  font-size: 24px;
+}
+
+.panel-carrito .offcanvas-body {
+  padding: 16px 20px;
+}
+
+/* Fila compacta del panel (antes .cart-panel-item). */
+.item-panel-carrito {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.producto-imagen.miniatura-panel,
+.producto-imagen-fallback.miniatura-panel {
+  width: 64px;
+  height: 64px;
+}
+
+.info-panel-carrito h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.info-panel-carrito p {
+  margin: 2px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.control-cantidad-carrito {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0;
+}
+
+.boton-cantidad-carrito {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.valor-cantidad-carrito {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.panel-carrito-vacio {
+  padding: 30px 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+.pie-panel-carrito {
+  padding: 18px 20px;
+  border-top: 1px solid var(--line);
+}
+
+.total-panel-carrito {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+@media (max-width: 575.98px) {
+  .fila-carrito .card-body {
+    align-items: flex-start !important;
+    flex-wrap: wrap;
+  }
+
+  .acciones-fila-carrito {
+    width: 100%;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: end;
+    justify-items: start;
+  }
+
+  .acciones-fila-carrito .form-label {
+    grid-column: 1 / -1;
+  }
+}

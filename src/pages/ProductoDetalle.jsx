@@ -12,8 +12,8 @@ import Alert from 'react-bootstrap/Alert';
 import { useProductos } from '../hooks/useProductos.js';
 import { useCarrito } from '../hooks/useCarrito.js';
 import { formatearDinero } from '../utils/dinero.js';
-import ImagenProducto from '../components/ImagenProducto.jsx';
-import SelectorCantidad from '../components/SelectorCantidad.jsx';
+import ImagenProducto from '../components/atoms/ImagenProducto.jsx';
+import SelectorCantidad from '../components/molecules/SelectorCantidad.jsx';
 
 function DetalleProductoConCodigo({ codigo }) {
   const { pathname } = useLocation();

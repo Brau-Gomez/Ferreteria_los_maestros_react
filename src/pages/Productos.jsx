@@ -16,7 +16,7 @@ import Alert from 'react-bootstrap/Alert';
 import { useProductos } from '../hooks/useProductos.js';
 import { useCarrito } from '../hooks/useCarrito.js';
 import { categoriasPresentes, filtrarProductos } from '../utils/productos.js';
-import TarjetaProducto from '../components/TarjetaProducto.jsx';
+import TarjetaProducto from '../components/molecules/TarjetaProducto.jsx';
 
 function Productos() {
   const { productos } = useProductos();

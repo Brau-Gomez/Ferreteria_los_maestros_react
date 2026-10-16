@@ -10,7 +10,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import FilaCarrito from '../components/FilaCarrito.jsx';
+import FilaCarrito from '../components/molecules/FilaCarrito.jsx';
 import { useCarrito } from '../hooks/useCarrito.js';
 import { useSesion } from '../hooks/useSesion.js';
 import { formatearDinero } from '../utils/dinero.js';

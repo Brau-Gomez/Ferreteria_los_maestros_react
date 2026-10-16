@@ -1,7 +1,7 @@
 /* ============================================================
    Ferretería Los Maestros — tema propio sobre Bootstrap 5.3
    ------------------------------------------------------------
-   Decisión del plan de migración (Fase 0): NO se migra el
+   Decisión del proyecto: NO se migra el
    styles.css de 2.218 líneas del sitio HTML original. Partimos
    de Bootstrap y recreamos el look sobrescribiendo sus
    variables CSS con la paleta original del proyecto HTML5.
@@ -155,7 +155,7 @@
 }
 
 /* ------------------------------------------------------------
-   8) Portada (Fase 3): portea el look del hero, Nosotros y Blog
+   8) Portada: recrea el look del hero, Nosotros y Blog
       del styles.css original.
    ------------------------------------------------------------ */
 
@@ -260,7 +260,7 @@ html {
 }
 
 /* ------------------------------------------------------------
-   9) Catálogo y detalle de producto (Fase 4): portea .filter-bar,
+   9) Catálogo y detalle de producto: recrea .filter-bar,
       .product-grid, .product-card, .detail-card, .empty y .narrow.
    ------------------------------------------------------------ */
 
@@ -365,7 +365,7 @@ html {
 }
 
 /* ------------------------------------------------------------
-   10) Carrito (Fase 5): portea .cart-layout, .cart-item,
+   10) Carrito: recrea .cart-layout, .cart-item,
        .summary-card y .cart-panel con componentes Bootstrap.
    ------------------------------------------------------------ */
 
@@ -529,7 +529,448 @@ html {
 }
 
 /* ------------------------------------------------------------
-   11) Mi cuenta (Fase 7): porta perfil, pedidos y cuenta corriente
+   12) Contacto y artículos de blog: recrea el formulario,
+       la ficha de tienda y el detalle angosto del sitio original.
+   ------------------------------------------------------------ */
+.contacto-grid {
+  align-items: start;
+}
+
+.contacto-formulario {
+  max-width: 560px;
+}
+
+.contacto-datos {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.contacto-datos h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.contacto-dato {
+  margin-bottom: 18px;
+}
+
+.contacto-dato h3 {
+  margin-bottom: 6px;
+  color: var(--green);
+  font-size: 15px;
+}
+
+.contacto-dato p {
+  margin: 2px 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.blog-detalle {
+  max-width: 700px;
+}
+
+.blog-detalle .eyebrow {
+  margin-top: 20px;
+}
+
+.blog-detalle-bajada {
+  margin-bottom: 22px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.blog-detalle-imagen {
+  width: 100%;
+  max-height: 420px;
+  margin-bottom: 28px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.blog-detalle h2 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.blog-detalle p,
+.blog-detalle li {
+  color: var(--muted);
+  line-height: 1.65;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.blog-detalle ol,
+.blog-detalle ul {
+  padding-left: 22px;
+}
+
+.blog-detalle li {
+  margin-bottom: 10px;
+}
+
+.blog-detalle-cierre {
+  margin-top: 30px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+}
+
+/* ------------------------------------------------------------
+   13) Panel administrativo: layout propio del admin original,
+       tablas, métricas y formularios accesibles sobre Bootstrap.
+   ------------------------------------------------------------ */
+.admin-shell {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--cream);
+}
+
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 18px;
+  background: var(--deep);
+  color: #fff;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.admin-brand:hover {
+  color: var(--yellow);
+}
+
+.admin-brand span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-brand small {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.admin-brand-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--green);
+  font-size: 24px;
+}
+
+.admin-context {
+  margin: 28px 0 14px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+}
+
+.admin-nav {
+  display: grid;
+  gap: 6px;
+}
+
+.admin-nav a {
+  padding: 11px 12px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.86);
+  text-decoration: none;
+}
+
+.admin-nav a:hover,
+.admin-nav a.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--yellow);
+}
+
+.admin-sidebar-footer {
+  display: grid;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.admin-sidebar-footer a,
+.admin-sidebar-footer .text-button {
+  color: rgba(255, 255, 255, 0.82);
+  text-align: left;
+}
+
+.admin-workspace {
+  min-width: 0;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 68px;
+  padding: 12px 32px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.admin-topbar p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.admin-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 700;
+}
+
+.admin-user-chip span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+}
+
+.admin-main {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.admin-page-heading,
+.admin-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.admin-page-heading h1 {
+  margin-bottom: 8px;
+  font-size: clamp(30px, 4vw, 44px);
+}
+
+.admin-page-heading p,
+.admin-panel-header p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.admin-kicker {
+  margin-bottom: 7px !important;
+  color: var(--coral) !important;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.admin-metric .card-body {
+  display: grid;
+  gap: 5px;
+  min-height: 132px;
+}
+
+.admin-metric span,
+.admin-metric small {
+  color: var(--muted);
+}
+
+.admin-metric strong {
+  color: var(--green);
+  font-size: 32px;
+}
+
+.admin-panel {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.admin-panel-header h2 {
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+.admin-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-shortcut {
+  display: grid;
+  gap: 7px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.admin-shortcut:hover {
+  border-color: var(--green);
+  background: var(--cream);
+}
+
+.admin-shortcut span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  min-width: 720px;
+  vertical-align: middle;
+}
+
+.admin-table th {
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.admin-table-actions {
+  white-space: nowrap;
+}
+
+.admin-actions,
+.admin-form-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-product-visual {
+  display: grid;
+  min-height: 250px;
+  place-items: center;
+  padding: 18px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.admin-product-image,
+.producto-imagen.admin-product-image,
+.producto-imagen-fallback.admin-product-image {
+  width: 100%;
+  max-width: 360px;
+  height: 250px;
+  object-fit: contain;
+}
+
+.admin-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px;
+}
+
+.admin-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px;
+}
+
+.admin-details div {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-details dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-details dd {
+  margin: 4px 0 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.admin-form-footer {
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+@media (max-width: 800px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    gap: 12px;
+    padding: 14px 18px;
+  }
+
+  .admin-context {
+    display: none;
+  }
+
+  .admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .admin-sidebar-footer {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .admin-topbar,
+  .admin-main {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .admin-page-heading,
+  .admin-panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-shortcuts,
+  .admin-detail-grid,
+  .admin-details {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-panel {
+    padding: 16px;
+  }
+}
+
+/* ------------------------------------------------------------
+   11) Mi cuenta: perfil, pedidos y cuenta corriente
        desde las clases originales de tienda/cuenta.html.
    ------------------------------------------------------------ */
 .cuenta-grid {

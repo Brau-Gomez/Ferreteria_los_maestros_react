@@ -1,4 +1,4 @@
-// Catálogo de productos (Fase 4 del plan de migración).
+// Catálogo de productos de la tienda.
 // Porta tienda/catalogo.html + js/tienda/catalogo.js: encabezado con
 // contador, barra de filtros en vivo y grilla de tarjetas.
 //

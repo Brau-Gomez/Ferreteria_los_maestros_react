@@ -1,4 +1,4 @@
-// Página del carrito y confirmación de pedido (Fase 5).
+// Página del carrito y confirmación de pedido.
 // Porta tienda/carrito.html + dibujarCarrito()/submit de carrito.js:
 // filas editables, resumen, entrega y confirmación fiel en ep1-orders.
 import { useState } from 'react';

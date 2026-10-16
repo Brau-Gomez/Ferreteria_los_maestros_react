@@ -1,4 +1,4 @@
-// Página 404: cualquier ruta desconocida cae aquí (Fase 2).
+// Página 404 para rutas desconocidas.
 import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';

@@ -1,4 +1,4 @@
-// Gestión del scroll en la navegación (Fase 3).
+// Gestión del scroll en la navegación de la SPA.
 // Reproduce el comportamiento de los enlaces ancla del HTML original:
 // - Navegación normal: la página nueva arranca arriba.
 // - Navegación con ancla (/#nosotros, /#blog): desplazamiento suave

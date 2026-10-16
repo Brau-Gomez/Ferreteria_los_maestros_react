@@ -1,6 +1,6 @@
 // Normalización y validación del RUN chileno.
 // Portado desde js/validaciones/usuarios.js del proyecto HTML5: se separa
-// en su propio módulo porque también lo usan el AuthContext (Fase 2) y las
+// en su propio módulo porque también lo usan el AuthContext y las
 // validaciones de usuario.
 
 // Quita puntos, guiones y espacios, y pasa la K a mayúscula.

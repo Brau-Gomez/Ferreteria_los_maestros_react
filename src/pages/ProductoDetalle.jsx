@@ -1,4 +1,4 @@
-// Detalle de producto (Fase 4 del plan de migración).
+// Detalle de producto del catálogo.
 // Porta tienda/producto-detalle.html + js/tienda/producto-detalle.js:
 // ficha con imagen, datos, selector de cantidad y "Agregar al carrito".
 // El código llega por la URL (/productos/:codigo), como el ?codigo= original,

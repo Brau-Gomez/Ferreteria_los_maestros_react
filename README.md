@@ -84,13 +84,13 @@ por lo que **el sitio HTML original y esta versión comparten los mismos datos**
 | 1 | Módulos base: datos, utilidades, validaciones, persistencia | ✅ Listo |
 | 2 | Contextos de sesión y carrito, hooks, rutas y layout reactivo | ✅ Listo |
 | 3 | Portada: hero, Nosotros y blog | ✅ Listo |
-| 4 | Catálogo con filtros + detalle de producto | 🟡 Implementada, pendiente de verificación |
-| 5 | Carrito, panel lateral y checkout (con éxito/fallo de compra) | 🔜 Pendiente |
+| 4 | Catálogo con filtros + detalle de producto | ✅ Listo |
+| 5 | Carrito y panel lateral de compra | 🔜 Pendiente |
 | 6 | Ingreso y Registro con validaciones | 🔜 Pendiente |
 | 7 | Mi cuenta (perfil, pedidos, cuenta corriente) | 🔜 Pendiente |
 | 8 | Contacto, artículos de blog y pulido final | 🔜 Pendiente |
-| 9 | Vistas nuevas de la tienda: categorías y ofertas | 🔜 Pendiente |
 | B | Panel de administración con roles (Administrador/Vendedor) | 🔜 Pendiente |
+| — | Vistas nuevas de la EP2 (checkout, categorías, ofertas): desarrollo propio del equipo como práctica del framework | 🧑‍💻 Al final de la migración |
 | — | Pruebas unitarias de componentes (Jasmine) + ERS V2 + documento de cobertura | 🔜 Pendiente |
 
 ## 🧪 Calidad

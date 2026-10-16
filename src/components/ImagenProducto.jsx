@@ -5,12 +5,10 @@
 import { useState } from 'react';
 import { resolverImagen } from '../utils/imagenes.js';
 
-function ImagenProducto({ producto, className = '' }) {
+function ImagenProductoCargable({ producto, ruta, className }) {
   const [fallida, setFallida] = useState(false);
-  const ruta = resolverImagen(producto.imagen);
 
-  // Sin ruta utilizable o con error de carga: texto de respaldo.
-  if (!ruta || fallida) {
+  if (fallida) {
     return (
       <p className={`producto-imagen-fallback ${className}`.trim()}>
         Sin imagen disponible
@@ -24,6 +22,27 @@ function ImagenProducto({ producto, className = '' }) {
       alt={producto.nombre}
       loading="lazy"
       onError={() => setFallida(true)}
+    />
+  );
+}
+
+function ImagenProducto({ producto, className = '' }) {
+  const ruta = resolverImagen(producto.imagen);
+
+  if (!ruta) {
+    return (
+      <p className={`producto-imagen-fallback ${className}`.trim()}>
+        Sin imagen disponible
+      </p>
+    );
+  }
+
+  return (
+    <ImagenProductoCargable
+      key={JSON.stringify([producto.codigo, ruta])}
+      producto={producto}
+      ruta={ruta}
+      className={className}
     />
   );
 }

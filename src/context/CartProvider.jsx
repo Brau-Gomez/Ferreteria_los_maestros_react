@@ -78,19 +78,20 @@ export function CartProvider({ children }) {
       return { ok: false, mensaje: 'Este producto no tiene stock disponible.' };
     }
 
-    const carrito = revalidarItems(items, productos);
+    const carritoGuardado = leerListaGuardada(clavesDatos.carrito) || [];
+    const carrito = revalidarItems(carritoGuardado, productos);
     const existente = carrito.find((i) => i.codigo === codigo);
+    const cantidadActual = existente ? existente.cantidad : 0;
+    const disponible = Math.max(0, Math.floor(producto.stock) - cantidadActual);
+    if (disponible < 1) {
+      return { ok: false, mensaje: 'Ya agregaste todo el stock disponible.' };
+    }
+    const agregadas = Math.min(pedidas, disponible);
     if (existente) {
-      if (existente.cantidad >= producto.stock) {
-        return { ok: false, mensaje: 'Ya agregaste todo el stock disponible.' };
-      }
-      existente.cantidad = Math.min(
-        existente.cantidad + pedidas,
-        producto.stock,
-      );
+      existente.cantidad += agregadas;
     } else {
       const fila = { ...producto };
-      fila.cantidad = Math.min(pedidas, producto.stock);
+      fila.cantidad = agregadas;
       carrito.push(fila);
     }
 
@@ -102,7 +103,13 @@ export function CartProvider({ children }) {
     }
     // El original abre el panel lateral para confirmar la acción.
     setPanelAbierto(true);
-    return { ok: true, mensaje: 'Producto agregado al carrito.' };
+    return {
+      ok: true,
+      mensaje:
+        agregadas < pedidas
+          ? `Se agregaron ${agregadas} de las ${pedidas} unidades solicitadas por el stock disponible.`
+          : 'Producto agregado al carrito.',
+    };
   }
 
   // cantidad 0 equivale a quitar el producto (cambiarCantidad del original).
@@ -115,7 +122,7 @@ export function CartProvider({ children }) {
       };
     }
     const productos = obtenerProductos();
-    const carrito = revalidarItems(items, productos);
+    const carrito = revalidarItems(leerListaGuardada(clavesDatos.carrito) || [], productos);
     const nuevos = [];
     for (let i = 0; i < carrito.length; i++) {
       const producto = carrito[i];

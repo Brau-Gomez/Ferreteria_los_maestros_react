@@ -3,12 +3,22 @@
 // los cambios guardados en localStorage (por ejemplo, los del admin).
 //
 // Como el catálogo vive en localStorage, se lee directamente al
-// inicializar el estado: no hace falta un useEffect (que forzaría un
-// render extra) ni un estado de carga.
-import { useState } from 'react';
-import { obtenerProductos } from '../services/almacenamiento.js';
+// inicializar el estado y se vuelve a leer cuando cambia desde otra pestaña.
+import { useEffect, useState } from 'react';
+import { clavesDatos, obtenerProductos } from '../services/almacenamiento.js';
 
 export function useProductos() {
-  const [productos] = useState(() => obtenerProductos());
+  const [productos, setProductos] = useState(() => obtenerProductos());
+
+  useEffect(() => {
+    function alCambiarStorage(evento) {
+      if (evento.key !== clavesDatos.productos && evento.key !== null) return;
+      setProductos(obtenerProductos());
+    }
+
+    window.addEventListener('storage', alCambiarStorage);
+    return () => window.removeEventListener('storage', alCambiarStorage);
+  }, []);
+
   return { productos };
 }

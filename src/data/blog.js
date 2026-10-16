@@ -3,7 +3,7 @@
 //
 // El destacado de acero solo existe en la portada (el HTML original no
 // tenía artículo completo para él); pintura y taladro tienen página
-// propia que se implementa en la Fase 8 con estos mismos datos.
+// propia que reutiliza estos mismos datos.
 //
 // slug: ruta del artículo (/blog/:slug). Solo los artículos con slug
 // muestran el enlace "Leer más" en la portada, como en el original.

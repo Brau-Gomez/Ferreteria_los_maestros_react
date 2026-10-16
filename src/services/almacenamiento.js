@@ -108,6 +108,14 @@ export function guardarRegistro(clave, lista, campo, original, registro) {
   return guardarDato(clave, actualizados);
 }
 
+// Elimina un registro por su campo identificador; devuelve false si no existe
+// o si localStorage no pudo persistir la lista actualizada.
+export function eliminarRegistro(clave, lista, campo, valor) {
+  const restantes = lista.filter((registro) => registro[campo] !== valor);
+  if (restantes.length === lista.length) return false;
+  return guardarDato(clave, restantes);
+}
+
 // Perfiles de demostración universitaria (los tres entran con la clave demo123).
 export function crearUsuariosIniciales() {
   return [

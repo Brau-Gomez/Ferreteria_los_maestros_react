@@ -92,9 +92,9 @@ function Cuenta() {
                   ? 'Tienes acceso completo a la administración de productos y usuarios.'
                   : 'Puedes gestionar el catálogo de productos y revisar el stock.'}
               </p>
-              <Alert variant="info" className="mb-0">
-                El panel de administración se implementa en la Fase B.
-              </Alert>
+              <Button as={Link} to="/admin" variant="warning">
+                Ir al panel de administración
+              </Button>
             </Card.Body>
           </Card>
         )}

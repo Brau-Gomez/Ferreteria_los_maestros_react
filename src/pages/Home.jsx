@@ -1,4 +1,4 @@
-// Portada del sitio (Fase 3 del plan de migración).
+// Portada del sitio.
 // Porta el index.html original: hero centrado, sección Nosotros y Blog,
 // ahora con el layout de Bootstrap (Container/Row/Col y cards). Los
 // artículos viven en src/data/blog.js para no mezclar contenido con marcado.

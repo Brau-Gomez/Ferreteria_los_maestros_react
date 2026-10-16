@@ -1,4 +1,4 @@
-// Panel lateral global del carrito (Fase 5).
+// Panel lateral global del carrito.
 // Porta js/tienda/carrito-panel.js con Offcanvas de react-bootstrap:
 // abrir al agregar, Escape/X/"Seguir comprando" para cerrar, controles
 // de cantidad, eliminar, vaciar y enlace a la página del carrito.

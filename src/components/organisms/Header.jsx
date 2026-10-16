@@ -1,4 +1,4 @@
-// Cabecera compartida del sitio (Fase 2: accesos por sesión y carrito reactivo).
+// Cabecera compartida con accesos por sesión y contador reactivo del carrito.
 //
 // Porta el comportamiento de js/app.js del original:
 // - El contador del carrito (antes #cart-count) es un Badge que se
@@ -87,8 +87,7 @@ function Header() {
                   Mi cuenta
                 </Nav.Link>
                 {perfilInterno && (
-                  // El panel admin llega en la Fase B; cuando exista, el
-                  // Vendedor irá directo al listado de productos.
+                  // AdminLayout deriva a Vendedores al listado permitido de productos.
                   <Nav.Link as={NavLink} to="/admin">
                     Administración
                   </Nav.Link>

@@ -1,11 +1,11 @@
-// Proveedor del carrito (Fase 2 del plan de migración).
+// Proveedor del carrito persistido en el navegador.
 // Porta la lógica de js/tienda/carrito.js:
 // - Items con el producto completo + cantidad (estructura original).
 // - Revalidación contra el catálogo en cada operación: los productos
 //   sin stock se descartan y las cantidades se ajustan al máximo.
 // - Persistencia en ep1-cart.
-// - Al agregar se abre el panel lateral (la UI del panel llega en Fase 5;
-//   su estado de apertura ya vive aquí, como en el original).
+// - Al agregar se abre el panel lateral; su estado de apertura vive aquí,
+//   como en el original.
 import { useEffect, useState } from 'react';
 import { ContextoCarrito } from './CartContext.jsx';
 import {

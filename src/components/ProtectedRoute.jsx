@@ -1,6 +1,5 @@
 // Ruta protegida: si no hay sesión activa, redirige al ingreso.
-// En la Fase B se extenderá para exigir los roles del panel admin
-// (los Vendedores solo ven productos, igual que el original).
+// La autorización del panel admin se aplica en AdminLayout, por página y rol.
 import { Navigate } from 'react-router-dom';
 import { useSesion } from '../hooks/useSesion.js';
 

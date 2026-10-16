@@ -1,4 +1,4 @@
-// Proveedor de sesión (Fase 2 del plan de migración).
+// Proveedor de sesión de la aplicación.
 // Porta la lógica de js/app.js (usuarioDeSesion, cerrarSesion) y de
 // js/tienda/inicio-sesion.js (comprobación de credenciales y guardado
 // de la sesión).
@@ -90,7 +90,23 @@ export function AuthProvider({ children }) {
     return true;
   }
 
-  const valor = { usuario, entrar, salir };
+  // Mantiene en sincronía el Context y la clave de sesión cuando Admin edita
+  // su propio perfil (el sitio original volvía a resolverlo al recargar).
+  function actualizarSesion(runAnterior, usuarioActualizado) {
+    if (!usuario || usuario.run !== runAnterior) return true;
+    if (!usuarioActualizado.activo) {
+      if (!guardarDato(clavesDatos.sesion, null)) return false;
+      setUsuario(null);
+      return true;
+    }
+    if (!guardarDato(clavesDatos.sesion, { run: usuarioActualizado.run })) {
+      return false;
+    }
+    setUsuario(usuarioActualizado);
+    return true;
+  }
+
+  const valor = { usuario, entrar, salir, actualizarSesion };
   return (
     <ContextoAuth.Provider value={valor}>{children}</ContextoAuth.Provider>
   );

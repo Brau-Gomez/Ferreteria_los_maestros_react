@@ -1,4 +1,4 @@
-// Catálogo de productos para páginas y componentes (Fase 2).
+// Catálogo de productos compartido por páginas y componentes.
 // El servicio siembra ep1-products la primera vez y después respeta
 // los cambios guardados en localStorage (por ejemplo, los del admin).
 //

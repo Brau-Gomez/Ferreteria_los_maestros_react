@@ -1,6 +1,6 @@
 // Región y comunas consideradas por el sitio.
 //
-// Ajuste acordado con el equipo (Fase 1 del plan de migración): la
+// Ajuste acordado con el equipo: la
 // Ferretería Los Maestros atiende y despacha solamente en la Cuarta
 // Región de Chile (Región de Coquimbo), así que se descartan las demás
 // regiones que traía el proyecto HTML5.

@@ -1,10 +1,9 @@
-// Prueba de humo de los módulos base (Fase 1 del plan de migración).
+// Pruebas de humo de los módulos base.
 // Ejecutar con:  node scripts/smoke-test.mjs
 //
 // Verifica que la lógica portada del proyecto HTML5 funcione igual:
 // RUN con dígito verificador, dinero, imágenes, validaciones y PBKDF2.
-// No usa localStorage ni el JSON del catálogo: esos se prueban en el
-// navegador cuando los contextos los conecten (Fase 2).
+// No usa localStorage ni el JSON del catálogo: esos requieren navegador.
 import { normalizarRun, runValido } from '../src/utils/run.js';
 import { formatearDinero } from '../src/utils/dinero.js';
 import { resolverImagen } from '../src/utils/imagenes.js';
@@ -155,7 +154,7 @@ comprobar(
   fs.existsSync('public/assets/img/productos/img_portada/ferreteria.png'),
 );
 
-console.log('Filtros del catálogo (Fase 4)');
+console.log('Filtros del catálogo');
 const catalogoPrueba = [
   {
     codigo: 'HE001',
@@ -222,7 +221,7 @@ comprobar(
     JSON.stringify(['Herramientas', 'Pinturas', 'Tornillería']),
 );
 
-console.log('Cálculos del carrito (Fase 5)');
+console.log('Cálculos del carrito');
 const itemsCarritoPrueba = [
   { codigo: 'HE001', precioVenta: 12990, cantidad: 2 },
   { codigo: 'PI002', precioVenta: 4990, cantidad: 3 },

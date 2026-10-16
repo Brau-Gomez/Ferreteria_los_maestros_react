@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthProvider.jsx';
 import { CartProvider } from './context/CartProvider.jsx';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import PanelCarrito from './components/PanelCarrito';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollManager from './components/ScrollManager';
 import Home from './pages/Home';
@@ -27,6 +28,8 @@ function App() {
           <ScrollManager />
           <div className="d-flex flex-column min-vh-100">
             <Header />
+            {/* Panel global: se abre desde cualquier vista al agregar. */}
+            <PanelCarrito />
             <main className="flex-grow-1">
               <Routes>
                 <Route path="/" element={<Home />} />

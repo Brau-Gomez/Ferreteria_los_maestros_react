@@ -9,6 +9,7 @@ import { normalizarRun, runValido } from '../src/utils/run.js';
 import { formatearDinero } from '../src/utils/dinero.js';
 import { resolverImagen } from '../src/utils/imagenes.js';
 import { estadoProducto, filtrarProductos, categoriasPresentes } from '../src/utils/productos.js';
+import { cantidadCarrito, totalCarrito } from '../src/utils/carrito.js';
 import { huellaClave } from '../src/utils/claves.js';
 import {
   validarCorreo,
@@ -220,6 +221,21 @@ comprobar(
   JSON.stringify(categoriasPresentes(catalogoPrueba)) ===
     JSON.stringify(['Herramientas', 'Pinturas', 'Tornillería']),
 );
+
+console.log('Cálculos del carrito (Fase 5)');
+const itemsCarritoPrueba = [
+  { codigo: 'HE001', precioVenta: 12990, cantidad: 2 },
+  { codigo: 'PI002', precioVenta: 4990, cantidad: 3 },
+];
+comprobar(
+  'el contador suma todas las unidades',
+  cantidadCarrito(itemsCarritoPrueba) === 5,
+);
+comprobar(
+  'el total suma precio por cantidad de cada fila',
+  totalCarrito(itemsCarritoPrueba) === 40950,
+);
+comprobar('un carrito vacío totaliza cero', totalCarrito([]) === 0);
 
 console.log('Validación de usuario');
 const usuarios = [{ run: '123456785', correo: 'admin@duoc.cl' }];

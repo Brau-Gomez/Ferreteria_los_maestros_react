@@ -8,13 +8,13 @@ import CampoFormulario from '../molecules/CampoFormulario.jsx';
 
 function FormularioContacto({ datos, errores, mensaje, onCambio, onEnviar }) {
   return (
-    <Card className="auth-card">
+    <Card className="contacto-formulario">
       <Card.Body className="p-4">
         <Form noValidate onSubmit={onEnviar}>
           <CampoFormulario
             id="contacto-nombre"
             etiqueta="Nombre completo"
-            type="text"
+            required
             maxLength={100}
             placeholder="Ej: Juan Pérez González"
             value={datos.nombre}
@@ -26,6 +26,7 @@ function FormularioContacto({ datos, errores, mensaje, onCambio, onEnviar }) {
             id="contacto-correo"
             etiqueta="Correo electrónico"
             type="email"
+            required
             maxLength={100}
             placeholder="Ej: nombre@duocuc.cl"
             value={datos.correo}
@@ -37,7 +38,8 @@ function FormularioContacto({ datos, errores, mensaje, onCambio, onEnviar }) {
             id="contacto-comentario"
             etiqueta="Comentario"
             as="textarea"
-            rows={4}
+            required
+            rows={5}
             maxLength={500}
             placeholder="Cuéntanos tu consulta"
             value={datos.comentario}
@@ -45,9 +47,13 @@ function FormularioContacto({ datos, errores, mensaje, onCambio, onEnviar }) {
             onChange={(evento) => onCambio('comentario', evento.target.value)}
           />
 
-          {mensaje && <Alert variant="success">{mensaje}</Alert>}
+          {mensaje && (
+            <Alert variant="success" role="status">
+              {mensaje}
+            </Alert>
+          )}
 
-          <Button type="submit" variant="primary" className="w-100">
+          <Button type="submit" variant="warning" className="w-100">
             Enviar consulta
           </Button>
         </Form>

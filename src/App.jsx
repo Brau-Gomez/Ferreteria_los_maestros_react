@@ -20,6 +20,7 @@ import Ingreso from './pages/Ingreso';
 import Registro from './pages/Registro';
 import Cuenta from './pages/Cuenta';
 import Contacto from './pages/Contacto';
+import BlogDetalle from './pages/BlogDetalle';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
                   }
                 />
                 <Route path="/contacto" element={<Contacto />} />
+                <Route path="/blog/:slug" element={<BlogDetalle />} />
                 {/* Cualquier otra ruta muestra la página 404. */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

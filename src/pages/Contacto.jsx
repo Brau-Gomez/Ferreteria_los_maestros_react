@@ -1,40 +1,28 @@
-// Formulario de contacto (stub temporal).
-// El formulario con validación en vivo se implementa en la Fase 8.
+// Página de contacto: solo arma la vista. La lógica del formulario vive en
+// ContactoContainer y los datos de la tienda en el organismo DatosTienda.
+import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import DatosTienda from '../components/organisms/DatosTienda.jsx';
+import ContactoContainer from '../containers/ContactoContainer.jsx';
 
 function Contacto() {
-  const [datos, setDatos] = useState(inicial);
-  const [errores, setErrores] = useState({});
-  const [mensaje, setMensaje] = useState('');
-  const [intentoEnviar, setIntentoEnviar] = useState(false);
-
-  function actualizar(campo, valor) {
-    const siguientes = { ...datos, [campo]: valor };
-    setDatos(siguientes);
-    if (intentoEnviar) setErrores(validarContacto(siguientes));
-    setMensaje('');
-  }
-
-  function alEnviar(evento) {
-    evento.preventDefault();
-    const actuales = validarContacto(datos);
-    setIntentoEnviar(true);
-    setErrores(actuales);
-    if (Object.values(actuales).some(Boolean)) return;
-
-    setDatos(inicial);
-    setErrores({});
-    setMensaje('Consulta registrada para esta demostración. No se envía a un servidor.');
-    setIntentoEnviar(false);
-  }
-
   return (
     <Container className="py-5">
-      <h1 className="mb-3">Contacto</h1>
-      <p className="text-muted mb-0">
-        Contacto en migración: el formulario con validación se implementa
-        en la Fase 8 del plan.
-      </p>
+      <header className="mb-4">
+        <p className="eyebrow mb-2">Estamos para ayudarte</p>
+        <h1 className="titulo-seccion mb-2">Contacto</h1>
+        <p>Completa el formulario para registrar tu consulta.</p>
+      </header>
+
+      <Row className="g-4 contacto-grid">
+        <Col lg={7}>
+          <ContactoContainer />
+        </Col>
+        <Col lg={5}>
+          <DatosTienda />
+        </Col>
+      </Row>
     </Container>
   );
 }

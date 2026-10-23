@@ -14,6 +14,7 @@ rediseñado desde cero con Bootstrap.
 | **Bootstrap 5.3 + react-bootstrap 2.10** | Diseño responsivo. No se migró el CSS original: la paleta se mapeó a variables de Bootstrap en `src/theme.css` |
 | **React Router 7** | Navegación entre vistas |
 | **localStorage** | Persistencia simulada (catálogo, usuarios, carrito, pedidos y sesión) |
+| **Vitest + Testing Library** | Pruebas unitarias de utilidades, componentes y containers (entorno jsdom) |
 | **oxlint** | Lint, con las reglas de hooks de React activadas |
 | **Node** | Pruebas de humo ejecutables (`scripts/smoke-test.mjs`) |
 
@@ -27,6 +28,7 @@ npm run dev     # servidor de desarrollo → http://localhost:5173
 Otros comandos:
 
 ```bash
+npm run test                 # pruebas unitarias con Vitest
 npm run build                # build de producción
 npm run preview              # servir el build generado
 npm run lint                 # linter
@@ -40,16 +42,43 @@ src/
 ├── App.jsx               # Router + proveedores (sesión, carrito) + layout
 ├── main.jsx              # CSS de Bootstrap + theme.css + montaje de la app
 ├── theme.css             # Paleta del sitio original mapeada a variables Bootstrap
-├── components/           # Header, Footer, ProtectedRoute, ScrollManager
+├── setupTests.js         # Configuración de Vitest (jest-dom)
+├── components/           # Componentes presentacionales, organizados por Atomic Design
+│   ├── atoms/            #   Piezas mínimas (ImagenProducto)
+│   ├── molecules/        #   Combinaciones simples (CampoFormulario, TarjetaProducto, FilaCarrito…)
+│   ├── organisms/        #   Secciones completas (Header, Footer, FormularioIngreso, VistaCarrito…)
+│   └── admin/            #   Componentes del panel de administración
+├── containers/           # Containers: estado, efectos y lógica de cada vista
 ├── context/              # Contextos y providers de sesión y carrito
 ├── data/                 # Datos estáticos: productos.json, regiones, categorías, blog
 ├── hooks/                # Hooks custom: useSesion, useCarrito, useProductos
-├── pages/                # Vistas de cada ruta
+├── pages/                # Vistas de cada ruta (delgadas: delegan en un container)
 ├── services/             # Capa de persistencia (almacenamiento.js)
 └── utils/                # Dinero, RUN, claves PBKDF2, imágenes y validaciones
 scripts/
 └── smoke-test.mjs        # Pruebas de humo ejecutables con Node
 ```
+
+### Arquitectura de componentes
+
+**Atomic Design.** Los componentes de `components/` se organizan en átomos,
+moléculas y organismos; las páginas (`pages/`) actúan como plantillas de cada
+ruta. Los imports solo fluyen hacia abajo: una página usa organismos, un organismo
+usa moléculas y una molécula usa átomos. Átomos y moléculas nunca leen datos
+ni usan contextos.
+
+**Container/Presentational.** Cada vista con lógica se divide en dos capas:
+
+- El **container** (`src/containers/`) guarda el estado, usa los hooks y contextos
+  (`useCarrito`, `useSesion`, `useProductos`), valida y persiste. No tiene markup propio.
+- Los **componentes presentacionales** (`src/components/`) reciben datos y
+  callbacks por props y solo dibujan la interfaz.
+
+Ejemplo: `pages/Carrito.jsx` → `CarritoContainer` (estado, sesión y confirmación del
+pedido) → `VistaCarrito` → `ListaCarrito` y `ResumenPedido` (presentacionales).
+
+Vistas separadas con este patrón: Contacto, Catálogo, Detalle de producto, Carrito,
+Ingreso, Registro y Mi cuenta.
 
 ## 👥 Cuentas de demostración
 
@@ -85,16 +114,21 @@ por lo que **el sitio HTML original y esta versión comparten los mismos datos**
 | 2 | Contextos de sesión y carrito, hooks, rutas y layout reactivo | ✅ Listo |
 | 3 | Portada: hero, Nosotros y blog | ✅ Listo |
 | 4 | Catálogo con filtros + detalle de producto | ✅ Listo |
-| 5 | Carrito y panel lateral de compra | 🔜 Pendiente |
-| 6 | Ingreso y Registro con validaciones | 🔜 Pendiente |
-| 7 | Mi cuenta (perfil, pedidos, cuenta corriente) | 🔜 Pendiente |
-| 8 | Contacto, artículos de blog y pulido final | 🔜 Pendiente |
-| B | Panel de administración con roles (Administrador/Vendedor) | 🔜 Pendiente |
+| 5 | Carrito y panel lateral de compra | ✅ Listo |
+| 6 | Ingreso y Registro con validaciones | ✅ Listo |
+| 7 | Mi cuenta (perfil, pedidos, cuenta corriente) | ✅ Listo |
+| 8 | Contacto, artículos de blog y pulido final | ✅ Listo |
+| B | Panel de administración con roles (Administrador/Vendedor) | ✅ Listo |
+| — | Refactor a Atomic Design + Container/Presentational | ✅ Listo en las vistas de cliente |
+| — | Pruebas unitarias con Vitest | ✅ 31 archivos, 119 pruebas |
 | — | Vistas nuevas de la EP2 (checkout, categorías, ofertas): desarrollo propio del equipo como práctica del framework | 🧑‍💻 Al final de la migración |
-| — | Pruebas unitarias de componentes (Jasmine) + ERS V2 + documento de cobertura | 🔜 Pendiente |
+| — | ERS V2 + documento de cobertura | 🔜 Pendiente |
 
 ## 🧪 Calidad
 
+- `npm run test`: pruebas unitarias con **Vitest** y **Testing Library** (entorno jsdom).
+  Cubren la lógica pura (`utils/`), las moléculas, los organismos y los containers
+  (filtros del catálogo, carrito, validaciones de ingreso y registro, cuenta corriente).
 - `npm run lint`: oxlint sin advertencias sobre el código fuente.
 - `node scripts/smoke-test.mjs`: 53 pruebas de la lógica pura portada del original
   (formato de RUN módulo 11, dinero en pesos, huella de claves PBKDF2, validaciones
@@ -104,4 +138,4 @@ por lo que **el sitio HTML original y esta versión comparten los mismos datos**
 
 *Proyecto académico — DSY1104 Desarrollo Fullstack II, Evaluación Parcial 2.*
 
-**Integrantes (Grupo 6): Alejandro Maturana - Braulio Gomez** 
+**Integrantes (Grupo 6): Alejandro Maturana - Braulio Gomez**

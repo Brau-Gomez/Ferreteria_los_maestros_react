@@ -29,4 +29,17 @@ describe('CampoFormulario', () => {
     );
     expect(screen.getByLabelText('Correo')).not.toHaveClass('is-invalid');
   });
+
+  it('muestra el texto de ayuda cuando se entrega', () => {
+    render(
+      <CampoFormulario
+        id="run"
+        etiqueta="RUN"
+        ayuda="Sin puntos ni guion."
+        value=""
+        onChange={() => {}}
+      />,
+    );
+    expect(screen.getByText('Sin puntos ni guion.')).toBeInTheDocument();
+  });
 });

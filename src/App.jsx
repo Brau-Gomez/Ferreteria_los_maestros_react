@@ -15,10 +15,10 @@ import ScrollManager from './components/ScrollManager';
 import Home from './pages/Home';
 import Productos from './pages/Productos';
 import ProductoDetalle from './pages/ProductoDetalle';
-import Carrito from './pages/Carrito';
 import Categorias from './pages/Categorias';
 import CategoriaDetalle from './pages/CategoriaDetalle';
 import Ofertas from './pages/Ofertas';
+import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
 import Ingreso from './pages/Ingreso';
 import Registro from './pages/Registro';
@@ -29,6 +29,7 @@ import NotFound from './pages/NotFound';
 import AdminLayout from './components/admin/AdminLayout.jsx';
 import AdminInicio from './pages/AdminInicio.jsx';
 import AdminProductos from './pages/AdminProductos.jsx';
+import AdminProductosCriticos from './pages/AdminProductosCriticos.jsx';
 import AdminProductoDetalle from './pages/AdminProductoDetalle.jsx';
 import AdminProductoForm from './pages/AdminProductoForm.jsx';
 import AdminUsuarios from './pages/AdminUsuarios.jsx';
@@ -83,6 +84,7 @@ function ContenidoApp() {
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<AdminInicio />} />
                   <Route path="productos" element={<AdminProductos />} />
+                  <Route path="criticos" element={<AdminProductosCriticos />} />
                   <Route path="productos/nuevo" element={<AdminProductoForm modo="nuevo" />} />
                   <Route path="productos/:codigo/editar" element={<AdminProductoForm modo="editar" />} />
                   <Route path="productos/:codigo" element={<AdminProductoDetalle />} />

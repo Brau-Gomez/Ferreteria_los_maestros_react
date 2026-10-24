@@ -9,13 +9,9 @@ const items = [
 const base = {
   items,
   total: 20000,
-  entrega: 'Retiro en tienda',
   aviso: null,
-  pedidoRecibido: false,
   onCambiarCantidad: () => {},
   onQuitar: () => {},
-  onCambiarEntrega: () => {},
-  onConfirmar: (evento) => evento.preventDefault(),
   onCerrarAviso: () => {},
 };
 
@@ -47,12 +43,6 @@ describe('VistaCarrito', () => {
     expect(screen.getByText('Inicia sesión antes.')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /close/i }));
     expect(onCerrarAviso).toHaveBeenCalledTimes(1);
-  });
-
-  it('muestra la confirmación cuando el pedido fue recibido', () => {
-    mostrar({ pedidoRecibido: true });
-    expect(screen.getByText('Pedido recibido')).toBeInTheDocument();
-    expect(screen.queryByText('Tu carrito')).not.toBeInTheDocument();
   });
 
   it('avisa el código al quitar un producto', () => {

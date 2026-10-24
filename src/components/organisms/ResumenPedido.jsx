@@ -1,16 +1,11 @@
-// Resumen del pedido: total, tipo de entrega y botón de confirmar.
-// Presentacional: el tipo de entrega y el envío los controla el container.
+// Resumen del carrito: total y botón para ir al checkout.
+// Presentacional: la entrega y el pago se eligen en el checkout.
+import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
 import { formatearDinero } from '../../utils/dinero.js';
 
-const opcionesEntrega = [
-  { id: 'retiro-tienda', valor: 'Retiro en tienda' },
-  { id: 'despacho', valor: 'Despacho' },
-];
-
-function ResumenPedido({ total, entrega, onCambiarEntrega, onConfirmar }) {
+function ResumenPedido({ total }) {
   return (
     <Card className="resumen-pedido">
       <Card.Body>
@@ -18,26 +13,9 @@ function ResumenPedido({ total, entrega, onCambiarEntrega, onConfirmar }) {
         <p className="total-resumen">
           Total <strong>{formatearDinero(total)}</strong>
         </p>
-        <Form onSubmit={onConfirmar}>
-          <fieldset>
-            <legend className="fs-6">Tipo de entrega</legend>
-            {opcionesEntrega.map((opcion) => (
-              <Form.Check
-                key={opcion.id}
-                type="radio"
-                id={opcion.id}
-                name="entrega"
-                value={opcion.valor}
-                label={opcion.valor}
-                checked={entrega === opcion.valor}
-                onChange={(evento) => onCambiarEntrega(evento.target.value)}
-              />
-            ))}
-          </fieldset>
-          <Button type="submit" variant="warning" className="w-100">
-            Confirmar pedido
-          </Button>
-        </Form>
+        <Button as={Link} to="/checkout" variant="warning" className="w-100">
+          Ir a pagar
+        </Button>
       </Card.Body>
     </Card>
   );

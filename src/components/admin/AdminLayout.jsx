@@ -47,6 +47,7 @@ function AdminLayout() {
           <NavLink to="/admin/productos">Productos</NavLink>
           {esAdmin && <NavLink to="/admin/criticos">Stock crítico</NavLink>}
           {esAdmin && <NavLink to="/admin/ordenes">Órdenes</NavLink>}
+          {esAdmin && <NavLink to="/admin/categorias">Categorías</NavLink>}
           {esAdmin && <NavLink to="/admin/reportes">Reportes</NavLink>}
           {esAdmin && <NavLink to="/admin/usuarios">Usuarios</NavLink>}
           <NavLink to="/admin/perfil">Mi perfil</NavLink>

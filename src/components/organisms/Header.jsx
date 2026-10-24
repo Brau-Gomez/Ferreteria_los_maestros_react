@@ -16,7 +16,7 @@ import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { categoriasProducto } from '../../data/categorias.js';
+import { obtenerCategorias } from '../../services/categorias.js';
 import { useSesion } from '../../hooks/useSesion.js';
 import { useCarrito } from '../../hooks/useCarrito.js';
 
@@ -25,6 +25,7 @@ function Header() {
   const { contador } = useCarrito();
   const navigate = useNavigate();
   const [busqueda, setBusqueda] = useState('');
+  const [categorias] = useState(() => obtenerCategorias());
   const perfilInterno = Boolean(usuario) && usuario.tipoUsuario !== 'Cliente';
 
   // La búsqueda lleva al catálogo con el texto ya aplicado (?q=...).
@@ -92,7 +93,7 @@ function Header() {
                 Todas las categorías
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              {categoriasProducto.map((categoria) => (
+              {categorias.map((categoria) => (
                 <NavDropdown.Item
                   key={categoria}
                   as={Link}

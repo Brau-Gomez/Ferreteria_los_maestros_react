@@ -1,13 +1,15 @@
 // Container de la página Categorías: calcula cuántos productos tiene cada
-// categoría oficial. Solo renderiza ListaCategorias.
+// categoría vigente. Solo renderiza ListaCategorias.
+import { useState } from 'react';
 import ListaCategorias from '../components/organisms/ListaCategorias.jsx';
-import { categoriasProducto } from '../data/categorias.js';
 import { useProductos } from '../hooks/useProductos.js';
+import { obtenerCategorias } from '../services/categorias.js';
 import { contarPorCategoria } from '../utils/productos.js';
 
 function CategoriasContainer() {
   const { productos } = useProductos();
-  return <ListaCategorias categorias={contarPorCategoria(productos, categoriasProducto)} />;
+  const [categorias] = useState(() => obtenerCategorias());
+  return <ListaCategorias categorias={contarPorCategoria(productos, categorias)} />;
 }
 
 export default CategoriasContainer;

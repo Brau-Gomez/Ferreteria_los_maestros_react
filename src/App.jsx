@@ -32,6 +32,7 @@ import AdminProductos from './pages/AdminProductos.jsx';
 import AdminProductosCriticos from './pages/AdminProductosCriticos.jsx';
 import AdminReportes from './pages/AdminReportes.jsx';
 import AdminPerfil from './pages/AdminPerfil.jsx';
+import AdminCategorias from './pages/AdminCategorias.jsx';
 import AdminOrdenes from './pages/AdminOrdenes.jsx';
 import AdminOrdenDetalle from './pages/AdminOrdenDetalle.jsx';
 import AdminProductoDetalle from './pages/AdminProductoDetalle.jsx';
@@ -95,6 +96,7 @@ function ContenidoApp() {
                   <Route path="ordenes" element={<AdminOrdenes />} />
                   <Route path="ordenes/:id" element={<AdminOrdenDetalle />} />
                   <Route path="reportes" element={<AdminReportes />} />
+                  <Route path="categorias" element={<AdminCategorias />} />
                   <Route path="perfil" element={<AdminPerfil />} />
                   <Route path="usuarios" element={<AdminUsuarios />} />
                   <Route path="usuarios/nuevo" element={<AdminUsuarioForm modo="nuevo" />} />

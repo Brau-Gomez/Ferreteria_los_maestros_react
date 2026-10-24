@@ -1,4 +1,5 @@
-// Cabecera compartida con accesos por sesión y contador reactivo del carrito.
+// Cabecera compartida (presentacional): recibe todo por props.
+// El estado y los hooks viven en containers/HeaderContainer.jsx.
 //
 // Porta el comportamiento de js/app.js del original:
 // - El contador del carrito (antes #cart-count) es un Badge que se
@@ -7,8 +8,7 @@
 //   sin sesión se muestra "Ingreso".
 // - "Administración" solo para perfiles internos (Admin o Vendedor).
 // - "Contacto" es un canal de clientes: los perfiles internos no lo ven.
-import { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -16,29 +16,17 @@ import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { obtenerCategorias } from '../../services/categorias.js';
-import { useSesion } from '../../hooks/useSesion.js';
-import { useCarrito } from '../../hooks/useCarrito.js';
 
-function Header() {
-  const { usuario, salir } = useSesion();
-  const { contador } = useCarrito();
-  const navigate = useNavigate();
-  const [busqueda, setBusqueda] = useState('');
-  const [categorias] = useState(() => obtenerCategorias());
+function Header({
+  usuario,
+  contador = 0,
+  categorias = [],
+  busqueda = '',
+  onCambiarBusqueda,
+  onBuscar,
+  onCerrarSesion,
+}) {
   const perfilInterno = Boolean(usuario) && usuario.tipoUsuario !== 'Cliente';
-
-  // La búsqueda lleva al catálogo con el texto ya aplicado (?q=...).
-  function buscar(evento) {
-    evento.preventDefault();
-    const texto = busqueda.trim();
-    navigate(texto ? '/productos?q=' + encodeURIComponent(texto) : '/productos');
-  }
-
-  // El original redirigía al ingreso tras cerrar sesión (cerrarSesion).
-  function alCerrarSesion() {
-    if (salir()) navigate('/ingreso');
-  }
 
   return (
     <Navbar
@@ -67,14 +55,14 @@ function Header() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="nav-principal" />
         <Navbar.Collapse id="nav-principal">
-          <Form className="d-flex my-2 my-lg-0 ms-lg-auto" role="search" onSubmit={buscar}>
+          <Form className="d-flex my-2 my-lg-0 ms-lg-auto" role="search" onSubmit={onBuscar}>
             <Form.Control
               type="search"
               size="sm"
               placeholder="Buscar"
               aria-label="Buscar productos"
               value={busqueda}
-              onChange={(evento) => setBusqueda(evento.target.value)}
+              onChange={(evento) => onCambiarBusqueda(evento.target.value)}
             />
             <Button type="submit" variant="warning" size="sm" className="ms-2">
               Buscar
@@ -139,7 +127,7 @@ function Header() {
                 <Button
                   variant="link"
                   className="nav-link p-0 border-0"
-                  onClick={alCerrarSesion}
+                  onClick={onCerrarSesion}
                 >
                   Cerrar sesión
                 </Button>

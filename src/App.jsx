@@ -7,9 +7,9 @@ import { CartProvider } from './context/CartProvider.jsx';
 // Componentes por nivel atómico (lineamiento EP2): organisms son las
 // secciones visuales; ProtectedRoute y ScrollManager son piezas de
 // comportamiento/ruta, por eso quedan en la raíz de components/.
-import Header from './components/organisms/Header';
+import HeaderContainer from './containers/HeaderContainer';
 import Footer from './components/organisms/Footer';
-import PanelCarrito from './components/organisms/PanelCarrito';
+import PanelCarritoContainer from './containers/PanelCarritoContainer';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollManager from './components/ScrollManager';
 import Home from './pages/Home';
@@ -50,8 +50,8 @@ function ContenidoApp() {
       {/* Scroll en cada navegación y soporte de anclas (#nosotros, #blog). */}
       <ScrollManager />
       <div className="d-flex flex-column min-vh-100">
-        {!enAdministracion && <Header />}
-        {!enAdministracion && <PanelCarrito />}
+        {!enAdministracion && <HeaderContainer />}
+        {!enAdministracion && <PanelCarritoContainer />}
         <main className="flex-grow-1">
           <Routes>
                 <Route path="/" element={<Home />} />

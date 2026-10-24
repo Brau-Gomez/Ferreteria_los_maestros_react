@@ -1,7 +1,7 @@
 // Listado de productos del panel admin (catálogo completo o stock crítico).
 // Presentacional: recibe los textos, los productos y si el usuario es admin.
 import { Link } from 'react-router-dom';
-import Badge from 'react-bootstrap/Badge';
+import InsigniaEstado from '../atoms/InsigniaEstado.jsx';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { estadoProducto } from '../../utils/productos.js';
@@ -59,9 +59,9 @@ function ListadoProductosAdmin({
                   <td>{formatearDinero(producto.precioVenta)}</td>
                   <td>{producto.stock}</td>
                   <td>
-                    <Badge bg={esCritico(producto) ? 'danger' : 'success'}>
+                    <InsigniaEstado variante={esCritico(producto) ? 'danger' : 'success'}>
                       {estadoProducto(producto)}
-                    </Badge>
+                    </InsigniaEstado>
                   </td>
                   <td className="admin-table-actions">
                     <Link to={`/admin/productos/${encodeURIComponent(producto.codigo)}`}>Ver</Link>

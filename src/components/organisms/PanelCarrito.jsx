@@ -1,4 +1,5 @@
-// Panel lateral global del carrito.
+// Panel lateral global del carrito (presentacional): recibe todo por props.
+// El estado vive en containers/PanelCarritoContainer.jsx.
 // Porta js/tienda/carrito-panel.js con Offcanvas de react-bootstrap:
 // abrir al agregar, Escape/X/"Seguir comprando" para cerrar, controles
 // de cantidad, eliminar, vaciar y enlace a la página del carrito.
@@ -7,34 +8,21 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import Button from 'react-bootstrap/Button';
 import ImagenProducto from '../atoms/ImagenProducto.jsx';
 import ControlCantidadCarrito from '../molecules/ControlCantidadCarrito.jsx';
-import { useCarrito } from '../../hooks/useCarrito.js';
 import { formatearDinero } from '../../utils/dinero.js';
 
-function PanelCarrito() {
-  const {
-    items,
-    total,
-    panelAbierto,
-    cerrarPanel,
-    cambiarCantidad,
-    quitar,
-    vaciar,
-  } = useCarrito();
-
-  function ajustarCantidad(codigo, cantidad) {
-    cambiarCantidad(codigo, cantidad);
-  }
-
-  function irAlCarrito() {
-    // En el HTML la navegación recargaba y cerraba el panel. En la SPA
-    // se debe cerrar explícitamente antes de cambiar de ruta.
-    cerrarPanel();
-  }
-
+function PanelCarrito({
+  items = [],
+  total = 0,
+  abierto = false,
+  onCerrar,
+  onCambiarCantidad,
+  onQuitar,
+  onVaciar,
+}) {
   return (
     <Offcanvas
-      show={panelAbierto}
-      onHide={cerrarPanel}
+      show={abierto}
+      onHide={onCerrar}
       placement="end"
       backdrop={false}
       scroll
@@ -59,7 +47,7 @@ function PanelCarrito() {
                   cantidad={producto.cantidad}
                   tope={producto.stock}
                   onCambiar={(cantidad) =>
-                    ajustarCantidad(producto.codigo, cantidad)
+                    onCambiarCantidad(producto.codigo, cantidad)
                   }
                 />
                 <p>
@@ -70,7 +58,7 @@ function PanelCarrito() {
               <Button
                 variant="outline-danger"
                 size="sm"
-                onClick={() => quitar(producto.codigo)}
+                onClick={() => onQuitar(producto.codigo)}
               >
                 Eliminar
               </Button>
@@ -84,15 +72,16 @@ function PanelCarrito() {
             <p className="total-panel-carrito">
               Total <strong>{formatearDinero(total)}</strong>
             </p>
-            <Button variant="outline-primary" className="w-100" onClick={vaciar}>
+            <Button variant="outline-primary" className="w-100" onClick={onVaciar}>
               Vaciar carrito
             </Button>
+            {/* En la SPA el panel se cierra explícitamente antes de cambiar de ruta. */}
             <Button
               as={Link}
               to="/carrito"
               variant="warning"
               className="w-100 mt-2"
-              onClick={irAlCarrito}
+              onClick={onCerrar}
             >
               Ir al carrito
             </Button>
@@ -101,7 +90,7 @@ function PanelCarrito() {
         <Button
           variant="outline-primary"
           className={`w-100${items.length > 0 ? ' mt-2' : ''}`}
-          onClick={cerrarPanel}
+          onClick={onCerrar}
         >
           Seguir comprando
         </Button>

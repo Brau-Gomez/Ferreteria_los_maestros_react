@@ -3,7 +3,7 @@
 // compras ya preparadas por el container.
 import { Link } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
-import Badge from 'react-bootstrap/Badge';
+import InsigniaEstado from '../atoms/InsigniaEstado.jsx';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { formatearDinero } from '../../utils/dinero.js';
@@ -54,9 +54,9 @@ function DetalleUsuarioAdmin({ usuario, error, compras, totalComprado, onElimina
           <div>
             <dt>Estado</dt>
             <dd>
-              <Badge bg={usuario.activo ? 'success' : 'secondary'}>
+              <InsigniaEstado variante={usuario.activo ? 'success' : 'secondary'}>
                 {usuario.activo ? 'Activo' : 'Inactivo'}
-              </Badge>
+              </InsigniaEstado>
             </dd>
           </div>
         </dl>

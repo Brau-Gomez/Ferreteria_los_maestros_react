@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
-import { AuthProvider } from '../../context/AuthProvider.jsx';
-import { CartProvider } from '../../context/CartProvider.jsx';
-import Header from './Header.jsx';
+import { AuthProvider } from '../context/AuthProvider.jsx';
+import { CartProvider } from '../context/CartProvider.jsx';
+import HeaderContainer from './HeaderContainer.jsx';
 
 function Ubicacion() {
   const { pathname, search } = useLocation();
@@ -15,7 +15,7 @@ function mostrar() {
     <MemoryRouter initialEntries={['/']}>
       <AuthProvider>
         <CartProvider>
-          <Header />
+          <HeaderContainer />
           <Routes>
             <Route path="*" element={<Ubicacion />} />
           </Routes>

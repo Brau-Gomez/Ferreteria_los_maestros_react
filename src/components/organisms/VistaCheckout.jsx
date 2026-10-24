@@ -37,8 +37,8 @@ function VistaCheckout({
 
   return (
     <>
-      <p className="eyebrow mb-2">Finalizar compra</p>
-      <h1 className="titulo-seccion mb-4">Checkout</h1>
+      <p className="eyebrow mb-2">Último paso</p>
+      <h1 className="titulo-seccion mb-4">Realizar pago</h1>
       <Row className="g-4">
         <Col lg={8}>
           <FormularioCheckout

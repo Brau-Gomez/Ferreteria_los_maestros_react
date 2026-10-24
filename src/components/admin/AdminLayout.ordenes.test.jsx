@@ -6,16 +6,17 @@ import AdminLayout from './AdminLayout.jsx';
 const admin = { run: '123456785', nombre: 'Admin', apellidos: 'Duoc', correo: 'admin@duoc.cl', tipoUsuario: 'Administrador', activo: true };
 const vendedor = { run: '222222222', nombre: 'Vera', apellidos: 'Vende', correo: 'vera@duoc.cl', tipoUsuario: 'Vendedor', activo: true };
 
-function mostrar(sesion) {
+function mostrar(sesion, ruta = '/admin/ordenes') {
   localStorage.clear();
   localStorage.setItem('ep1-users', JSON.stringify([admin, vendedor]));
   localStorage.setItem('ep1-user', JSON.stringify({ run: sesion.run }));
   return render(
-    <MemoryRouter initialEntries={['/admin/ordenes']}>
+    <MemoryRouter initialEntries={[ruta]}>
       <AuthProvider>
         <Routes>
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="ordenes" element={<p>Contenido órdenes</p>} />
+            <Route path="ordenes/:id" element={<p>Contenido detalle orden</p>} />
             <Route path="productos" element={<p>Contenido productos</p>} />
           </Route>
         </Routes>
@@ -31,9 +32,14 @@ describe('AdminLayout: Órdenes', () => {
     expect(screen.getByText('Contenido órdenes')).toBeInTheDocument();
   });
 
-  it('el vendedor no accede a órdenes y vuelve a productos', () => {
+  it('el vendedor también ve el enlace y la lista de órdenes (RF-17)', () => {
     mostrar(vendedor);
-    expect(screen.getByText('Contenido productos')).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'Órdenes' })).not.toBeInTheDocument();
+    expect(screen.getByText('Contenido órdenes')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Órdenes' })).toHaveAttribute('href', '/admin/ordenes');
+  });
+
+  it('el vendedor puede abrir el detalle de una orden', () => {
+    mostrar(vendedor, '/admin/ordenes/PED-1700000000000');
+    expect(screen.getByText('Contenido detalle orden')).toBeInTheDocument();
   });
 });

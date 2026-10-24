@@ -3,6 +3,7 @@
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import MapaDespacho from '../components/organisms/MapaDespacho.jsx';
 import DatosTienda from '../components/organisms/DatosTienda.jsx';
 import ContactoContainer from '../containers/ContactoContainer.jsx';
 
@@ -23,6 +24,11 @@ function Contacto() {
           <DatosTienda />
         </Col>
       </Row>
+
+      <section className="mt-5" aria-labelledby="titulo-mapa">
+        <h2 id="titulo-mapa" className="mb-3">Dónde estamos y dónde despachamos</h2>
+        <MapaDespacho />
+      </section>
     </Container>
   );
 }

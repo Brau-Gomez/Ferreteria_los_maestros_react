@@ -3,6 +3,7 @@
 // CheckoutContainer; aquí solo se dibujan los campos y se avisan los cambios.
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import MapaDespacho from './MapaDespacho.jsx';
 import CampoFormulario from '../molecules/CampoFormulario.jsx';
 
 const opcionesEntrega = ['Retiro en tienda', 'Despacho'];
@@ -86,7 +87,8 @@ function FormularioCheckout({ datos, errores, comunas, onCambio, onEnviar }) {
               </Form.Select>
               <Form.Control.Feedback type="invalid">{errores.comuna}</Form.Control.Feedback>
             </Form.Group>
-            <p className="cuenta-descripcion mb-0">Región de Coquimbo</p>
+            <p className="cuenta-descripcion">Región de Coquimbo</p>
+            <MapaDespacho comunaSeleccionada={datos.comuna} />
           </div>
         )}
       </fieldset>

@@ -1,34 +1,8 @@
-// Página de una categoría: reutiliza el catálogo con la categoría ya elegida.
-// Si la categoría de la URL no existe, muestra un aviso con enlace de vuelta.
-import { Link, useParams } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import ProductosContainer from '../containers/ProductosContainer.jsx';
-import { obtenerCategorias } from '../services/categorias.js';
+// Página de una categoría: envoltorio delgado; la lógica está en el contenedor.
+import CategoriaDetalleContainer from '../containers/CategoriaDetalleContainer.jsx';
 
 function CategoriaDetalle() {
-  const { categoria } = useParams();
-
-  if (!obtenerCategorias().includes(categoria)) {
-    return (
-      <Container className="py-5">
-        <div className="sin-resultados">
-          <h1>Categoría no encontrada</h1>
-          <Link to="/categorias">Ver todas las categorías</Link>
-        </div>
-      </Container>
-    );
-  }
-
-  return (
-    <Container className="py-5">
-      <p className="eyebrow mb-2">
-        <Link to="/categorias">Categorías</Link> / {categoria}
-      </p>
-      <h1 className="titulo-seccion mb-3">{categoria}</h1>
-      {/* key: al cambiar de categoría el catálogo reinicia sus filtros. */}
-      <ProductosContainer key={categoria} categoriaInicial={categoria} />
-    </Container>
-  );
+  return <CategoriaDetalleContainer />;
 }
 
 export default CategoriaDetalle;

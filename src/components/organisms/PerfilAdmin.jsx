@@ -13,6 +13,7 @@ const permisosPorPerfil = {
   Vendedor: [
     'Consultar el catálogo de productos',
     'Ver el detalle de cada producto',
+    'Consultar la lista y el detalle de las órdenes',
   ],
 };
 

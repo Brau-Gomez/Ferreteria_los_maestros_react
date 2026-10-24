@@ -6,6 +6,7 @@ import BoletaAdmin from '../components/organisms/BoletaAdmin.jsx';
 import { clavesDatos, leerListaGuardada, obtenerUsuarios } from '../services/almacenamiento.js';
 import { buscarPedido, desgloseIva, nombreCliente } from '../utils/boleta.js';
 import { fechaDesdeMarca, marcaPedido } from '../utils/cuenta.js';
+import { estadoPedido } from '../utils/estadoPedido.js';
 
 function AdminOrdenDetalleContainer() {
   const { id } = useParams();
@@ -17,6 +18,7 @@ function AdminOrdenDetalleContainer() {
     pedido,
     cliente: nombreCliente(usuarios, pedido.runUsuario),
     fecha: fechaDesdeMarca(marcaPedido(pedido.id)),
+    estado: estadoPedido(pedido),
     desglose: desgloseIva(pedido.total),
   };
 

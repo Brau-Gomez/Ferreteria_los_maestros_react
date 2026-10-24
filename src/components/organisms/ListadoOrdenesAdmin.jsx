@@ -1,5 +1,5 @@
 // Listado de órdenes de compra del panel admin. Presentacional: recibe las
-// filas ya preparadas por el container ({ id, fecha, cliente, entrega, total }).
+// filas ya preparadas por el container ({ id, fecha, cliente, entrega, estado, total }).
 import { Link } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import { formatearDinero } from '../../utils/dinero.js';
@@ -29,6 +29,7 @@ function ListadoOrdenesAdmin({ ordenes }) {
                 <th scope="col">Fecha</th>
                 <th scope="col">Cliente</th>
                 <th scope="col">Entrega</th>
+                <th scope="col">Estado</th>
                 <th scope="col">Total</th>
                 <th scope="col">Acciones</th>
               </tr>
@@ -40,6 +41,7 @@ function ListadoOrdenesAdmin({ ordenes }) {
                   <td>{orden.fecha}</td>
                   <td>{orden.cliente}</td>
                   <td>{orden.entrega}</td>
+                  <td>{orden.estado}</td>
                   <td>{formatearDinero(orden.total)}</td>
                   <td>
                     <Link to={`/admin/ordenes/${encodeURIComponent(orden.id)}`}>Ver boleta</Link>
@@ -47,7 +49,7 @@ function ListadoOrdenesAdmin({ ordenes }) {
                 </tr>
               ))}
               {ordenes.length === 0 && (
-                <tr><td colSpan="6">Todavía no hay órdenes registradas.</td></tr>
+                <tr><td colSpan="7">Todavía no hay órdenes registradas.</td></tr>
               )}
             </tbody>
           </Table>

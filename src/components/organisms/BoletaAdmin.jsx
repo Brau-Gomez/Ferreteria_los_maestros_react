@@ -17,7 +17,7 @@ function BoletaAdmin({ boleta, onImprimir }) {
     );
   }
 
-  const { pedido, cliente, fecha, desglose } = boleta;
+  const { pedido, cliente, fecha, estado, desglose } = boleta;
   const productos = Array.isArray(pedido.productos) ? pedido.productos : [];
 
   return (
@@ -36,6 +36,7 @@ function BoletaAdmin({ boleta, onImprimir }) {
       <section className="admin-panel">
         <dl className="admin-details">
           <div><dt>Cliente</dt><dd>{cliente}</dd></div>
+          <div><dt>Estado</dt><dd>{estado}</dd></div>
           <div><dt>Entrega</dt><dd>{pedido.delivery}</dd></div>
           {pedido.despacho && (
             <div>

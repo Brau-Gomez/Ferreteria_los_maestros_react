@@ -16,6 +16,9 @@ import Home from './pages/Home';
 import Productos from './pages/Productos';
 import ProductoDetalle from './pages/ProductoDetalle';
 import Carrito from './pages/Carrito';
+import Categorias from './pages/Categorias';
+import CategoriaDetalle from './pages/CategoriaDetalle';
+import Ofertas from './pages/Ofertas';
 import Checkout from './pages/Checkout';
 import Ingreso from './pages/Ingreso';
 import Registro from './pages/Registro';
@@ -52,6 +55,9 @@ function ContenidoApp() {
                   path="/productos/:codigo"
                   element={<ProductoDetalle />}
                 />
+                <Route path="/categorias" element={<Categorias />} />
+                <Route path="/categorias/:categoria" element={<CategoriaDetalle />} />
+                <Route path="/ofertas" element={<Ofertas />} />
                 <Route path="/carrito" element={<Carrito />} />
                 <Route
                   path="/checkout"

@@ -48,3 +48,31 @@ export function categoriasPresentes(productos) {
   }
   return categorias.sort();
 }
+
+
+// Productos marcados en oferta. Una oferta se define con enOferta: true y
+// un precioAnterior mayor al precio de venta actual (precioVenta ya es el
+// precio rebajado que se cobra en el carrito).
+export function esOferta(producto) {
+  return Boolean(producto.enOferta) && producto.precioAnterior > producto.precioVenta;
+}
+
+export function productosEnOferta(productos) {
+  return productos.filter(esOferta);
+}
+
+// Porcentaje de descuento redondeado respecto del precio anterior.
+export function porcentajeDescuento(producto) {
+  if (!esOferta(producto)) return 0;
+  return Math.round(
+    ((producto.precioAnterior - producto.precioVenta) / producto.precioAnterior) * 100,
+  );
+}
+
+// Cantidad de productos por categoría, en el orden de la lista recibida.
+export function contarPorCategoria(productos, categorias) {
+  return categorias.map((categoria) => ({
+    categoria,
+    cantidad: productos.filter((producto) => producto.categoria === categoria).length,
+  }));
+}

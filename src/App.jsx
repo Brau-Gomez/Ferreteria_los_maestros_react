@@ -30,6 +30,8 @@ import AdminLayout from './components/admin/AdminLayout.jsx';
 import AdminInicio from './pages/AdminInicio.jsx';
 import AdminProductos from './pages/AdminProductos.jsx';
 import AdminProductosCriticos from './pages/AdminProductosCriticos.jsx';
+import AdminOrdenes from './pages/AdminOrdenes.jsx';
+import AdminOrdenDetalle from './pages/AdminOrdenDetalle.jsx';
 import AdminProductoDetalle from './pages/AdminProductoDetalle.jsx';
 import AdminProductoForm from './pages/AdminProductoForm.jsx';
 import AdminUsuarios from './pages/AdminUsuarios.jsx';
@@ -88,6 +90,8 @@ function ContenidoApp() {
                   <Route path="productos/nuevo" element={<AdminProductoForm modo="nuevo" />} />
                   <Route path="productos/:codigo/editar" element={<AdminProductoForm modo="editar" />} />
                   <Route path="productos/:codigo" element={<AdminProductoDetalle />} />
+                  <Route path="ordenes" element={<AdminOrdenes />} />
+                  <Route path="ordenes/:id" element={<AdminOrdenDetalle />} />
                   <Route path="usuarios" element={<AdminUsuarios />} />
                   <Route path="usuarios/nuevo" element={<AdminUsuarioForm modo="nuevo" />} />
                   <Route path="usuarios/:run/editar" element={<AdminUsuarioForm modo="editar" />} />

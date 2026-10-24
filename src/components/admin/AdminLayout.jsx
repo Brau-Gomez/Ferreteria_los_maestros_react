@@ -45,6 +45,7 @@ function AdminLayout() {
           {esAdmin && <NavLink to="/admin" end>Resumen</NavLink>}
           <NavLink to="/admin/productos">Productos</NavLink>
           {esAdmin && <NavLink to="/admin/criticos">Stock crítico</NavLink>}
+          {esAdmin && <NavLink to="/admin/ordenes">Órdenes</NavLink>}
           {esAdmin && <NavLink to="/admin/usuarios">Usuarios</NavLink>}
         </nav>
         <div className="admin-sidebar-footer">

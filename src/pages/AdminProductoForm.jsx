@@ -7,7 +7,7 @@ import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import { categoriasProducto } from '../data/categorias.js';
+import { obtenerCategorias } from '../services/categorias.js';
 import { clavesDatos, guardarRegistro, obtenerProductos } from '../services/almacenamiento.js';
 import { validarProducto } from '../utils/validaciones/productos.js';
 
@@ -34,6 +34,7 @@ function AdminProductoForm({ modo }) {
   const { codigo } = useParams();
   const navigate = useNavigate();
   const [productos] = useState(() => obtenerProductos());
+  const [categorias] = useState(() => obtenerCategorias());
   const codigoOriginal = modo === 'editar' ? (codigo || '').toUpperCase() : '';
   const producto = productos.find((item) => item.codigo === codigoOriginal);
   const [datos, setDatos] = useState(() => producto ? {
@@ -63,7 +64,7 @@ function AdminProductoForm({ modo }) {
     evento.preventDefault();
     const normalizados = { ...datos, codigo: datos.codigo.trim().toUpperCase() };
     const listaActual = obtenerProductos();
-    const actuales = validarProducto(normalizados, listaActual, codigoOriginal, archivo);
+    const actuales = validarProducto(normalizados, listaActual, codigoOriginal, archivo, categorias);
     setErrores(actuales);
     if (Object.values(actuales).some(Boolean)) return;
 
@@ -72,7 +73,7 @@ function AdminProductoForm({ modo }) {
     try {
       const imagen = archivo ? await leerImagen(archivo) : producto?.imagen || '';
       const listaFinal = obtenerProductos();
-      const erroresFinales = validarProducto(normalizados, listaFinal, codigoOriginal, archivo);
+      const erroresFinales = validarProducto(normalizados, listaFinal, codigoOriginal, archivo, categorias);
       setErrores(erroresFinales);
       if (Object.values(erroresFinales).some(Boolean)) {
         setMensaje('Revisa los campos antes de guardar.');
@@ -140,7 +141,7 @@ function AdminProductoForm({ modo }) {
                 <Form.Label>Categoría *</Form.Label>
                 <Form.Select value={datos.categoria} isInvalid={Boolean(errores.categoria)} onChange={(evento) => actualizar('categoria', evento.target.value)}>
                   <option value="">Selecciona una categoría</option>
-                  {categoriasProducto.map((categoria) => <option key={categoria}>{categoria}</option>)}
+                  {categorias.map((categoria) => <option key={categoria}>{categoria}</option>)}
                 </Form.Select>
                 <Form.Control.Feedback type="invalid">{errores.categoria}</Form.Control.Feedback>
               </Form.Group>

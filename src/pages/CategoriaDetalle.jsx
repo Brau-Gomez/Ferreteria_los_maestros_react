@@ -3,12 +3,12 @@
 import { Link, useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import ProductosContainer from '../containers/ProductosContainer.jsx';
-import { categoriasProducto } from '../data/categorias.js';
+import { obtenerCategorias } from '../services/categorias.js';
 
 function CategoriaDetalle() {
   const { categoria } = useParams();
 
-  if (!categoriasProducto.includes(categoria)) {
+  if (!obtenerCategorias().includes(categoria)) {
     return (
       <Container className="py-5">
         <div className="sin-resultados">

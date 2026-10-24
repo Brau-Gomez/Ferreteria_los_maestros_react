@@ -28,7 +28,8 @@ export function validarImagen(archivo) {
 // - productos: catálogo existente, para detectar códigos duplicados.
 // - codigoOriginal: código previo cuando se edita.
 // - archivo: imagen seleccionada (opcional).
-export function validarProducto(datos, productos, codigoOriginal, archivo) {
+// - categorias: categorías vigentes (por defecto, la lista oficial).
+export function validarProducto(datos, productos, codigoOriginal, archivo, categorias = categoriasProducto) {
   const errores = {};
   if (datos.codigo.length < 3)
     errores.codigo = 'El código debe tener al menos 3 caracteres.';
@@ -43,7 +44,7 @@ export function validarProducto(datos, productos, codigoOriginal, archivo) {
   errores.stock = validarNumero(datos.stock, true, true);
   errores.stockCritico = validarNumero(datos.stockCritico, false, true);
   errores.imagen = validarImagen(archivo);
-  if (categoriasProducto.indexOf(datos.categoria) === -1)
+  if (categorias.indexOf(datos.categoria) === -1)
     errores.categoria = 'Selecciona una categoría.';
   for (let i = 0; i < productos.length; i++) {
     if (productos[i].codigo === datos.codigo && datos.codigo !== codigoOriginal) {

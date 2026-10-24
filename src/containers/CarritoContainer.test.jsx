@@ -51,23 +51,9 @@ describe('CarritoContainer', () => {
     expect(screen.getByText('Tu carrito está vacío')).toBeInTheDocument();
   });
 
-  it('pide iniciar sesión si se confirma sin usuario y conserva el carrito', () => {
-    prepararDatos({ conSesion: false });
-    mostrar();
-    fireEvent.click(screen.getByRole('button', { name: 'Confirmar pedido' }));
-    expect(screen.getByText(/Inicia sesión antes de confirmar/)).toBeInTheDocument();
-    expect(screen.getByText('Cemento gris 25 kg')).toBeInTheDocument();
-  });
-
-  it('confirma el pedido con sesión y lo guarda en ep1-orders', () => {
+  it('ofrece ir a pagar cuando hay productos', () => {
     prepararDatos({ conSesion: true });
     mostrar();
-    fireEvent.click(screen.getByLabelText('Despacho'));
-    fireEvent.click(screen.getByRole('button', { name: 'Confirmar pedido' }));
-    expect(screen.getByText('Pedido recibido')).toBeInTheDocument();
-    const pedidos = JSON.parse(localStorage.getItem('ep1-orders'));
-    expect(pedidos).toHaveLength(1);
-    expect(pedidos[0].delivery).toBe('Despacho');
-    expect(pedidos[0].total).toBe(11980);
+    expect(screen.getByRole('button', { name: 'Ir a pagar' })).toHaveAttribute('href', '/checkout');
   });
 });

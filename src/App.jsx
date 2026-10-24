@@ -16,6 +16,7 @@ import Home from './pages/Home';
 import Productos from './pages/Productos';
 import ProductoDetalle from './pages/ProductoDetalle';
 import Carrito from './pages/Carrito';
+import Checkout from './pages/Checkout';
 import Ingreso from './pages/Ingreso';
 import Registro from './pages/Registro';
 import Cuenta from './pages/Cuenta';
@@ -52,6 +53,14 @@ function ContenidoApp() {
                   element={<ProductoDetalle />}
                 />
                 <Route path="/carrito" element={<Carrito />} />
+                <Route
+                  path="/checkout"
+                  element={
+                    <ProtectedRoute>
+                      <Checkout />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="/ingreso" element={<Ingreso />} />
                 <Route path="/registro" element={<Registro />} />
                 {/* Mi cuenta requiere una sesión activa. */}

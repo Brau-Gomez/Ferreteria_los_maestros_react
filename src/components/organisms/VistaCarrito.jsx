@@ -1,5 +1,5 @@
-// Vista completa del carrito: encabezado, aviso, lista y resumen, o los
-// estados "vacío" y "pedido recibido". Presentacional: sin estado propio.
+// Vista completa del carrito: encabezado, aviso, lista y resumen, o el
+// estado "vacío". Presentacional: sin estado propio.
 import { Link } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 import Col from 'react-bootstrap/Col';
@@ -7,29 +7,7 @@ import Row from 'react-bootstrap/Row';
 import ListaCarrito from './ListaCarrito.jsx';
 import ResumenPedido from './ResumenPedido.jsx';
 
-function VistaCarrito({
-  items,
-  total,
-  entrega,
-  aviso,
-  pedidoRecibido,
-  onCambiarCantidad,
-  onQuitar,
-  onCambiarEntrega,
-  onConfirmar,
-  onCerrarAviso,
-}) {
-  // El original reemplazaba el contenido al terminar el pedido.
-  if (pedidoRecibido) {
-    return (
-      <div className="sin-resultados">
-        <h1>Pedido recibido</h1>
-        <p>Tu solicitud quedó guardada en este navegador.</p>
-        <Link to="/cuenta">Ver mi cuenta</Link>
-      </div>
-    );
-  }
-
+function VistaCarrito({ items, total, aviso, onCambiarCantidad, onQuitar, onCerrarAviso }) {
   return (
     <>
       <p className="eyebrow mb-2">Solicitud de productos</p>
@@ -60,12 +38,7 @@ function VistaCarrito({
             />
           </Col>
           <Col lg={4}>
-            <ResumenPedido
-              total={total}
-              entrega={entrega}
-              onCambiarEntrega={onCambiarEntrega}
-              onConfirmar={onConfirmar}
-            />
+            <ResumenPedido total={total} />
           </Col>
         </Row>
       )}

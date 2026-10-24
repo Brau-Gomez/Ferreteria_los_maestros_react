@@ -160,7 +160,7 @@ export function CartProvider({ children }) {
   // js/tienda/carrito.js: valida sesión/entrega, guarda primero el pedido
   // en ep1-orders y solo después vacía ep1-cart. Si falla el segundo paso,
   // restaura los pedidos anteriores para no dejar datos inconsistentes.
-  function confirmarPedido(usuario, entrega) {
+  function confirmarPedido(usuario, entrega, despacho) {
     if (!usuario) {
       return {
         ok: false,
@@ -183,16 +183,17 @@ export function CartProvider({ children }) {
     }
 
     const anteriores = leerListaGuardada(clavesDatos.pedidos) || [];
-    const pedidos = [
-      {
+      const pedido = {
         id: 'PED-' + Date.now(),
         runUsuario: usuario.run,
         total: totalCarrito(carrito),
         delivery: entrega,
         productos: carrito,
-      },
-      ...anteriores,
-    ];
+    };
+    // Datos de despacho del checkout (opcional): solo si se informan.
+    if (despacho) pedido.despacho = despacho;
+    const pedidos = [pedido, ...anteriores];
+    
     if (!guardarDato(clavesDatos.pedidos, pedidos)) {
       return {
         ok: false,
@@ -207,7 +208,7 @@ export function CartProvider({ children }) {
       };
     }
     setPanelAbierto(false);
-    return { ok: true, mensaje: 'Pedido recibido.' };
+    return { ok: true, mensaje: 'Pedido recibido.', pedidoId: pedido.id };
   }
 
   // Valores derivados que consumen el Navbar y las páginas.

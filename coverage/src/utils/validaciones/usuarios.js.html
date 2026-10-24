@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/25</span>
+                <span class='fraction'>25/25</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.5% </span>
+                <span class="strong">95.83% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/24</span>
+                <span class='fraction'>23/24</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.21% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/23</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -124,42 +124,42 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Validación de usuarios (registro, admin y cuenta).
 // Portado desde js/validaciones/usuarios.js del HTML5.
@@ -181,31 +181,31 @@ export function validarUsuario(datos, usuarios, runOriginal) {
   errores.correo = validarCorreo(datos.correo);
   errores.direccion = validarTexto(datos.direccion, 'La dirección', 300, true);
   const roles = ['Administrador', 'Vendedor', 'Cliente'];
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (roles.indexOf(datos.tipoUsuario) === -1)
-<span class="cstat-no" title="statement not covered" >    errores.tipoUsuario = 'Selecciona un tipo de usuario.';</span>
+  if (roles.indexOf(datos.tipoUsuario) === -1)
+    errores.tipoUsuario = 'Selecciona un tipo de usuario.';
   const comunas = comunasPorRegion[datos.region];
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!comunas) <span class="cstat-no" title="statement not covered" >errores.region = 'Selecciona una región.';</span>
+  if (!comunas) errores.region = 'Selecciona una región.';
   if (!comunas || comunas.indexOf(datos.comuna) === -1)
     errores.comuna = 'Selecciona una comuna de la región.';
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (datos.fechaNacimiento) {
-    const fecha = <span class="cstat-no" title="statement not covered" >new Date(datos.fechaNacimiento + 'T00:00:00');</span>
-<span class="cstat-no" title="statement not covered" >    if (isNaN(fecha.getTime()) || fecha &gt; new Date()) {</span>
-<span class="cstat-no" title="statement not covered" >      errores.fechaNacimiento =</span>
+  if (datos.fechaNacimiento) {
+    const fecha = new Date(datos.fechaNacimiento + 'T00:00:00');
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (isNaN(fecha.getTime()) || fecha &gt; new Date()) {
+      errores.fechaNacimiento =
         'Ingresa una fecha de nacimiento válida, no futura.';
     }
   }
   for (let i = 0; i &lt; usuarios.length; i++) {
-<span class="cstat-no" title="statement not covered" >    if (</span>
+    if (
       normalizarRun(usuarios[i].run) === datos.run &amp;&amp;
       datos.run !== runOriginal
     ) {
-<span class="cstat-no" title="statement not covered" >      errores.run = 'Ya existe un usuario registrado con este RUN.';</span>
+      errores.run = 'Ya existe un usuario registrado con este RUN.';
     }
-<span class="cstat-no" title="statement not covered" >    if (</span>
+    if (
       usuarios[i].correo.toLowerCase() === datos.correo &amp;&amp;
       normalizarRun(usuarios[i].run) !== runOriginal
     ) {
-<span class="cstat-no" title="statement not covered" >      errores.correo = 'Ya existe un usuario registrado con este correo.';</span>
+      errores.correo = 'Ya existe un usuario registrado con este correo.';
     }
   }
   return errores;
@@ -217,7 +217,7 @@ export function validarUsuario(datos, usuarios, runOriginal) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-10-23T19:11:57.626Z
+                at 2026-10-24T01:26:54.654Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

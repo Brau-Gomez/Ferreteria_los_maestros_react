@@ -11,5 +11,13 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/setupTests.js',
+    // Cobertura con V8: `npm run test:coverage` imprime la tabla en consola
+    // y genera un reporte HTML navegable en la carpeta coverage/.
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      include: ['src/**/*.{js,jsx}'],
+      exclude: ['src/**/*.test.{js,jsx}', 'src/main.jsx', 'src/setupTests.js'],
+    },
   },
 })

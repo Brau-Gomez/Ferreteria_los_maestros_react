@@ -7,12 +7,16 @@
 //   sin sesión se muestra "Ingreso".
 // - "Administración" solo para perfiles internos (Admin o Vendedor).
 // - "Contacto" es un canal de clientes: los perfiles internos no lo ven.
+import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import { categoriasProducto } from '../../data/categorias.js';
 import { useSesion } from '../../hooks/useSesion.js';
 import { useCarrito } from '../../hooks/useCarrito.js';
 
@@ -20,7 +24,15 @@ function Header() {
   const { usuario, salir } = useSesion();
   const { contador } = useCarrito();
   const navigate = useNavigate();
+  const [busqueda, setBusqueda] = useState('');
   const perfilInterno = Boolean(usuario) && usuario.tipoUsuario !== 'Cliente';
+
+  // La búsqueda lleva al catálogo con el texto ya aplicado (?q=...).
+  function buscar(evento) {
+    evento.preventDefault();
+    const texto = busqueda.trim();
+    navigate(texto ? '/productos?q=' + encodeURIComponent(texto) : '/productos');
+  }
 
   // El original redirigía al ingreso tras cerrar sesión (cerrarSesion).
   function alCerrarSesion() {
@@ -54,13 +66,44 @@ function Header() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="nav-principal" />
         <Navbar.Collapse id="nav-principal">
-          <Nav className="ms-auto align-items-lg-center">
+          <Form className="d-flex my-2 my-lg-0 ms-lg-auto" role="search" onSubmit={buscar}>
+            <Form.Control
+              type="search"
+              size="sm"
+              placeholder="Buscar"
+              aria-label="Buscar productos"
+              value={busqueda}
+              onChange={(evento) => setBusqueda(evento.target.value)}
+            />
+            <Button type="submit" variant="warning" size="sm" className="ms-2">
+              Buscar
+            </Button>
+          </Form>
+          <Nav className="ms-lg-2 align-items-lg-center text-nowrap">
             {/* NavLink marca con .active la página actual. */}
             <Nav.Link as={NavLink} to="/" end>
               Inicio
             </Nav.Link>
             <Nav.Link as={NavLink} to="/productos">
               Catálogo
+            </Nav.Link>
+            <NavDropdown title="Categorías" id="menu-categorias">
+              <NavDropdown.Item as={Link} to="/categorias">
+                Todas las categorías
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              {categoriasProducto.map((categoria) => (
+                <NavDropdown.Item
+                  key={categoria}
+                  as={Link}
+                  to={'/categorias/' + encodeURIComponent(categoria)}
+                >
+                  {categoria}
+                </NavDropdown.Item>
+              ))}
+            </NavDropdown>
+            <Nav.Link as={NavLink} to="/ofertas">
+              Ofertas
             </Nav.Link>
             <Nav.Link as={NavLink} to="/carrito">
               Carrito{' '}

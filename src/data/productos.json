@@ -9,7 +9,9 @@
     "precioCompra": 3200,
     "precioVenta": 5990,
     "stock": 80,
-    "stockMinimo": 20
+    "stockMinimo": 20,
+    "enOferta": true,
+    "precioAnterior": 7190
   },
   {
     "codigo": "MC002",
@@ -225,7 +227,9 @@
     "precioCompra": 1200,
     "precioVenta": 2490,
     "stock": 60,
-    "stockMinimo": 20
+    "stockMinimo": 20,
+    "enOferta": true,
+    "precioAnterior": 2990
   },
   {
     "codigo": "HM001",
@@ -333,7 +337,9 @@
     "precioCompra": 2200,
     "precioVenta": 4290,
     "stock": 25,
-    "stockMinimo": 8
+    "stockMinimo": 8,
+    "enOferta": true,
+    "precioAnterior": 5150
   },
   {
     "codigo": "HM010",
@@ -441,7 +447,9 @@
     "precioCompra": 3900,
     "precioVenta": 7490,
     "stock": 25,
-    "stockMinimo": 8
+    "stockMinimo": 8,
+    "enOferta": true,
+    "precioAnterior": 8990
   },
   {
     "codigo": "GS003",
@@ -657,7 +665,9 @@
     "precioCompra": 12000,
     "precioVenta": 22990,
     "stock": 8,
-    "stockMinimo": 2
+    "stockMinimo": 2,
+    "enOferta": true,
+    "precioAnterior": 27590
   },
   {
     "codigo": "EL009",
@@ -765,7 +775,9 @@
     "precioCompra": 1600,
     "precioVenta": 3190,
     "stock": 35,
-    "stockMinimo": 10
+    "stockMinimo": 10,
+    "enOferta": true,
+    "precioAnterior": 3830
   },
   {
     "codigo": "TR005",
@@ -873,7 +885,9 @@
     "precioCompra": 9500,
     "precioVenta": 18990,
     "stock": 18,
-    "stockMinimo": 5
+    "stockMinimo": 5,
+    "enOferta": true,
+    "precioAnterior": 22790
   },
   {
     "codigo": "MD006",
@@ -981,7 +995,9 @@
     "precioCompra": 15000,
     "precioVenta": 28990,
     "stock": 5,
-    "stockMinimo": 2
+    "stockMinimo": 2,
+    "enOferta": true,
+    "precioAnterior": 34790
   },
   {
     "codigo": "JA003",

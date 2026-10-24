@@ -5,11 +5,14 @@
 import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Badge from 'react-bootstrap/Badge';
 import ImagenProducto from '../atoms/ImagenProducto.jsx';
 import { formatearDinero } from '../../utils/dinero.js';
+import { esOferta, porcentajeDescuento } from '../../utils/productos.js';
 
 function TarjetaProducto({ producto, onAgregar, className = '' }) {
   const sinStock = producto.stock < 1;
+  const enOferta = esOferta(producto);
   return (
     <Card className={`tarjeta-producto h-100 ${className}`.trim()}>
       <Card.Body className="d-flex flex-column">
@@ -24,6 +27,16 @@ function TarjetaProducto({ producto, onAgregar, className = '' }) {
         {/* margin-top:auto en .tarjeta-precio empuja precio, stock y
             botones al fondo de la tarjeta, como el original. */}
         <strong className="tarjeta-precio">
+          {enOferta && (
+            <>
+              <Badge bg="danger" className="me-2">
+                Oferta -{porcentajeDescuento(producto)}%
+              </Badge>
+              <del className="text-body-secondary fw-normal me-2">
+                {formatearDinero(producto.precioAnterior)}
+              </del>
+            </>
+          )}
           {formatearDinero(producto.precioVenta)}
         </strong>
         <p className="tarjeta-stock small text-body-secondary mb-3">

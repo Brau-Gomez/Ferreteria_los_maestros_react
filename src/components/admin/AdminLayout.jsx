@@ -9,6 +9,7 @@ function AdminLayout() {
   const navigate = useNavigate();
   const esAdmin = usuario?.tipoUsuario === 'Administrador';
   const esRutaProductoPermitida = location.pathname === '/admin/productos' ||
+    location.pathname === '/admin/perfil' ||
     (/^\/admin\/productos\/[^/]+$/.test(location.pathname) &&
       !['nuevo', 'editar'].includes(location.pathname.split('/').at(-1)));
 
@@ -46,7 +47,9 @@ function AdminLayout() {
           <NavLink to="/admin/productos">Productos</NavLink>
           {esAdmin && <NavLink to="/admin/criticos">Stock crítico</NavLink>}
           {esAdmin && <NavLink to="/admin/ordenes">Órdenes</NavLink>}
+          {esAdmin && <NavLink to="/admin/reportes">Reportes</NavLink>}
           {esAdmin && <NavLink to="/admin/usuarios">Usuarios</NavLink>}
+          <NavLink to="/admin/perfil">Mi perfil</NavLink>
         </nav>
         <div className="admin-sidebar-footer">
           <Link to="/">Volver a la tienda</Link>

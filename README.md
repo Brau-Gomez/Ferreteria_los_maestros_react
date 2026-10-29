@@ -75,17 +75,27 @@ src/
 ├── components/           # Componentes presentacionales, organizados por Atomic Design
 │   ├── atoms/            #   Piezas mínimas (ImagenProducto, PrecioProducto, InsigniaEstado)
 │   ├── molecules/        #   Combinaciones simples (CampoFormulario, TarjetaProducto, TarjetaBlog…)
-│   ├── organisms/        #   Secciones completas (Header, PanelCarrito, HeroPortada, VistaCarrito…)
-│   ├── admin/            #   Estructura del panel (AdminLayout con control de acceso por perfil)
+│   ├── organisms/        #   Secciones completas, agrupadas por dominio
+│   │   ├── admin/        #     Panel (AdminLayout con control de acceso por perfil…)
+│   │   ├── blog/         #     Sección y detalle de artículos
+│   │   ├── carrito/      #     PanelCarrito, VistaCarrito, ListaCarrito
+│   │   ├── catalogo/     #     Grilla, filtros, ficha, categorías y ofertas
+│   │   ├── checkout/     #     Formulario, resumen, pago y mapa de despacho
+│   │   ├── cuenta/       #     Perfil, historial y cuenta corriente
+│   │   ├── registro/     #     Formularios de ingreso y registro
+│   │   └── tienda/       #     Header, Footer, Hero, Nosotros, Contacto
 │   ├── ProtectedRoute.jsx#   Ruta que exige sesión activa
 │   └── ScrollManager.jsx #   Scroll al cambiar de ruta y soporte de anclas (#nosotros, #blog)
-├── containers/           # Containers: estado, efectos, hooks y persistencia de cada vista
+├── containers/           # Containers: estado, efectos, hooks y persistencia de cada vista,
+│                         # agrupados por dominio (admin, auth, blog, carrito, catalogo,
+│                         # checkout, contacto, cuenta, layout)
 ├── context/              # Contextos y providers de sesión y carrito
 ├── data/                 # Datos estáticos: productos.json, regiones, categorías, cobertura, blog
 ├── hooks/                # Hooks custom: useSesion, useCarrito, useProductos
-├── pages/                # Plantillas de cada ruta (delgadas: delegan en un container)
+├── pages/                # Plantillas por dominio (delgadas: delegan en un container)
 ├── services/             # Capa de persistencia (almacenamiento.js, categorias.js)
-└── utils/                # Dinero, RUN, claves PBKDF2, carrito, reportes, estado de pedidos y validaciones
+└── utils/                # Dinero, RUN, claves PBKDF2, carrito, reportes, estado de pedidos
+                          # y validaciones/ (subcarpeta)
 scripts/
 └── smoke-test.mjs        # Pruebas de humo ejecutables con Node
 ```
@@ -97,6 +107,10 @@ moléculas y organismos; las páginas (`pages/`) actúan como plantillas de cada
 ruta. Los imports solo fluyen hacia abajo: una página usa organismos, un organismo
 usa moléculas y una molécula usa átomos. Átomos y moléculas nunca leen datos
 ni usan contextos.
+
+**Alias de imports.** Los módulos se importan con el alias `@` → `src/`
+(configurado en `vite.config.js` y `jsconfig.json`), por ejemplo
+`import { useCarrito } from '@/hooks/useCarrito'`.
 
 **Container/Presentational.** Cada vista con lógica se divide en dos capas:
 

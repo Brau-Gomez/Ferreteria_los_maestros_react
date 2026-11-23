@@ -8,9 +8,9 @@ export function cantidadCarrito(items) {
 }
 
 // Total monetario del resumen de pedido y del panel lateral.
+// Tolera ítems optimistas que aún no traen precio (evita NaN en el checkout).
 export function totalCarrito(items) {
   return items.reduce(
-    (suma, item) => suma + item.precioVenta * item.cantidad,
-    0,
-  );
+    (suma, item) => suma + (Number(item.precioVenta) || 0) * item.cantidad,
+    0);
 }

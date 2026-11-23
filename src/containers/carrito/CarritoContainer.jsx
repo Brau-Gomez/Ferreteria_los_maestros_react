@@ -9,8 +9,9 @@ function CarritoContainer() {
   // Aviso de la última acción: { ok, mensaje } o null.
   const [aviso, setAviso] = useState(null);
 
-  function actualizarCantidad(codigo, cantidad) {
-    const resultado = cambiarCantidad(codigo, cantidad);
+  // cambiarCantidad() es async: sin await, resultado es una promesa sin .ok.
+  async function actualizarCantidad(codigo, cantidad) {
+    const resultado = await cambiarCantidad(codigo, cantidad);
     if (!resultado.ok) setAviso(resultado);
   }
 

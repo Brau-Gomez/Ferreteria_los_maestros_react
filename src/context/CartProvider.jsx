@@ -1,166 +1,143 @@
-// Proveedor del carrito persistido en el navegador.
-// Porta la lógica de js/tienda/carrito.js:
-// - Items con el producto completo + cantidad (estructura original).
-// - Revalidación contra el catálogo en cada operación: los productos
-//   sin stock se descartan y las cantidades se ajustan al máximo.
-// - Persistencia en ep1-cart.
-// - Al agregar se abre el panel lateral; su estado de apertura vive aquí,
-//   como en el original.
-import { useEffect, useState } from 'react';
+// Proveedor del carrito con actualizaciones optimistas via TanStack Query.
+// Mantiene la misma interfaz que el original para compatibilidad.
+import { useState, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ContextoCarrito } from './CartContext.jsx';
-import {
-  clavesDatos,
-  guardarDato,
-  leerListaGuardada,
-  obtenerProductos,
-} from '../services/almacenamiento.js';
-import { cantidadCarrito, totalCarrito } from '../utils/carrito.js';
-
-// Equivalente a actualizarDatosCarrito() del original: al operar se usan
-// precios y stock actuales del catálogo.
-function revalidarItems(guardados, productos) {
-  const carrito = [];
-  for (let i = 0; i < guardados.length; i++) {
-    const producto = productos.find((p) => p.codigo === guardados[i].codigo);
-    if (!producto || producto.stock < 1) continue;
-    let cantidad = Number(guardados[i].cantidad);
-    if (!Number.isFinite(cantidad) || cantidad < 1) continue;
-    cantidad = Math.min(Math.floor(cantidad), Math.floor(producto.stock));
-    const fila = { ...producto, cantidad };
-    carrito.push(fila);
-  }
-  return carrito;
-}
+import { useSesion } from '@/hooks/useSesion.js';
+import { 
+  obtenerCarrito, 
+  agregarAlCarrito, 
+  actualizarCantidadCarrito, 
+  quitarDelCarrito, 
+  vaciarCarrito 
+} from '@/api/carritoApi.js';
+import { cantidadCarrito, totalCarrito } from '@/utils/carrito.js';
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(() =>
-    revalidarItems(
-      leerListaGuardada(clavesDatos.carrito) || [],
-      obtenerProductos(),
-    ),
-  );
+  const queryClient = useQueryClient();
   const [panelAbierto, setPanelAbierto] = useState(false);
 
-  // Sincroniza con otras pestañas del mismo navegador (evento storage),
-  // como el actualizarContadorCarrito global del app.js original.
+  // Invalidar carrito al montar y al cambiar pestaña
   useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['carrito'] });
+    
     function alCambiarStorage(evento) {
-      if (evento.key !== clavesDatos.carrito) return;
-      setItems(
-        revalidarItems(
-          leerListaGuardada(clavesDatos.carrito) || [],
-          obtenerProductos(),
-        ),
-      );
+      if (evento.key === 'carrito-sync') {
+        queryClient.invalidateQueries({ queryKey: ['carrito'] });
+      }
     }
     window.addEventListener('storage', alCambiarStorage);
     return () => window.removeEventListener('storage', alCambiarStorage);
-  }, []);
+  }, [queryClient]);
 
-  // Guarda y actualiza el estado. Devuelve false si el guardado falla,
-  // para avisar como en el original.
-  function persistir(carrito) {
-    if (!guardarDato(clavesDatos.carrito, carrito)) return false;
-    setItems(carrito);
-    return true;
-  }
+  // El carrito vive en el backend y exige JWT: solo se pide con sesión iniciada.
+  const { isAuthenticated } = useSesion();
+  const { data: items = [] } = useQuery({
+    queryKey: ['carrito'],
+    queryFn: obtenerCarrito,
+    enabled: isAuthenticated,
+  });
 
-  // Agrega unidades de un producto. cantidad es opcional: desde el
-  // catálogo se agrega de a una unidad (agregarAlCarrito del original).
-  // Devuelve { ok, mensaje } para que la página muestre el aviso.
-  function agregar(codigo, cantidad) {
+  // Al cerrar sesión no dejamos el carrito de otro usuario en el cache
+  useEffect(() => {
+    if (!isAuthenticated) queryClient.removeQueries({ queryKey: ['carrito'] });
+  }, [isAuthenticated, queryClient]);
+
+  // Mutación optimista: agregar al carrito
+  async function agregar(codigo, cantidad) {
     let pedidas = Number(cantidad);
     if (!Number.isFinite(pedidas) || pedidas < 1) pedidas = 1;
     pedidas = Math.floor(pedidas);
 
-    const productos = obtenerProductos();
-    const producto = productos.find((p) => p.codigo === codigo);
-    if (!producto || producto.stock < 1) {
-      return { ok: false, mensaje: 'Este producto no tiene stock disponible.' };
-    }
+    // Solo se adelanta la cantidad de un ítem que ya está en el carrito;
+    // el producto nuevo llega completo en la respuesta del POST.
+    await queryClient.cancelQueries({ queryKey: ['carrito'] });
+    const previousItems = queryClient.getQueryData(['carrito']) || [];
+    queryClient.setQueryData(['carrito'], previousItems.map((item) =>
+      item.codigo === codigo ? { ...item, cantidad: item.cantidad + pedidas } : item,
+    ));
 
-    const carritoGuardado = leerListaGuardada(clavesDatos.carrito) || [];
-    const carrito = revalidarItems(carritoGuardado, productos);
-    const existente = carrito.find((i) => i.codigo === codigo);
-    const cantidadActual = existente ? existente.cantidad : 0;
-    const disponible = Math.max(0, Math.floor(producto.stock) - cantidadActual);
-    if (disponible < 1) {
-      return { ok: false, mensaje: 'Ya agregaste todo el stock disponible.' };
-    }
-    const agregadas = Math.min(pedidas, disponible);
-    if (existente) {
-      existente.cantidad += agregadas;
-    } else {
-      const fila = { ...producto };
-      fila.cantidad = agregadas;
-      carrito.push(fila);
-    }
-
-    if (!persistir(carrito)) {
+    try {
+      const resultado = await agregarAlCarrito(codigo, pedidas);
+      // El invalidate traerá la respuesta real del server
+      queryClient.setQueryData(['carrito'], (actuales = []) => [
+        ...actuales.filter(i => i.codigo !== codigo), resultado
+      ]);
+      queryClient.invalidateQueries({ queryKey: ['carrito'] });
+      setPanelAbierto(true);
       return {
-        ok: false,
-        mensaje: 'No se pudo guardar el carrito en este navegador.',
+        ok: true,
+        mensaje: 'Producto agregado al carrito.',
       };
+    } catch (error) {
+      // Rollback
+      queryClient.setQueryData(['carrito'], previousItems);
+      const msg = error.response?.data?.mensaje || 'No se pudo agregar el producto.';
+      return { ok: false, mensaje: msg };
     }
-    // El original abre el panel lateral para confirmar la acción.
-    setPanelAbierto(true);
-    return {
-      ok: true,
-      mensaje:
-        agregadas < pedidas
-          ? `Se agregaron ${agregadas} de las ${pedidas} unidades solicitadas por el stock disponible.`
-          : 'Producto agregado al carrito.',
-    };
   }
 
-  // cantidad 0 equivale a quitar el producto (cambiarCantidad del original).
-  function cambiarCantidad(codigo, cantidad) {
+  // Mutación optimista: cambiar cantidad
+  async function cambiarCantidad(codigo, cantidad) {
     if (!Number.isInteger(cantidad) || cantidad < 0) {
       return {
         ok: false,
-        mensaje:
-          'La cantidad debe ser un número entero, igual o mayor a cero.',
+        mensaje: 'La cantidad debe ser un número entero, igual o mayor a cero.',
       };
     }
-    const productos = obtenerProductos();
-    const carrito = revalidarItems(leerListaGuardada(clavesDatos.carrito) || [], productos);
-    const nuevos = [];
-    for (let i = 0; i < carrito.length; i++) {
-      const producto = carrito[i];
-      if (producto.codigo === codigo) {
-        producto.cantidad = Math.min(cantidad, producto.stock);
+
+    await queryClient.cancelQueries({ queryKey: ['carrito'] });
+    const previousItems = queryClient.getQueryData(['carrito']) || [];
+    
+    let optimisticItems;
+    if (cantidad === 0) {
+      optimisticItems = previousItems.filter(item => item.codigo !== codigo);
+    } else {
+      optimisticItems = previousItems.map(item => 
+        item.codigo === codigo ? { ...item, cantidad } : item
+      );
+    }
+    
+    queryClient.setQueryData(['carrito'], optimisticItems);
+
+    try {
+      if (cantidad === 0) {
+        await quitarDelCarrito(codigo);
+      } else {
+        await actualizarCantidadCarrito(codigo, cantidad);
       }
-      if (producto.cantidad > 0) nuevos.push(producto);
+      queryClient.invalidateQueries({ queryKey: ['carrito'] });
+      return { ok: true, mensaje: '' };
+    } catch (error) {
+      queryClient.setQueryData(['carrito'], previousItems);
+      const msg = error.response?.data?.mensaje || 'No se pudo actualizar el carrito.';
+      return { ok: false, mensaje: msg };
     }
-    if (!persistir(nuevos)) {
-      return {
-        ok: false,
-        mensaje: 'No se pudo guardar el carrito en este navegador.',
-      };
-    }
-    return { ok: true, mensaje: '' };
   }
 
   function quitar(codigo) {
     return cambiarCantidad(codigo, 0);
   }
 
-  // "Vaciar carrito" del panel lateral (data-cart-clear del original).
-  function vaciar() {
-    if (!persistir([])) {
-      return {
-        ok: false,
-        mensaje: 'No se pudo guardar el carrito en este navegador.',
-      };
+  // Mutación optimista: vaciar carrito
+  async function vaciar() {
+    await queryClient.cancelQueries({ queryKey: ['carrito'] });
+    const previousItems = queryClient.getQueryData(['carrito']) || [];
+    queryClient.setQueryData(['carrito'], []);
+
+    try {
+      await vaciarCarrito();
+      queryClient.invalidateQueries({ queryKey: ['carrito'] });
+      return { ok: true, mensaje: '' };
+    } catch (error) {
+      queryClient.setQueryData(['carrito'], previousItems);
+      const msg = error.response?.data?.mensaje || 'No se pudo vaciar el carrito.';
+      return { ok: false, mensaje: msg };
     }
-    return { ok: true, mensaje: '' };
   }
 
-  // Confirma el pedido de la página Carrito. Porta el submit de
-  // js/tienda/carrito.js: valida sesión/entrega, guarda primero el pedido
-  // en ep1-orders y solo después vacía ep1-cart. Si falla el segundo paso,
-  // restaura los pedidos anteriores para no dejar datos inconsistentes.
-  function confirmarPedido(usuario, entrega, despacho) {
+  // Confirma el pedido delegando al backend (CheckoutContainer usa API directa)
+  async function confirmarPedido(usuario, entrega, despacho) {
     if (!usuario) {
       return {
         ok: false,
@@ -171,10 +148,7 @@ export function CartProvider({ children }) {
       return { ok: false, mensaje: 'Selecciona un tipo de entrega válido.' };
     }
 
-    const carrito = revalidarItems(
-      leerListaGuardada(clavesDatos.carrito) || [],
-      obtenerProductos(),
-    );
+    const carrito = items;
     if (!carrito.length) {
       return {
         ok: false,
@@ -182,36 +156,10 @@ export function CartProvider({ children }) {
       };
     }
 
-    const anteriores = leerListaGuardada(clavesDatos.pedidos) || [];
-      const pedido = {
-        id: 'PED-' + Date.now(),
-        runUsuario: usuario.run,
-        total: totalCarrito(carrito),
-        delivery: entrega,
-        productos: carrito,
-    };
-    // Datos de despacho del checkout (opcional): solo si se informan.
-    if (despacho) pedido.despacho = despacho;
-    const pedidos = [pedido, ...anteriores];
-    
-    if (!guardarDato(clavesDatos.pedidos, pedidos)) {
-      return {
-        ok: false,
-        mensaje: 'No se pudo guardar el pedido. El carrito se conserva.',
-      };
-    }
-    if (!persistir([])) {
-      guardarDato(clavesDatos.pedidos, anteriores);
-      return {
-        ok: false,
-        mensaje: 'No se pudo guardar el carrito en este navegador.',
-      };
-    }
-    setPanelAbierto(false);
-    return { ok: true, mensaje: 'Pedido recibido.', pedidoId: pedido.id };
+    return { ok: true, mensaje: 'Usar CheckoutContainer para confirmar.', pedidoId: null };
   }
 
-  // Valores derivados que consumen el Navbar y las páginas.
+  // Valores derivados
   const contador = cantidadCarrito(items);
   const total = totalCarrito(items);
 
@@ -228,6 +176,7 @@ export function CartProvider({ children }) {
     vaciar,
     confirmarPedido,
   };
+
   return (
     <ContextoCarrito.Provider value={valor}>
       {children}

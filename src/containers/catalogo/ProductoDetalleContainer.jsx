@@ -71,7 +71,7 @@ function ProductoDetalleContainer({ codigo }) {
       onCambiarCantidad={(nuevaCantidad) =>
         setSeleccionCantidad({ codigo: codigoBuscado, cantidad: nuevaCantidad })
       }
-      onAgregar={() => setAviso(agregar(producto.codigo, cantidad))}
+      onAgregar={async () => setAviso(await agregar(producto.codigo, cantidad))}
       onCerrarAviso={() => setAviso(null)}
     />
   );

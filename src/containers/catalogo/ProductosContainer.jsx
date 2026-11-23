@@ -36,8 +36,9 @@ function ProductosContainer({ categoriaInicial = 'Todas' }) {
   }
 
   // El CartContext valida el stock y devuelve { ok, mensaje }.
-  function agregarDesdeCatalogo(codigo) {
-    setAviso(agregar(codigo));
+  // agregar() es async: hay que esperar el { ok, mensaje }, no guardar la promesa.
+  async function agregarDesdeCatalogo(codigo) {
+    setAviso(await agregar(codigo));
   }
 
   return (

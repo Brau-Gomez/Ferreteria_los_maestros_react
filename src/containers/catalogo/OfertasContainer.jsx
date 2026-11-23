@@ -15,7 +15,7 @@ function OfertasContainer() {
     <VistaOfertas
       productos={productosEnOferta(productos)}
       aviso={aviso}
-      onAgregar={(codigo) => setAviso(agregar(codigo))}
+      onAgregar={async (codigo) => setAviso(await agregar(codigo))}
       onCerrarAviso={() => setAviso(null)}
     />
   );

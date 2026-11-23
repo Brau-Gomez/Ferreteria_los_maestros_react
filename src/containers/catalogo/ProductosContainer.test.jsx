@@ -60,9 +60,9 @@ describe('ProductosContainer', () => {
     expect(screen.getByText('Sin resultados')).toBeInTheDocument();
   });
 
-  it('avisa que el producto fue agregado al carrito', () => {
+  it('avisa que el producto fue agregado al carrito', async () => {
     mostrar();
     fireEvent.click(screen.getAllByRole('button', { name: 'Agregar' })[0]);
-    expect(screen.getByText('Producto agregado al carrito.')).toBeInTheDocument();
+    expect(await screen.findByText('Producto agregado al carrito.')).toBeInTheDocument();
   });
 });

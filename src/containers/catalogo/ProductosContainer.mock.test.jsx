@@ -27,20 +27,20 @@ describe('ProductosContainer con useCarrito simulado', () => {
     localStorage.setItem('ep1-products', JSON.stringify(catalogo));
   });
 
-  it('llama a agregar con el código del producto', () => {
+  it('llama a agregar con el código del producto', async () => {
     const agregar = vi.fn(() => ({ ok: true, mensaje: 'Producto agregado al carrito.' }));
     useCarrito.mockReturnValue({ agregar });
     mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Agregar' }));
     expect(agregar).toHaveBeenCalledWith('MC001');
-    expect(screen.getByText('Producto agregado al carrito.')).toBeInTheDocument();
+    expect(await screen.findByText('Producto agregado al carrito.')).toBeInTheDocument();
   });
 
-  it('muestra el aviso de error que devuelva el carrito', () => {
+  it('muestra el aviso de error que devuelva el carrito', async () => {
     const agregar = vi.fn(() => ({ ok: false, mensaje: 'Ya agregaste todo el stock disponible.' }));
     useCarrito.mockReturnValue({ agregar });
     mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Agregar' }));
-    expect(screen.getByText('Ya agregaste todo el stock disponible.')).toBeInTheDocument();
+    expect(await screen.findByText('Ya agregaste todo el stock disponible.')).toBeInTheDocument();
   });
 });

@@ -21,6 +21,14 @@ describe('ordenarPedidos', () => {
     expect(ordenarPedidos(lista).map((p) => p.id)).toEqual(['PED-300', 'PED-200', 'PED-100']);
     expect(lista[0].id).toBe('PED-100');
   });
+
+  it('ordena por createdAt cuando el id es un UUID', () => {
+    const lista = [
+      { id: 'uuid-vieja', createdAt: '2026-01-01T00:00:00Z' },
+      { id: 'uuid-nueva', createdAt: '2026-02-01T00:00:00Z' },
+    ];
+    expect(ordenarPedidos(lista).map((p) => p.id)).toEqual(['uuid-nueva', 'uuid-vieja']);
+  });
 });
 
 describe('buscarPedido', () => {
@@ -40,5 +48,14 @@ describe('nombreCliente', () => {
 
   it('muestra el RUN si el perfil ya no existe', () => {
     expect(nombreCliente(usuarios, '999999999')).toBe('Cliente no registrado (999999999)');
+  });
+
+  it('resuelve el cliente por userId de la API', () => {
+    const conId = [{ id: 'u-1', nombre: 'Ana', apellidos: 'Pérez' }];
+    expect(nombreCliente(conId, 'u-1')).toBe('Ana Pérez');
+  });
+
+  it('no muestra un identificador indefinido', () => {
+    expect(nombreCliente(usuarios, undefined)).toBe('Cliente no registrado');
   });
 });

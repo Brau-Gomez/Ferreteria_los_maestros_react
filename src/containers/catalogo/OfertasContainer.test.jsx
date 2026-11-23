@@ -27,11 +27,10 @@ describe('OfertasContainer', () => {
     expect(screen.queryByText('Viga normal')).not.toBeInTheDocument();
   });
 
-  it('agrega al carrito y muestra el aviso', () => {
+  it('agrega al carrito y muestra el aviso', async () => {
     mostrar(catalogo);
     fireEvent.click(screen.getByRole('button', { name: 'Agregar' }));
-    expect(JSON.parse(localStorage.getItem('ep1-cart'))).toHaveLength(1);
-    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(await screen.findByRole('alert')).toBeInTheDocument();
   });
 
   it('muestra un mensaje si no hay ofertas', () => {

@@ -47,10 +47,10 @@ describe('ProductoDetalleContainer', () => {
     expect(screen.getByText('Producto no encontrado')).toBeInTheDocument();
   });
 
-  it('agrega al carrito y muestra el aviso', () => {
+  it('agrega al carrito y muestra el aviso', async () => {
     mostrar('/productos/MC001');
     fireEvent.click(screen.getByRole('button', { name: 'Agregar al carrito' }));
-    expect(screen.getByText('Producto agregado al carrito.')).toBeInTheDocument();
+    expect(await screen.findByText('Producto agregado al carrito.')).toBeInTheDocument();
   });
 
   it('bloquea la compra cuando todo el stock ya está en el carrito', () => {

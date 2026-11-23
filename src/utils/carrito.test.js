@@ -23,4 +23,8 @@ describe('totalCarrito', () => {
   it('devuelve 0 con el carrito vacío', () => {
     expect(totalCarrito([])).toBe(0);
   });
+
+  it('ignora ítems sin precio en lugar de devolver NaN', () => {
+    expect(totalCarrito([{ codigo: 'MC001', cantidad: 1 }])).toBe(0);
+  });
 });

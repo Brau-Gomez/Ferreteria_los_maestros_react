@@ -30,10 +30,11 @@ describe('VistaCuenta', () => {
     expect(screen.queryByText('Cuenta corriente')).not.toBeInTheDocument();
   });
 
-  it('muestra para un contratista los datos de empresa y la cuenta corriente', () => {
+  it('muestra para un contratista los datos de empresa, la cuenta corriente y el historial', () => {
     mostrar({ usuario: contratista });
     expect(screen.getByText('Datos de la empresa')).toBeInTheDocument();
     expect(screen.getByText('Cuenta corriente')).toBeInTheDocument();
+    expect(screen.getByText('Historial de pedidos')).toBeInTheDocument();
   });
 
   it('muestra para un administrador el acceso al panel y no el historial', () => {

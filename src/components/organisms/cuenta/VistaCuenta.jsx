@@ -10,6 +10,7 @@ import HistorialPedidos from '@/components/organisms/cuenta/HistorialPedidos.jsx
 
 function VistaCuenta({ usuario, pedidos, movimientos }) {
   const esCliente = usuario.tipoUsuario === 'Cliente';
+  const esGestion = usuario.tipoUsuario === 'Administrador' || usuario.tipoUsuario === 'Vendedor';
 
   return (
     <Container className="py-5">
@@ -23,7 +24,7 @@ function VistaCuenta({ usuario, pedidos, movimientos }) {
         {usuario.esContratista && usuario.empresa && (
           <DatosEmpresa empresa={usuario.empresa} />
         )}
-        {esCliente
+        {!esGestion
           ? <HistorialPedidos pedidos={pedidos} />
           : <AccesoPanel tipoUsuario={usuario.tipoUsuario} />}
         {esCliente && usuario.esContratista && (

@@ -1,14 +1,13 @@
 // Container del resumen admin: calcula las métricas del catálogo y los
-// usuarios. Solo renderiza ResumenAdmin.
-import { useState } from 'react';
+// usuarios via API. Solo renderiza ResumenAdmin.
 import ResumenAdmin from '@/components/organisms/admin/ResumenAdmin.jsx';
 import { useProductos } from '@/hooks/useProductos.js';
-import { obtenerUsuarios } from '@/services/almacenamiento.js';
+import { useUsuarios } from '@/hooks/useUsuarios.js';
 import { productosCriticos } from '@/utils/admin.js';
 
 function AdminInicioContainer() {
   const { productos } = useProductos();
-  const [usuarios] = useState(() => obtenerUsuarios());
+  const { usuarios } = useUsuarios();
   return (
     <ResumenAdmin
       totalProductos={productos.length}

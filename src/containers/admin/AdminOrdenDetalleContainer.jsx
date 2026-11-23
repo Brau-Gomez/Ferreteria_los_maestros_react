@@ -1,23 +1,26 @@
-// Container de la boleta: busca la orden por id (de la URL), su cliente y
+// Container de la boleta: busca la orden por id (de la URL) via API, su cliente y
 // calcula el desglose de IVA. Solo renderiza BoletaAdmin.
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BoletaAdmin from '@/components/organisms/admin/BoletaAdmin.jsx';
-import { clavesDatos, leerListaGuardada, obtenerUsuarios } from '@/services/almacenamiento.js';
-import { buscarPedido, desgloseIva, nombreCliente } from '@/utils/boleta.js';
-import { fechaDesdeMarca, marcaPedido } from '@/utils/cuenta.js';
+import { useOrden } from '@/hooks/useOrdenes.js';
+import { useUsuarios } from '@/hooks/useUsuarios.js';
+import { desgloseIva, nombreCliente } from '@/utils/boleta.js';
+import { fechaPedido } from '@/utils/cuenta.js';
 import { estadoPedido } from '@/utils/estadoPedido.js';
 
 function AdminOrdenDetalleContainer() {
   const { id } = useParams();
-  const [pedidos] = useState(() => leerListaGuardada(clavesDatos.pedidos) || []);
-  const [usuarios] = useState(() => obtenerUsuarios());
-  const pedido = buscarPedido(pedidos, id);
+  const { orden: pedido, isLoading } = useOrden(id);
+  const { usuarios } = useUsuarios();
 
-  const boleta = pedido && {
+  if (isLoading || !pedido) {
+    return null;
+  }
+
+  const boleta = {
     pedido,
     cliente: nombreCliente(usuarios, pedido.runUsuario),
-    fecha: fechaDesdeMarca(marcaPedido(pedido.id)),
+    fecha: fechaPedido(pedido),
     estado: estadoPedido(pedido),
     desglose: desgloseIva(pedido.total),
   };

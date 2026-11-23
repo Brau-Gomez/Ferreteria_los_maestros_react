@@ -1,14 +1,26 @@
-// Ubicación de la ferretería y zona de cobertura de despacho (RF-10 del ERS).
-// El despacho se limita a la Región de Coquimbo (ver data/regiones.js).
+// Datos de cobertura de despacho para el mapa (presentacional).
+// Sincronizado con la API (catalogoApi.obtenerCobertura).
+// La API es la fuente de verdad; esto es solo para renderizado inmediato del mapa.
 export const ubicacionTienda = {
   nombre: 'Ferretería Los Maestros',
-  direccion: 'Av. Francisco de Aguirre 1234, La Serena',
-  posicion: [-29.9027, -71.252],
+  direccion: 'Av. del Mar 1234, La Serena',
+  posicion: [-29.9045, -71.2519], // [lat, lng] La Serena
 };
 
-// Cada comuna con cobertura: centro y radio aproximado en metros.
 export const comunasCobertura = [
-  { comuna: 'La Serena', posicion: [-29.9027, -71.252], radio: 7000 },
-  { comuna: 'Coquimbo', posicion: [-29.9533, -71.3436], radio: 7000 },
-  { comuna: 'Ovalle', posicion: [-30.5983, -71.2003], radio: 9000 },
+  {
+    comuna: 'La Serena',
+    posicion: [-29.9045, -71.2519],
+    radio: 15000, // 15 km
+  },
+  {
+    comuna: 'Coquimbo',
+    posicion: [-29.9533, -71.3395],
+    radio: 15000,
+  },
+  {
+    comuna: 'Ovalle',
+    posicion: [-30.6011, -71.1990],
+    radio: 10000,
+  },
 ];

@@ -1,11 +1,10 @@
-// Container del listado de usuarios del admin: lee los perfiles guardados.
+// Container del listado de usuarios del admin: lee los perfiles via API.
 // Solo renderiza ListadoUsuariosAdmin.
-import { useState } from 'react';
 import ListadoUsuariosAdmin from '@/components/organisms/admin/ListadoUsuariosAdmin.jsx';
-import { obtenerUsuarios } from '@/services/almacenamiento.js';
+import { useUsuarios } from '@/hooks/useUsuarios.js';
 
 function AdminUsuariosContainer() {
-  const [usuarios] = useState(() => obtenerUsuarios());
+  const { usuarios } = useUsuarios();
   return <ListadoUsuariosAdmin usuarios={usuarios} />;
 }
 

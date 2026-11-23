@@ -1,5 +1,5 @@
 // Container del detalle de producto del admin: busca el producto por código,
-// decide permisos según el perfil y elimina con confirmación.
+// decide permisos según el perfil y elimina con confirmación via API.
 // Solo renderiza DetalleProductoAdmin o el aviso de producto no encontrado.
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,17 +7,19 @@ import AvisoNoEncontradoAdmin from '@/components/organisms/admin/AvisoNoEncontra
 import DetalleProductoAdmin from '@/components/organisms/admin/DetalleProductoAdmin.jsx';
 import { useProductos } from '@/hooks/useProductos.js';
 import { useSesion } from '@/hooks/useSesion.js';
-import { clavesDatos, eliminarRegistro, leerListaGuardada, obtenerProductos } from '@/services/almacenamiento.js';
+import { useEliminarProducto } from '@/hooks/useProductos.js';
 
 function AdminProductoDetalleContainer() {
   const { codigo } = useParams();
   const navigate = useNavigate();
-  const { productos } = useProductos();
+  const { productos, isLoading, refetch } = useProductos();
   const { usuario } = useSesion();
   const [error, setError] = useState('');
+  const eliminarProductoMutation = useEliminarProducto();
+  
   const producto = productos.find((item) => item.codigo === (codigo || '').toUpperCase());
 
-  if (!producto) {
+  if (!producto && !isLoading) {
     return (
       <AvisoNoEncontradoAdmin
         titulo="Producto no encontrado"
@@ -28,14 +30,18 @@ function AdminProductoDetalleContainer() {
     );
   }
 
-  function eliminar() {
+  async function eliminar() {
     if (!window.confirm(`¿Eliminar el producto ${producto.codigo}?`)) return;
-    const lista = leerListaGuardada(clavesDatos.productos) || obtenerProductos();
-    if (!eliminarRegistro(clavesDatos.productos, lista, 'codigo', producto.codigo)) {
-      setError('No fue posible eliminar el producto. Puedes reintentarlo.');
-      return;
+    try {
+      setError('');
+      await eliminarProductoMutation.mutateAsync(producto.codigo);
+      // La invalidación de cache hará que se refresque la lista
+      await refetch();
+      navigate('/admin/productos');
+    } catch (err) {
+      const msg = err.response?.data?.mensaje || err.message || 'No fue posible eliminar el producto.';
+      setError(msg);
     }
-    navigate('/admin/productos');
   }
 
   return (

@@ -1,36 +1,50 @@
 // Container de categorías del admin: valida, persiste y mantiene
-// coherentes los productos (al renombrar) y el catálogo (al eliminar).
+// coherentes los productos (al renombrar) y el catálogo (al eliminar) via API.
 // Solo renderiza GestionCategoriasAdmin.
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GestionCategoriasAdmin from '@/components/organisms/admin/GestionCategoriasAdmin.jsx';
-import { clavesDatos, guardarDato, obtenerProductos } from '@/services/almacenamiento.js';
-import { guardarCategorias, obtenerCategorias } from '@/services/categorias.js';
+import { useProductos } from '@/hooks/useProductos.js';
+import { useCategorias, useCrearCategoria, useActualizarCategoria, useEliminarCategoria } from '@/hooks/useProductos.js';
 import { contarPorCategoria } from '@/utils/productos.js';
 import { validarCategoria } from '@/utils/validaciones/categorias.js';
 
 function AdminCategoriasContainer() {
-  const [categorias, setCategorias] = useState(() => obtenerCategorias());
-  const [productos, setProductos] = useState(() => obtenerProductos());
+  const { categorias, isLoading: catLoading, refetch: refetchCategorias } = useCategorias();
+  const { productos, isLoading: prodLoading, refetch: refetchProductos } = useProductos();
+  
+  const crearCategoriaMutation = useCrearCategoria();
+  const actualizarCategoriaMutation = useActualizarCategoria();
+  const eliminarCategoriaMutation = useEliminarCategoria();
+  
   const [nuevoNombre, setNuevoNombre] = useState('');
   const [editando, setEditando] = useState('');
   const [valorEdicion, setValorEdicion] = useState('');
   const [error, setError] = useState('');
   const [mensaje, setMensaje] = useState('');
 
+  const loading = catLoading || prodLoading || 
+    crearCategoriaMutation.isPending || 
+    actualizarCategoriaMutation.isPending || 
+    eliminarCategoriaMutation.isPending;
+
   function avisar(nuevoError, nuevoMensaje) {
     setError(nuevoError);
     setMensaje(nuevoMensaje);
   }
 
-  function agregar() {
+  async function agregar() {
     const problema = validarCategoria(nuevoNombre, categorias);
     if (problema) return avisar(problema, '');
-    const nombre = nuevoNombre.trim();
-    const lista = [...categorias, nombre];
-    if (!guardarCategorias(lista)) return avisar('No se pudo guardar la categoría.', '');
-    setCategorias(lista);
-    setNuevoNombre('');
-    avisar('', `Categoría "${nombre}" creada.`);
+    try {
+      setError('');
+      await crearCategoriaMutation.mutateAsync({ nombre: nuevoNombre.trim() });
+      await Promise.all([refetchCategorias(), refetchProductos()]);
+      setNuevoNombre('');
+      avisar('', `Categoría "${nuevoNombre.trim()}" creada.`);
+    } catch (err) {
+      const msg = err.response?.data?.mensaje || err.message || 'No se pudo guardar la categoría.';
+      avisar(msg, '');
+    }
   }
 
   function empezarEdicion(nombre) {
@@ -45,34 +59,40 @@ function AdminCategoriasContainer() {
     avisar('', '');
   }
 
-  function guardarEdicion() {
+  async function guardarEdicion() {
     const problema = validarCategoria(valorEdicion, categorias, editando);
     if (problema) return avisar(problema, '');
-    const nombre = valorEdicion.trim();
-    const lista = categorias.map((categoria) => (categoria === editando ? nombre : categoria));
-    if (!guardarCategorias(lista)) return avisar('No se pudo guardar la categoría.', '');
-    // Los productos que usaban el nombre anterior pasan al nuevo.
-    const actualizados = productos.map((producto) =>
-      producto.categoria === editando ? { ...producto, categoria: nombre } : producto,
-    );
-    guardarDato(clavesDatos.productos, actualizados);
-    setProductos(actualizados);
-    setCategorias(lista);
-    setEditando('');
-    setValorEdicion('');
-    avisar('', `Categoría renombrada a "${nombre}".`);
+    try {
+      setError('');
+      await actualizarCategoriaMutation.mutateAsync({ 
+        nombreAntiguo: editando, 
+        nombreNuevo: valorEdicion.trim() 
+      });
+      await Promise.all([refetchCategorias(), refetchProductos()]);
+      setEditando('');
+      setValorEdicion('');
+      avisar('', `Categoría renombrada a "${valorEdicion.trim()}".`);
+    } catch (err) {
+      const msg = err.response?.data?.mensaje || err.message || 'No se pudo guardar la categoría.';
+      avisar(msg, '');
+    }
   }
 
-  function eliminar(nombre) {
+  async function eliminar(nombre) {
     const usados = productos.filter((producto) => producto.categoria === nombre).length;
     if (usados > 0) {
       return avisar(`No se puede eliminar "${nombre}": tiene ${usados} producto(s) asociados.`, '');
     }
-    if (!window.confirm(`¿Eliminar la categoría "${nombre}"?`)) return undefined;
-    const lista = categorias.filter((categoria) => categoria !== nombre);
-    if (!guardarCategorias(lista)) return avisar('No se pudo eliminar la categoría.', '');
-    setCategorias(lista);
-    return avisar('', `Categoría "${nombre}" eliminada.`);
+    if (!window.confirm(`¿Eliminar la categoría "${nombre}"?`)) return;
+    try {
+      setError('');
+      await eliminarCategoriaMutation.mutateAsync(nombre);
+      await Promise.all([refetchCategorias(), refetchProductos()]);
+      avisar('', `Categoría "${nombre}" eliminada.`);
+    } catch (err) {
+      const msg = err.response?.data?.mensaje || err.message || 'No se pudo eliminar la categoría.';
+      avisar(msg, '');
+    }
   }
 
   return (

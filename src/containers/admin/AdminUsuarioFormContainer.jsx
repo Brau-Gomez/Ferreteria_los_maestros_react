@@ -1,27 +1,34 @@
 // Container del formulario de usuario: carga el perfil (si se edita), valida,
-// guarda y mantiene la sesión al día si la persona edita su propio perfil.
+// guarda y mantiene la sesión al día si la persona edita su propio perfil via API.
 // Solo renderiza FormularioUsuarioAdmin o el aviso de usuario no encontrado.
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AvisoNoEncontradoAdmin from '@/components/organisms/admin/AvisoNoEncontradoAdmin.jsx';
 import FormularioUsuarioAdmin from '@/components/organisms/admin/FormularioUsuarioAdmin.jsx';
-import { comunasPorRegion } from '@/data/regiones.js';
 import { useSesion } from '@/hooks/useSesion.js';
-import { clavesDatos, guardarRegistro, obtenerUsuarios } from '@/services/almacenamiento.js';
+import { useUsuarios } from '@/hooks/useUsuarios.js';
+import { useRegiones, useComunas } from '@/hooks/useCatalogo.js';
 import { normalizarRun } from '@/utils/run.js';
 import { validarUsuario } from '@/utils/validaciones/usuarios.js';
+import { useCrearUsuario, useActualizarUsuario } from '@/hooks/useUsuarios.js';
 
 const roles = ['Administrador', 'Vendedor', 'Cliente'];
-const regionUnica = 'Región de Coquimbo';
-const vacio = { run: '', nombre: '', apellidos: '', correo: '', fechaNacimiento: '', tipoUsuario: '', region: regionUnica, comuna: '', direccion: '' };
+const vacio = { run: '', nombre: '', apellidos: '', correo: '', fechaNacimiento: '', tipoUsuario: '', region: '', comuna: '', direccion: '' };
 
 function AdminUsuarioFormContainer({ modo }) {
   const { run } = useParams();
   const navigate = useNavigate();
-  const { usuario: usuarioSesion, actualizarSesion } = useSesion();
+  const { usuario: usuarioSesion, actualizarSesion, loading: authLoading } = useSesion();
+  
+  const { usuarios, isLoading: usuariosLoading, refetch: refetchUsuarios } = useUsuarios();
+  const { regiones, isLoading: regionesLoading } = useRegiones();
+  const { comunas, isLoading: comunasLoading } = useComunas(1); // Región de Coquimbo
+  const crearUsuarioMutation = useCrearUsuario();
+  const actualizarUsuarioMutation = useActualizarUsuario();
+  
   const runOriginal = modo === 'editar' ? normalizarRun(run || '') : '';
-  const [usuarios] = useState(() => obtenerUsuarios());
   const usuarioOriginal = usuarios.find((item) => item.run === runOriginal);
+  
   const [datos, setDatos] = useState(() => usuarioOriginal ? {
     run: usuarioOriginal.run,
     nombre: usuarioOriginal.nombre,
@@ -36,7 +43,27 @@ function AdminUsuarioFormContainer({ modo }) {
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState('');
 
-  if (modo === 'editar' && !usuarioOriginal) {
+  const loading = authLoading || usuariosLoading || regionesLoading || comunasLoading ||
+    crearUsuarioMutation.isPending || actualizarUsuarioMutation.isPending;
+
+  // Sincronizar datos cuando cambia el usuario
+  useEffect(() => {
+    if (modo === 'editar' && usuarioOriginal) {
+      setDatos({
+        run: usuarioOriginal.run,
+        nombre: usuarioOriginal.nombre,
+        apellidos: usuarioOriginal.apellidos,
+        correo: usuarioOriginal.correo,
+        fechaNacimiento: usuarioOriginal.fechaNacimiento || '',
+        tipoUsuario: usuarioOriginal.tipoUsuario,
+        region: usuarioOriginal.region,
+        comuna: usuarioOriginal.comuna,
+        direccion: usuarioOriginal.direccion,
+      });
+    }
+  }, [usuarioOriginal, modo]);
+
+  if (modo === 'editar' && !usuarioOriginal && !usuariosLoading) {
     return (
       <AvisoNoEncontradoAdmin
         titulo="Usuario no encontrado"
@@ -57,15 +84,14 @@ function AdminUsuarioFormContainer({ modo }) {
     setMensaje('');
   }
 
-  function alEnviar(evento) {
+  async function alEnviar(evento) {
     evento.preventDefault();
     const normalizados = {
       ...datos,
       run: normalizarRun(datos.run),
       correo: datos.correo.trim().toLowerCase(),
     };
-    const lista = obtenerUsuarios();
-    const actuales = validarUsuario(normalizados, lista, runOriginal);
+    const actuales = validarUsuario(normalizados, usuarios, runOriginal);
     setErrores(actuales);
     if (Object.values(actuales).some(Boolean)) return;
 
@@ -74,15 +100,31 @@ function AdminUsuarioFormContainer({ modo }) {
       ...normalizados,
       activo: usuarioOriginal ? usuarioOriginal.activo : true,
     };
-    if (!guardarRegistro(clavesDatos.usuarios, lista, 'run', runOriginal, actualizado)) {
-      setMensaje('No fue posible guardar el usuario. Puedes reintentarlo.');
-      return;
+    
+    try {
+      setMensaje('');
+      if (modo === 'editar') {
+        await actualizarUsuarioMutation.mutateAsync({ run: runOriginal, usuario: actualizado });
+      } else {
+        await crearUsuarioMutation.mutateAsync(actualizado);
+      }
+      
+      await refetchUsuarios();
+      
+      // Actualizar sesión si es el propio usuario
+      if (usuarioOriginal && usuarioSesion && usuarioOriginal.run === usuarioSesion.run) {
+        const ok = actualizarSesion(runOriginal, actualizado);
+        if (!ok) {
+          setMensaje('El perfil se guardó, pero no se pudo actualizar la sesión. Cierra sesión y vuelve a ingresar.');
+          return;
+        }
+      }
+      
+      navigate(`/admin/usuarios/${encodeURIComponent(actualizado.run)}`);
+    } catch (error) {
+      const msg = error.response?.data?.mensaje || error.message || 'No fue posible guardar el usuario. Puedes reintentarlo.';
+      setMensaje(msg);
     }
-    if (usuarioOriginal && usuarioOriginal.run === usuarioSesion.run && !actualizarSesion(runOriginal, actualizado)) {
-      setMensaje('El perfil se guardó, pero no se pudo actualizar la sesión. Cierra sesión y vuelve a ingresar.');
-      return;
-    }
-    navigate(`/admin/usuarios/${encodeURIComponent(actualizado.run)}`);
   }
 
   return (
@@ -91,9 +133,10 @@ function AdminUsuarioFormContainer({ modo }) {
       datos={datos}
       errores={errores}
       mensaje={mensaje}
+      guardando={loading}
       roles={roles}
-      regiones={Object.keys(comunasPorRegion)}
-      comunas={comunasPorRegion[datos.region] || []}
+      regiones={regiones.map(r => r.nombre)}
+      comunas={comunas.map(c => c.nombre)}
       rutaCancelar={usuarioOriginal ? `/admin/usuarios/${encodeURIComponent(usuarioOriginal.run)}` : '/admin/usuarios'}
       onCambiar={actualizar}
       onCambiarRegion={cambiarRegion}

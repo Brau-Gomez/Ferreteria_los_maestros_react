@@ -1,14 +1,26 @@
 // Container del listado de productos del admin. Con soloCriticos muestra
 // únicamente los productos con stock crítico. Solo renderiza el organismo.
+import { useEffect, useState } from 'react';
 import ListadoProductosAdmin from '@/components/organisms/admin/ListadoProductosAdmin.jsx';
 import { useProductos } from '@/hooks/useProductos.js';
 import { useSesion } from '@/hooks/useSesion.js';
 import { productosCriticos } from '@/utils/admin.js';
 
 function AdminProductosContainer({ soloCriticos = false }) {
-  const { productos } = useProductos();
-  const { usuario } = useSesion();
-  const esAdmin = usuario.tipoUsuario === 'Administrador';
+  const { productos, isLoading } = useProductos();
+  const { usuario, isAuthenticated, loading: authLoading } = useSesion();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Esperar a que la autenticación termine antes de renderizar
+  if (!mounted || authLoading) {
+    return null;
+  }
+
+  const esAdmin = usuario?.tipoUsuario === 'Administrador';
 
   if (soloCriticos) {
     return (

@@ -15,6 +15,12 @@ export function marcaPedido(id) {
   return Number.isFinite(marca) && marca > 0 ? marca : 0;
 }
 
+// La API devuelve createdAt; los pedidos antiguos lo traían dentro del id.
+export function fechaPedido(pedido) {
+  const marca = pedido?.createdAt ? Date.parse(pedido.createdAt) : marcaPedido(pedido?.id);
+  return fechaDesdeMarca(marca);
+}
+
 export function pedidosDeUsuario(pedidos, run) {
   return pedidos.filter((pedido) => pedido.runUsuario === run);
 }

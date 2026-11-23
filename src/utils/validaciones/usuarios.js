@@ -4,7 +4,7 @@
 // los campos válidos quedan con texto vacío.
 import { normalizarRun, runValido } from '../run.js';
 import { validarCorreo, validarTexto } from './comunes.js';
-import { comunasPorRegion } from '../../data/regiones.js';
+import { comunasPorRegion } from '../../data/comunas.js';
 
 // - datos: campos del formulario.
 // - usuarios: lista existente, para detectar duplicados.

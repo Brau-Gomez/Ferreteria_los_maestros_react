@@ -1,19 +1,18 @@
 // Contenedor de la cabecera: concentra los hooks (sesión, carrito, router),
-// el servicio de categorías y el estado del buscador. El organismo Header
-// solo dibuja lo que recibe.
+// el servicio de categorías via API y el estado del buscador.
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/organisms/tienda/Header.jsx';
-import { obtenerCategorias } from '@/services/categorias.js';
+import { useCategorias } from '@/hooks/useProductos.js';
 import { useSesion } from '@/hooks/useSesion.js';
 import { useCarrito } from '@/hooks/useCarrito.js';
 
 function HeaderContainer() {
   const { usuario, salir } = useSesion();
   const { contador } = useCarrito();
+  const { categorias } = useCategorias();
   const navigate = useNavigate();
   const [busqueda, setBusqueda] = useState('');
-  const [categorias] = useState(() => obtenerCategorias());
 
   // La búsqueda lleva al catálogo con el texto ya aplicado (?q=...).
   function buscar(evento) {

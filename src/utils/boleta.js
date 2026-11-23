@@ -12,7 +12,8 @@ export function desgloseIva(total) {
 
 // Pedidos del más nuevo al más antiguo (la fecha viaja en el id PED-<marca>).
 export function ordenarPedidos(pedidos) {
-  return [...pedidos].sort((a, b) => marcaPedido(b.id) - marcaPedido(a.id));
+  const marca = (pedido) => Date.parse(pedido?.createdAt) || marcaPedido(pedido?.id);
+  return [...pedidos].sort((a, b) => marca(b) - marca(a));
 }
 
 export function buscarPedido(pedidos, id) {
@@ -21,8 +22,10 @@ export function buscarPedido(pedidos, id) {
 
 // Nombre para mostrar del cliente de un pedido; si el perfil ya no existe
 // se muestra su RUN.
-export function nombreCliente(usuarios, run) {
-  const usuario = usuarios.find((item) => item.run === run);
-  if (!usuario) return `Cliente no registrado (${run})`;
+export function nombreCliente(usuarios, identificador) {
+  if (!identificador) return 'Cliente no registrado';
+  // Los pedidos de la API traen userId (UUID); los antiguos traen run.
+  const usuario = usuarios.find((item) => item.id === identificador || item.run === identificador);
+  if (!usuario) return `Cliente no registrado (${identificador})`;
   return `${usuario.nombre} ${usuario.apellidos}`.trim();
 }

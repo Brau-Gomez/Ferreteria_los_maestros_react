@@ -1,26 +1,34 @@
 // Container del detalle de usuario del admin: busca el perfil por RUN,
-// arma su historial de compras y maneja la eliminación protegida.
+// arma su historial de compras y maneja la eliminación protegida via API.
 // Solo renderiza DetalleUsuarioAdmin.
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DetalleUsuarioAdmin from '@/components/organisms/admin/DetalleUsuarioAdmin.jsx';
 import { useSesion } from '@/hooks/useSesion.js';
-import { clavesDatos, eliminarRegistro, leerListaGuardada, obtenerUsuarios } from '@/services/almacenamiento.js';
+import { useUsuarios } from '@/hooks/useUsuarios.js';
+import { useOrdenes } from '@/hooks/useOrdenes.js';
+import { useEliminarUsuario } from '@/hooks/useUsuarios.js';
 import { ordenarPedidos } from '@/utils/boleta.js';
 import { fechaDesdeMarca, marcaPedido, pedidosDeUsuario } from '@/utils/cuenta.js';
 
 function AdminUsuarioDetalleContainer() {
   const { run } = useParams();
   const navigate = useNavigate();
-  const { usuario: sesion } = useSesion();
+  const { usuario: sesion, isAuthenticated, loading: authLoading } = useSesion();
+  
+  // Usar hooks de API
+  const { usuarios, isLoading: usuariosLoading, refetch: refetchUsuarios } = useUsuarios();
+  const { ordenes, isLoading: ordenesLoading, refetch: refetchOrdenes } = useOrdenes();
+  const eliminarUsuarioMutation = useEliminarUsuario();
+  
   const [error, setError] = useState('');
   const runBuscado = (run || '').replace(/[.\-\s]/g, '').toUpperCase();
-  const [usuarios] = useState(() => obtenerUsuarios());
-  const [pedidos] = useState(() => leerListaGuardada(clavesDatos.pedidos) || []);
   const usuario = usuarios.find((item) => item.run === runBuscado);
 
+  const loading = authLoading || usuariosLoading || ordenesLoading;
+
   const compras = usuario
-    ? ordenarPedidos(pedidosDeUsuario(pedidos, usuario.run)).map((pedido) => ({
+    ? ordenarPedidos(pedidosDeUsuario(ordenes, usuario.run)).map((pedido) => ({
         id: pedido.id,
         fecha: fechaDesdeMarca(marcaPedido(pedido.id)),
         entrega: pedido.delivery,
@@ -29,7 +37,11 @@ function AdminUsuarioDetalleContainer() {
     : [];
   const totalComprado = compras.reduce((suma, compra) => suma + compra.total, 0);
 
-  function eliminar() {
+  async function eliminar() {
+    if (!usuario || !sesion) {
+      setError('No se pudo verificar la sesión.');
+      return;
+    }
     if (usuario.run === sesion.run) {
       setError('No puedes eliminar el perfil con el que tienes iniciada la sesión.');
       return;
@@ -42,12 +54,20 @@ function AdminUsuarioDetalleContainer() {
       return;
     }
     if (!window.confirm(`¿Eliminar el perfil de ${usuario.nombre} ${usuario.apellidos}?`)) return;
-    const lista = leerListaGuardada(clavesDatos.usuarios) || obtenerUsuarios();
-    if (!eliminarRegistro(clavesDatos.usuarios, lista, 'run', usuario.run)) {
-      setError('No fue posible eliminar el usuario. Puedes reintentarlo.');
-      return;
+    
+    try {
+      setError('');
+      await eliminarUsuarioMutation.mutateAsync(usuario.run);
+      await Promise.all([refetchUsuarios(), refetchOrdenes()]);
+      navigate('/admin/usuarios');
+    } catch (err) {
+      const msg = err.response?.data?.mensaje || err.message || 'No fue posible eliminar el usuario.';
+      setError(msg);
     }
-    navigate('/admin/usuarios');
+  }
+
+  if (loading || !usuario) {
+    return null; // o un skeleton
   }
 
   return (

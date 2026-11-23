@@ -1,30 +1,30 @@
-// Container de Mi cuenta: lee la sesión, los pedidos y los abonos guardados
+// Container de Mi cuenta: lee la sesión, los pedidos y los abonos via API
 // y calcula el historial y los movimientos de la cuenta corriente.
-import { useState } from 'react';
-import VistaCuenta from '@/components/organisms/cuenta/VistaCuenta.jsx';
 import { useSesion } from '@/hooks/useSesion.js';
-import { clavesDatos, leerListaGuardada } from '@/services/almacenamiento.js';
-import { movimientosCuenta, pedidosDeUsuario } from '@/utils/cuenta.js';
+import { useOrdenes } from '@/hooks/useOrdenes.js';
+import { useUsuarios } from '@/hooks/useUsuarios.js';
+import VistaCuenta from '@/components/organisms/cuenta/VistaCuenta.jsx';
+import { movimientosCuenta } from '@/utils/cuenta.js';
 
 function CuentaContainer() {
   const { usuario } = useSesion();
-  // Lectura inicial desde los servicios de persistencia; los datos no se
-  // duplican en localStorage dentro del componente.
-  const [pedidos] = useState(() => leerListaGuardada(clavesDatos.pedidos) || []);
-  const [abonos] = useState(() => leerListaGuardada(clavesDatos.abonos) || []);
+  const { ordenes: pedidos } = useOrdenes();
+  const { usuarios } = useUsuarios();
 
-  if (!usuario) return null; // ProtectedRoute redirige antes de mostrar esta página.
+  if (!usuario) return null;
 
-  const esCliente = usuario.tipoUsuario === 'Cliente';
-  const pedidosUsuario = esCliente ? pedidosDeUsuario(pedidos, usuario.run) : [];
+  // GET /orders ya devuelve solo los pedidos del usuario autenticado (cliente o contratista).
+  // El perfil de /auth/me no trae run, así que filtrar aquí por run deja el historial vacío.
+  const abonos = usuarios.flatMap(u => u.abonos || []).filter(a => a.userRun === usuario.run);
+
   const movimientos = usuario.esContratista
-    ? movimientosCuenta(pedidosUsuario, abonos, usuario.run)
+    ? movimientosCuenta(pedidos, abonos, usuario.run)
     : [];
 
   return (
     <VistaCuenta
       usuario={usuario}
-      pedidos={pedidosUsuario}
+      pedidos={pedidos}
       movimientos={movimientos}
     />
   );

@@ -1,19 +1,19 @@
-// Container del listado de órdenes: lee pedidos y usuarios guardados y arma
+// Container del listado de órdenes: lee pedidos y usuarios via API y arma
 // las filas (fecha, cliente, estado, total). Solo renderiza ListadoOrdenesAdmin.
-import { useState } from 'react';
 import ListadoOrdenesAdmin from '@/components/organisms/admin/ListadoOrdenesAdmin.jsx';
-import { clavesDatos, leerListaGuardada, obtenerUsuarios } from '@/services/almacenamiento.js';
+import { useOrdenes } from '@/hooks/useOrdenes.js';
+import { useUsuarios } from '@/hooks/useUsuarios.js';
 import { nombreCliente, ordenarPedidos } from '@/utils/boleta.js';
-import { fechaDesdeMarca, marcaPedido } from '@/utils/cuenta.js';
+import { fechaPedido } from '@/utils/cuenta.js';
 import { estadoPedido } from '@/utils/estadoPedido.js';
 
 function AdminOrdenesContainer() {
-  const [pedidos] = useState(() => leerListaGuardada(clavesDatos.pedidos) || []);
-  const [usuarios] = useState(() => obtenerUsuarios());
+  const { ordenes: pedidos } = useOrdenes();
+  const { usuarios } = useUsuarios();
 
   const ordenes = ordenarPedidos(pedidos).map((pedido) => ({
     id: pedido.id,
-    fecha: fechaDesdeMarca(marcaPedido(pedido.id)),
+    fecha: fechaPedido(pedido),
     cliente: nombreCliente(usuarios, pedido.runUsuario),
     entrega: pedido.delivery,
     estado: estadoPedido(pedido),

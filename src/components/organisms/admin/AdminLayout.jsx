@@ -4,9 +4,15 @@ import Button from 'react-bootstrap/Button';
 import { useSesion } from '@/hooks/useSesion.js';
 
 function AdminLayout() {
-  const { usuario, salir } = useSesion();
+  const { usuario, salir, loading } = useSesion();
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Mostrar loading mientras se verifica la sesión
+  if (loading) {
+    return <div className="admin-shell">Cargando...</div>;
+  }
+  
   const esAdmin = usuario?.tipoUsuario === 'Administrador';
   const esRutaProductoPermitida = location.pathname === '/admin/productos' ||
     location.pathname === '/admin/perfil' ||

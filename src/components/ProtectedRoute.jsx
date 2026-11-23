@@ -4,8 +4,9 @@ import { Navigate } from 'react-router-dom';
 import { useSesion } from '../hooks/useSesion.js';
 
 function ProtectedRoute({ children }) {
-  const { usuario } = useSesion();
-  if (!usuario) {
+  const { isAuthenticated, loading } = useSesion();
+  
+  if (loading || !isAuthenticated) {
     return <Navigate to="/ingreso" replace />;
   }
   return children;

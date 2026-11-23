@@ -35,7 +35,7 @@ function IngresoContainer() {
   }
 
   function seleccionarDemo(correo) {
-    const siguientes = { correo, clave: 'demo123' };
+    const siguientes = { correo, clave: import.meta.env.VITE_DEMO_PASSWORD || '' };
     setDatos(siguientes);
     setErrores(validar(siguientes));
     setMensaje('');

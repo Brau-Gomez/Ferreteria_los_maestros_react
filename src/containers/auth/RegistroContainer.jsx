@@ -1,19 +1,15 @@
 // Container del registro: concentra el estado del formulario, la validación
-// y el guardado de la cuenta (con la huella PBKDF2 de la contraseña).
+// y el guardado de la cuenta via API (backend hashea con BCrypt).
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import FormularioRegistro from '@/components/organisms/registro/FormularioRegistro.jsx';
-import { comunasPorRegion } from '@/data/regiones.js';
-import {
-  clavesDatos,
-  guardarRegistro,
-  obtenerUsuarios,
-} from '@/services/almacenamiento.js';
-import { huellaClave } from '@/utils/claves.js';
+import { useRegiones, useComunas } from '@/hooks/useCatalogo.js';
+import { register as apiRegister } from '@/api/authApi.js';
 import { normalizarRun, runValido } from '@/utils/run.js';
 import { validarClave, validarTexto } from '@/utils/validaciones/comunes.js';
 import { validarUsuario } from '@/utils/validaciones/usuarios.js';
+import { useUsuarios } from '@/hooks/useUsuarios.js';
 
-const regionUnica = 'Región de Coquimbo';
 const formularioInicial = {
   nombre: '',
   apellidos: '',
@@ -32,15 +28,15 @@ const formularioInicial = {
 };
 
 // Devuelve un mensaje por campo con error; los válidos quedan en ''.
-function validar(valores) {
+function validar(valores, usuarios, regiones) {
   const normalizados = {
     ...valores,
     run: normalizarRun(valores.run),
     correo: valores.correo.trim().toLowerCase(),
     tipoUsuario: 'Cliente',
-    region: regionUnica,
+    region: regiones[0]?.nombre || 'Región de Coquimbo',
   };
-  const actuales = validarUsuario(normalizados, obtenerUsuarios(), '');
+  const actuales = validarUsuario(normalizados, usuarios, '');
   actuales.clave = validarClave(valores.clave);
   actuales.confirmacion = valores.clave === valores.confirmacion
     ? ''
@@ -69,6 +65,11 @@ function validar(valores) {
 }
 
 function RegistroContainer() {
+  const navigate = useNavigate();
+  const { usuarios, isLoading: usuariosLoading } = useUsuarios();
+  const { regiones, isLoading: regionesLoading } = useRegiones();
+  const { comunas, isLoading: comunasLoading } = useComunas(1);
+  
   const [datos, setDatos] = useState(formularioInicial);
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState('');
@@ -76,16 +77,18 @@ function RegistroContainer() {
   const [enviando, setEnviando] = useState(false);
   const esContratista = datos.tipoCuenta === 'Contratista';
 
+  const loading = usuariosLoading || regionesLoading || comunasLoading;
+
   function actualizar(campo, valor) {
     const siguientes = { ...datos, [campo]: valor };
     setDatos(siguientes);
-    setErrores(validar(siguientes));
+    setErrores(validar(siguientes, usuarios, regiones));
     setMensaje('');
   }
 
   async function enviar(evento) {
     evento.preventDefault();
-    const actuales = validar(datos);
+    const actuales = validar(datos, usuarios, regiones);
     setErrores(actuales);
     if (Object.values(actuales).some(Boolean)) return;
 
@@ -99,11 +102,10 @@ function RegistroContainer() {
         correo: datos.correo.trim().toLowerCase(),
         fechaNacimiento: datos.fechaNacimiento,
         tipoUsuario: 'Cliente',
-        region: regionUnica,
+        region: regiones[0]?.nombre || 'Región de Coquimbo',
         comuna: datos.comuna,
         direccion: datos.direccion.trim(),
         activo: true,
-        sal: crypto.randomUUID(),
         telefono: datos.telefono.trim(),
         esContratista,
       };
@@ -114,25 +116,20 @@ function RegistroContainer() {
           direccion: datos.empresaDireccion.trim(),
         };
       }
-      usuario.claveHuella = await huellaClave(datos.clave, usuario.sal);
 
-      // Revalida antes de persistir para no aceptar duplicados creados durante el cálculo PBKDF2.
-      const erroresFinales = validarUsuario(usuario, obtenerUsuarios(), '');
-      if (Object.values(erroresFinales).some(Boolean)) {
-        setErrores(erroresFinales);
-        return;
-      }
-      if (!guardarRegistro(clavesDatos.usuarios, obtenerUsuarios(), 'run', '', usuario)) {
-        setMensaje('No se pudo guardar tu cuenta. Puedes reintentarlo.');
-        setExito(false);
-        return;
-      }
+      // El backend hashea la contraseña con BCrypt
+      await apiRegister(usuario, datos.clave);
+      
       setDatos(formularioInicial);
       setErrores({});
-      setMensaje('Cuenta creada en este navegador. Ya puedes iniciar sesión.');
+      setMensaje('Cuenta creada. Ya puedes iniciar sesión.');
       setExito(true);
-    } catch {
-      setMensaje('No se pudo crear la cuenta. Abre el proyecto con Live Server.');
+      
+      // Redirigir a login tras 2 segundos
+      setTimeout(() => navigate('/ingreso'), 2000);
+    } catch (error) {
+      const msg = error.response?.data?.mensaje || error.message || 'No se pudo crear la cuenta.';
+      setMensaje(msg);
       setExito(false);
     } finally {
       setEnviando(false);
@@ -146,8 +143,9 @@ function RegistroContainer() {
       mensaje={mensaje}
       exito={exito}
       enviando={enviando}
-      region={regionUnica}
-      comunas={comunasPorRegion[regionUnica]}
+      loading={loading}
+      region={regiones[0]?.nombre || 'Región de Coquimbo'}
+      comunas={comunas.map(c => c.nombre)}
       onCambio={actualizar}
       onEnviar={enviar}
     />

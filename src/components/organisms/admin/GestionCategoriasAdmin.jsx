@@ -34,7 +34,7 @@ function GestionCategoriasAdmin({
         <div className="admin-panel-header">
           <div>
             <h2 id="titulo-lista-categorias">Categorías registradas</h2>
-            <p>{categorias.length} categorías en este navegador.</p>
+            <p>{categorias.length} categorías registradas.</p>
           </div>
         </div>
         <div className="admin-table-wrap">

@@ -69,7 +69,7 @@ function AdminLayout() {
       </aside>
       <div className="admin-workspace">
         <header className="admin-topbar">
-          <p>Sesión local de demostración</p>
+          <p>Panel de administración</p>
           <div className="admin-user-chip">
             <span aria-hidden="true">{usuario.nombre.charAt(0).toUpperCase()}</span>
             {usuario.nombre} · {usuario.tipoUsuario}

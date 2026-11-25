@@ -35,7 +35,7 @@ function FormularioProductoAdmin({
         <div>
           <p className="admin-kicker"><Link to="/admin/productos">Productos</Link> / {modo === 'editar' ? 'Editar' : 'Nuevo'}</p>
           <h1>{modo === 'editar' ? 'Editar producto' : 'Nuevo producto'}</h1>
-          <p>Los cambios se guardan en el catálogo local de este navegador.</p>
+          <p>Los cambios se guardan en el catálogo de la tienda.</p>
         </div>
       </header>
       <Card className="admin-panel"><Card.Body>

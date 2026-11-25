@@ -11,7 +11,7 @@ function ResumenAdmin({ totalProductos, totalUsuarios, totalCriticos }) {
         <div>
           <p className="admin-kicker">Estado general</p>
           <h1>Panel de control</h1>
-          <p>Administra el catálogo y los usuarios guardados.</p>
+          <p>Administra el catálogo y los usuarios registrados.</p>
         </div>
       </header>
       <Row className="g-3 admin-metrics" aria-label="Resumen del sistema">
@@ -38,9 +38,9 @@ function ResumenAdmin({ totalProductos, totalUsuarios, totalCriticos }) {
         <div className="admin-shortcuts">
           <Link className="admin-shortcut" to="/admin/productos"><strong>Revisar productos</strong><span>Consulta el inventario y abre el detalle de cada referencia.</span></Link>
           <Link className="admin-shortcut" to="/admin/criticos"><strong>Productos críticos</strong><span>Revisa los productos con stock al mínimo.</span></Link>
-          <Link className="admin-shortcut" to="/admin/productos/nuevo"><strong>Preparar un producto</strong><span>Crea una referencia y guárdala en el catálogo local.</span></Link>
+          <Link className="admin-shortcut" to="/admin/productos/nuevo"><strong>Preparar un producto</strong><span>Crea una referencia y agrégala al catálogo de la tienda.</span></Link>
           <Link className="admin-shortcut" to="/admin/usuarios"><strong>Revisar usuarios</strong><span>Consulta los perfiles registrados.</span></Link>
-          <Link className="admin-shortcut" to="/admin/usuarios/nuevo"><strong>Preparar un usuario</strong><span>Crea un perfil validado para esta demostración.</span></Link>
+          <Link className="admin-shortcut" to="/admin/usuarios/nuevo"><strong>Preparar un usuario</strong><span>Crea un perfil nuevo con su rol.</span></Link>
         </div>
       </section>
     </>

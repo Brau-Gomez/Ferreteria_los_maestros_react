@@ -24,8 +24,7 @@ function FormularioIngreso({
         <p className="eyebrow mb-2">Acceso de demostración</p>
         <h1 className="mb-3">Iniciar sesión</h1>
         <p>
-          Selecciona un perfil para revisar el flujo visual. Los datos se
-          guardan sólo en este navegador.
+          Selecciona un perfil de demostración o ingresa con tu correo y contraseña.
         </p>
         <AccesosDemo cuentas={cuentasDemo} onSeleccionar={onSeleccionarDemo} />
         <Form noValidate onSubmit={onEnviar}>

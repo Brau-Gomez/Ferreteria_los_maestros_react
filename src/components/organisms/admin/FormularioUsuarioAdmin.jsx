@@ -33,7 +33,7 @@ function FormularioUsuarioAdmin({
         <div>
           <p className="admin-kicker"><Link to="/admin/usuarios">Usuarios</Link> / {modo === 'editar' ? 'Editar' : 'Nuevo'}</p>
           <h1>{modo === 'editar' ? 'Editar usuario' : 'Nuevo usuario'}</h1>
-          <p>Los perfiles se guardan en este navegador y pueden ingresar con la clave demo123.</p>
+          <p>Crea el perfil con sus datos de contacto y su rol.</p>
         </div>
       </header>
       <Card className="admin-panel"><Card.Body>

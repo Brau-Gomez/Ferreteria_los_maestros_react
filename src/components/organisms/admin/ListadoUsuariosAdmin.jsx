@@ -19,7 +19,7 @@ function ListadoUsuariosAdmin({ usuarios }) {
         <div className="admin-panel-header">
           <div>
             <h2 id="titulo-tabla-usuarios">Usuarios registrados</h2>
-            <p>{usuarios.length} perfiles guardados en este navegador.</p>
+            <p>{usuarios.length} perfiles registrados.</p>
           </div>
         </div>
         <div className="admin-table-wrap">
@@ -40,7 +40,7 @@ function ListadoUsuariosAdmin({ usuarios }) {
                   <td>{usuario.run}</td>
                   <td>{usuario.nombre} {usuario.apellidos}</td>
                   <td>{usuario.correo}</td>
-                  <td>{usuario.tipoUsuario}</td>
+                  <td>{usuario.esContratista ? 'Contratista' : usuario.tipoUsuario}</td>
                   <td>
                     <Badge bg={usuario.activo ? 'success' : 'secondary'}>
                       {usuario.activo ? 'Activo' : 'Inactivo'}

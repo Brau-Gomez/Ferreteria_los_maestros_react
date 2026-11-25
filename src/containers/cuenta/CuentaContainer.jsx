@@ -1,24 +1,22 @@
-// Container de Mi cuenta: lee la sesión, los pedidos y los abonos via API
-// y calcula el historial y los movimientos de la cuenta corriente.
+// Container de Mi cuenta: lee la sesión, los pedidos y (si es contratista) su
+// cuenta corriente via API, y calcula los movimientos de la cuenta.
 import { useSesion } from '@/hooks/useSesion.js';
 import { useOrdenes } from '@/hooks/useOrdenes.js';
-import { useUsuarios } from '@/hooks/useUsuarios.js';
+import { useMiCuentaCorriente } from '@/hooks/useMiCuentaCorriente.js';
 import VistaCuenta from '@/components/organisms/cuenta/VistaCuenta.jsx';
 import { movimientosCuenta } from '@/utils/cuenta.js';
 
 function CuentaContainer() {
   const { usuario } = useSesion();
+  // GET /orders ya devuelve solo los pedidos del usuario autenticado (cliente o contratista).
   const { ordenes: pedidos } = useOrdenes();
-  const { usuarios } = useUsuarios();
+  const { cuenta } = useMiCuentaCorriente(usuario?.esContratista);
 
   if (!usuario) return null;
 
-  // GET /orders ya devuelve solo los pedidos del usuario autenticado (cliente o contratista).
-  // El perfil de /auth/me no trae run, así que filtrar aquí por run deja el historial vacío.
-  const abonos = usuarios.flatMap(u => u.abonos || []).filter(a => a.userRun === usuario.run);
-
+  // Cada compra del contratista es un cargo en su cuenta corriente.
   const movimientos = usuario.esContratista
-    ? movimientosCuenta(pedidos, abonos, usuario.run)
+    ? movimientosCuenta(pedidos, [], usuario.run)
     : [];
 
   return (
@@ -26,6 +24,7 @@ function CuentaContainer() {
       usuario={usuario}
       pedidos={pedidos}
       movimientos={movimientos}
+      cuenta={cuenta}
     />
   );
 }

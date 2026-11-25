@@ -9,7 +9,7 @@ import { validarClave, validarCorreo } from '@/utils/validaciones/comunes.js';
 const cuentasDemo = [
   { tipo: 'Administrador', correo: 'admin@duoc.cl' },
   { tipo: 'Vendedor', correo: 'vendedor@profesor.duoc.cl' },
-  { tipo: 'Contratista demo', correo: 'cliente@gmail.com' },
+  { tipo: 'Contratista demo', correo: 'contratista@gmail.com' },
 ];
 
 function validar(valores) {

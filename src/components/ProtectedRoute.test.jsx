@@ -36,9 +36,10 @@ describe('ProtectedRoute', () => {
     expect(screen.queryByText('Contenido privado')).not.toBeInTheDocument();
   });
 
-  it('redirige al ingreso mientras carga', () => {
+  it('no redirige ni muestra contenido mientras se restaura la sesión', () => {
     mostrar({ loading: true });
-    expect(screen.getByText('Pantalla de ingreso')).toBeInTheDocument();
+    expect(screen.queryByText('Pantalla de ingreso')).not.toBeInTheDocument();
+    expect(screen.queryByText('Contenido privado')).not.toBeInTheDocument();
   });
 
   it('muestra el contenido si hay sesión activa', () => {

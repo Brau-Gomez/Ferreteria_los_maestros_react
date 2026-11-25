@@ -8,7 +8,7 @@ import DatosEmpresa from '@/components/organisms/tienda/DatosEmpresa.jsx';
 import DireccionDespacho from '@/components/organisms/checkout/DireccionDespacho.jsx';
 import HistorialPedidos from '@/components/organisms/cuenta/HistorialPedidos.jsx';
 
-function VistaCuenta({ usuario, pedidos, movimientos }) {
+function VistaCuenta({ usuario, pedidos, movimientos, cuenta }) {
   const esCliente = usuario.tipoUsuario === 'Cliente';
   const esGestion = usuario.tipoUsuario === 'Administrador' || usuario.tipoUsuario === 'Vendedor';
 
@@ -28,7 +28,7 @@ function VistaCuenta({ usuario, pedidos, movimientos }) {
           ? <HistorialPedidos pedidos={pedidos} />
           : <AccesoPanel tipoUsuario={usuario.tipoUsuario} />}
         {esCliente && usuario.esContratista && (
-          <CuentaCorriente movimientos={movimientos} />
+          <CuentaCorriente movimientos={movimientos} cuenta={cuenta} />
         )}
       </div>
     </Container>

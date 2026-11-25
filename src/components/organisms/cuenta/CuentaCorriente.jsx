@@ -2,12 +2,28 @@ import Card from 'react-bootstrap/Card';
 import { formatearDinero } from '@/utils/dinero.js';
 import { fechaDesdeMarca, resumenCuenta } from '@/utils/cuenta.js';
 
-function CuentaCorriente({ movimientos }) {
+// Cupo de crédito del contratista (viene de user-service) y movimientos
+// calculados a partir de sus compras.
+function CupoCuenta({ cuenta, utilizado }) {
+  if (!cuenta) return null;
+  const limite = Number(cuenta.limiteCredito) || 0;
+  const disponible = Math.max(limite - utilizado, 0);
+  return (
+    <div className="resumen-grid mb-3">
+      <div><b>{formatearDinero(limite)}</b><small>Cupo de crédito</small></div>
+      <div><b>{formatearDinero(disponible)}</b><small>Cupo disponible</small></div>
+      <div><b>Día {cuenta.diaCorte}</b><small>Corte mensual</small></div>
+    </div>
+  );
+}
+
+function CuentaCorriente({ movimientos, cuenta }) {
   if (movimientos.length === 0) {
     return (
       <Card className="tarjeta-cuenta cuenta-ancha">
         <Card.Body>
           <h2 className="h5">Cuenta corriente</h2>
+          <CupoCuenta cuenta={cuenta} utilizado={0} />
           <p className="cuenta-descripcion mb-0">
             Aún no registras movimientos en tu cuenta.
           </p>
@@ -31,6 +47,7 @@ function CuentaCorriente({ movimientos }) {
         <p className="cuenta-descripcion">
           Las compras se cargan a tu cuenta y se pagan al cierre de cada mes.
         </p>
+        <CupoCuenta cuenta={cuenta} utilizado={resumen.saldo} />
         <div className="resumen-grid mb-3">
           <div><b>{formatearDinero(resumen.saldo)}</b><small>Saldo pendiente</small></div>
           <div><b>{formatearDinero(resumen.cargosDelMes)}</b><small>Cargos del mes</small></div>

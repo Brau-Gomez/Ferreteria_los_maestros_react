@@ -19,7 +19,7 @@ function AdminOrdenDetalleContainer() {
 
   const boleta = {
     pedido,
-    cliente: nombreCliente(usuarios, pedido.runUsuario),
+    cliente: nombreCliente(usuarios, pedido.runUsuario, pedido.customerEmail),
     fecha: fechaPedido(pedido),
     estado: estadoPedido(pedido),
     desglose: desgloseIva(pedido.total),

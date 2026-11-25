@@ -42,6 +42,12 @@ export async function obtenerCuentaCorriente(run) {
   return data;
 }
 
+// Cuenta corriente del usuario autenticado (contratista).
+export async function obtenerMiCuentaCorriente() {
+  const { data } = await apiClient.get('/cuentas-corrientes/me');
+  return data;
+}
+
 export async function crearAbono(run, abono) {
   const { data } = await apiClient.post(`/users/${encodeURIComponent(run)}/deposits`, abono);
   return data;
@@ -49,7 +55,8 @@ export async function crearAbono(run, abono) {
 
 export function normalizarUsuario(usuario) {
   if (!usuario) return usuario;
-  const roles = usuario.roles || [];
+  // auth-service envía "roles" (lista); user-service envía "rol" (texto).
+  const roles = usuario.roles || (usuario.rol ? [usuario.rol] : []);
   // El backend devuelve nombreCompleto y estado; el panel trabaja con nombre/apellidos/activo.
   const [nombre = '', ...apellidos] = String(
     usuario.nombreCompleto ?? usuario.fullName ?? usuario.nombre ?? '',
@@ -61,6 +68,8 @@ export function normalizarUsuario(usuario) {
     nombre: usuario.nombre ?? nombre,
     apellidos: usuario.apellidos ?? apellidos.join(' '),
     activo: usuario.activo ?? (usuario.estado ? usuario.estado === 'ACTIVO' : true),
+    // El contratista compra como cliente, pero además tiene cuenta corriente.
+    esContratista: usuario.esContratista ?? roles.includes('CONTRATISTA'),
     tipoUsuario: roles.includes('ADMIN') || roles.includes('VENDEDOR')
       ? (roles.includes('ADMIN') ? 'Administrador' : 'Vendedor')
       : 'Cliente',

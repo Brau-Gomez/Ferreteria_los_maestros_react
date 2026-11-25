@@ -14,7 +14,7 @@ function AdminOrdenesContainer() {
   const ordenes = ordenarPedidos(pedidos).map((pedido) => ({
     id: pedido.id,
     fecha: fechaPedido(pedido),
-    cliente: nombreCliente(usuarios, pedido.runUsuario),
+    cliente: nombreCliente(usuarios, pedido.runUsuario, pedido.customerEmail),
     entrega: pedido.delivery,
     estado: estadoPedido(pedido),
     total: Number(pedido.total) || 0,

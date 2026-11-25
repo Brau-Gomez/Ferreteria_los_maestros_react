@@ -20,7 +20,7 @@ function TarjetaPerfil({ usuario }) {
           </span>
           <div>
             <h2 className="h5 mb-1">{nombre}</h2>
-            <span className="perfil-rol">{usuario.tipoUsuario}</span>
+            <span className="perfil-rol">{usuario.esContratista ? 'Contratista' : usuario.tipoUsuario}</span>
           </div>
         </div>
         <dl className="perfil-datos mb-0">

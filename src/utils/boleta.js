@@ -20,12 +20,20 @@ export function buscarPedido(pedidos, id) {
   return pedidos.find((pedido) => pedido.id === id) || null;
 }
 
-// Nombre para mostrar del cliente de un pedido; si el perfil ya no existe
-// se muestra su RUN.
-export function nombreCliente(usuarios, identificador) {
-  if (!identificador) return 'Cliente no registrado';
-  // Los pedidos de la API traen userId (UUID); los antiguos traen run.
-  const usuario = usuarios.find((item) => item.id === identificador || item.run === identificador);
-  if (!usuario) return `Cliente no registrado (${identificador})`;
+// Nombre para mostrar del cliente de un pedido. Se busca por id, por RUN o por
+// correo (la API guarda el correo de quien compró). Si el perfil ya no existe
+// se muestra el correo, o el identificador si no hay correo.
+export function nombreCliente(usuarios, identificador, correo) {
+  const correoNormalizado = correo ? String(correo).trim().toLowerCase() : '';
+  if (!identificador && !correoNormalizado) return 'Cliente no registrado';
+  const usuario = usuarios.find(
+    (item) =>
+      (identificador && (item.id === identificador || item.run === identificador)) ||
+      (correoNormalizado && String(item.correo || '').trim().toLowerCase() === correoNormalizado),
+  );
+  if (!usuario) {
+    if (correoNormalizado) return `Cliente no registrado (${correo})`;
+    return `Cliente no registrado (${identificador})`;
+  }
   return `${usuario.nombre} ${usuario.apellidos}`.trim();
 }

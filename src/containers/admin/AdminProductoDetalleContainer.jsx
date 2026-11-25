@@ -16,10 +16,15 @@ function AdminProductoDetalleContainer() {
   const { usuario } = useSesion();
   const [error, setError] = useState('');
   const eliminarProductoMutation = useEliminarProducto();
-  
+
   const producto = productos.find((item) => item.codigo === (codigo || '').toUpperCase());
 
-  if (!producto && !isLoading) {
+  // Mientras se cargan los productos no hay nada que mostrar todavía.
+  if (isLoading) {
+    return null;
+  }
+
+  if (!producto) {
     return (
       <AvisoNoEncontradoAdmin
         titulo="Producto no encontrado"

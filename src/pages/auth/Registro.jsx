@@ -8,7 +8,7 @@ function Registro() {
     <Container className="py-5">
       <div className="pagina-angosta mx-auto">
         <h1>Crear una cuenta</h1>
-        <p>Registro de cliente para esta demostración local.</p>
+        <p>Regístrate como cliente para comprar y revisar tus pedidos.</p>
         <RegistroContainer />
       </div>
     </Container>

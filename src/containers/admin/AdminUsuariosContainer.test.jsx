@@ -14,6 +14,6 @@ describe('AdminUsuariosContainer', () => {
       </MemoryRouter>,
     );
     expect(screen.getByText('Ana Pérez')).toBeInTheDocument();
-    expect(screen.getByText('1 perfiles guardados en este navegador.')).toBeInTheDocument();
+    expect(screen.getByText('1 perfiles registrados.')).toBeInTheDocument();
   });
 });

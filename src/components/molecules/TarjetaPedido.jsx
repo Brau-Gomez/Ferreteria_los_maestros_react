@@ -1,5 +1,5 @@
 import { formatearDinero } from '../../utils/dinero.js';
-import { fechaDesdeMarca, marcaPedido } from '../../utils/cuenta.js';
+import { fechaPedido } from '../../utils/cuenta.js';
 
 function TarjetaPedido({ pedido }) {
   const productos = Array.isArray(pedido.productos) ? pedido.productos : [];
@@ -9,7 +9,7 @@ function TarjetaPedido({ pedido }) {
       <div className="pedido-encabezado">
         <div>
           <h3>{pedido.id}</h3>
-          <p className="pedido-fecha">{fechaDesdeMarca(marcaPedido(pedido.id))}</p>
+          <p className="pedido-fecha">{fechaPedido(pedido)}</p>
         </div>
         <span className="pedido-entrega">{pedido.delivery}</span>
       </div>

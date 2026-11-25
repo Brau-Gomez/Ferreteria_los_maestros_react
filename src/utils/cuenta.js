@@ -28,7 +28,7 @@ export function pedidosDeUsuario(pedidos, run) {
 // Convierte compras y abonos en movimientos cronológicos para acumular saldo.
 export function movimientosCuenta(pedidos, abonos, runUsuario) {
   const cargos = pedidos.map((pedido) => ({
-    marca: marcaPedido(pedido.id),
+    marca: pedido.createdAt ? Date.parse(pedido.createdAt) : marcaPedido(pedido.id),
     documento: pedido.id,
     glosa: 'Compra en tienda',
     cargo: Number(pedido.total) || 0,

@@ -15,7 +15,7 @@ import {
 export function useProductos() {
   const { data: productos = [], isLoading, error, refetch } = useQuery({
     queryKey: ['productos'],
-    queryFn: listarProductos,
+    queryFn: () => listarProductos(),
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 

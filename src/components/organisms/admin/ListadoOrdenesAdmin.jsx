@@ -18,7 +18,7 @@ function ListadoOrdenesAdmin({ ordenes }) {
         <div className="admin-panel-header">
           <div>
             <h2 id="titulo-tabla-ordenes">Órdenes registradas</h2>
-            <p>{ordenes.length} órdenes guardadas en este navegador.</p>
+            <p>{ordenes.length} órdenes registradas.</p>
           </div>
         </div>
         <div className="admin-table-wrap">

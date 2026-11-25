@@ -16,7 +16,7 @@ function CatalogoProductos({
   return (
     <>
       <p className="text-body-secondary mb-4">
-        {productos.length} productos · datos locales de demostración
+        {productos.length} productos disponibles
       </p>
 
       <FiltrosCatalogo

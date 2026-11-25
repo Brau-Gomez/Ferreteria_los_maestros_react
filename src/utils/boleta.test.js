@@ -58,4 +58,9 @@ describe('nombreCliente', () => {
   it('no muestra un identificador indefinido', () => {
     expect(nombreCliente(usuarios, undefined)).toBe('Cliente no registrado');
   });
+
+  it('resuelve el cliente por correo cuando el id no coincide', () => {
+    const conCorreo = [{ id: 'u-1', correo: 'Ana@Mail.cl', nombre: 'Ana', apellidos: 'Pérez' }];
+    expect(nombreCliente(conCorreo, 'otro-id', 'ana@mail.cl')).toBe('Ana Pérez');
+  });
 });

@@ -34,8 +34,8 @@ describe('FormularioUsuarioAdmin', () => {
     const props = mostrar();
     fireEvent.change(screen.getByLabelText('Nombre *'), { target: { value: 'Luis' } });
     fireEvent.change(screen.getByLabelText('Tipo de usuario *'), { target: { value: 'Vendedor' } });
-    fireEvent.change(screen.getByLabelText('Comuna *'), { target: { value: 'Ovalle' } });
-    fireEvent.change(screen.getByLabelText('Región *'), { target: { value: 'Región de Coquimbo' } });
+    fireEvent.change(screen.getByLabelText('Comuna'), { target: { value: 'Ovalle' } });
+    fireEvent.change(screen.getByLabelText('Región'), { target: { value: 'Región de Coquimbo' } });
     expect(props.onCambiar).toHaveBeenCalledWith('nombre', 'Luis');
     expect(props.onCambiar).toHaveBeenCalledWith('tipoUsuario', 'Vendedor');
     expect(props.onCambiar).toHaveBeenCalledWith('comuna', 'Ovalle');

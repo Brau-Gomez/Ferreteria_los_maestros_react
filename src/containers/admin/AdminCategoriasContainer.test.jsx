@@ -1,87 +1,91 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import AdminCategoriasContainer from '@/containers/admin/AdminCategoriasContainer.jsx';
+import { fallarSiguientePeticion } from '@/test/servidorFalso.js';
 
 const productos = [
   { codigo: 'P1', nombre: 'Tablón', categoria: 'Madera', precioVenta: 1000, stock: 5, stockMinimo: 1 },
 ];
 
-function mostrar() {
-  localStorage.clear();
+// Prepara el backend falso y espera a que la tabla cargue desde la API.
+async function mostrar() {
   localStorage.setItem('ep1-products', JSON.stringify(productos));
   localStorage.setItem('ep1-categories', JSON.stringify(['Madera', 'Jardín']));
-  return render(<AdminCategoriasContainer />);
+  render(<AdminCategoriasContainer />);
+  await screen.findByRole('button', { name: 'Editar Madera' });
 }
+
+const categoriasGuardadas = () => JSON.parse(localStorage.getItem('ep1-categories'));
 
 describe('AdminCategoriasContainer', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('agrega una categoría válida y la guarda', () => {
-    mostrar();
+  it('agrega una categoría válida y la guarda', async () => {
+    await mostrar();
     fireEvent.change(screen.getByLabelText('Nombre de la nueva categoría'), { target: { value: 'Iluminación' } });
     fireEvent.click(screen.getByRole('button', { name: 'Agregar categoría' }));
-    expect(screen.getByText('Categoría "Iluminación" creada.')).toBeInTheDocument();
-    expect(JSON.parse(localStorage.getItem('ep1-categories'))).toContain('Iluminación');
+    expect(await screen.findByText('Categoría "Iluminación" creada.')).toBeInTheDocument();
+    expect(categoriasGuardadas()).toContain('Iluminación');
   });
 
-  it('rechaza una categoría repetida', () => {
-    mostrar();
+  it('rechaza una categoría repetida', async () => {
+    await mostrar();
     fireEvent.change(screen.getByLabelText('Nombre de la nueva categoría'), { target: { value: 'madera' } });
     fireEvent.click(screen.getByRole('button', { name: 'Agregar categoría' }));
-    expect(screen.getByText('Ya existe una categoría con ese nombre.')).toBeInTheDocument();
-    expect(JSON.parse(localStorage.getItem('ep1-categories'))).toHaveLength(2);
+    expect(await screen.findByText('Ya existe una categoría con ese nombre.')).toBeInTheDocument();
+    expect(categoriasGuardadas()).toHaveLength(2);
   });
 
-  it('al renombrar actualiza también los productos', () => {
-    mostrar();
+  it('al renombrar actualiza también los productos', async () => {
+    await mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Editar Madera' }));
     const campo = screen.getByLabelText('Nuevo nombre para Madera');
     fireEvent.change(campo, { target: { value: 'Maderas' } });
     fireEvent.click(screen.getByRole('button', { name: 'Guardar' }));
-    expect(screen.getByText('Categoría renombrada a "Maderas".')).toBeInTheDocument();
-    expect(JSON.parse(localStorage.getItem('ep1-categories'))).toEqual(['Maderas', 'Jardín']);
+    expect(await screen.findByText('Categoría renombrada a "Maderas".')).toBeInTheDocument();
+    expect(categoriasGuardadas()).toEqual(['Maderas', 'Jardín']);
     expect(JSON.parse(localStorage.getItem('ep1-products'))[0].categoria).toBe('Maderas');
   });
 
-  it('muestra el error si el nuevo nombre es inválido y permite cancelar', () => {
-    mostrar();
+  it('muestra el error si el nuevo nombre es inválido y permite cancelar', async () => {
+    await mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Editar Jardín' }));
     const campo = screen.getByLabelText('Nuevo nombre para Jardín');
     fireEvent.change(campo, { target: { value: 'ab' } });
     fireEvent.click(screen.getByRole('button', { name: 'Guardar' }));
-    expect(screen.getByText('El nombre debe tener al menos 3 caracteres.')).toBeInTheDocument();
+    expect(await screen.findByText('El nombre debe tener al menos 3 caracteres.')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
     expect(screen.queryByLabelText('Nuevo nombre para Jardín')).not.toBeInTheDocument();
   });
 
-  it('no elimina una categoría con productos', () => {
+  it('no elimina una categoría con productos', async () => {
     const confirmar = vi.spyOn(window, 'confirm');
-    mostrar();
+    await mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Eliminar Madera' }));
-    expect(screen.getByText(/tiene 1 producto/)).toBeInTheDocument();
+    expect(await screen.findByText(/tiene 1 producto/)).toBeInTheDocument();
     expect(confirmar).not.toHaveBeenCalled();
   });
 
-  it('elimina una categoría vacía tras confirmar', () => {
+  it('elimina una categoría vacía tras confirmar', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
-    mostrar();
+    await mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Eliminar Jardín' }));
-    expect(screen.getByText('Categoría "Jardín" eliminada.')).toBeInTheDocument();
-    expect(JSON.parse(localStorage.getItem('ep1-categories'))).toEqual(['Madera']);
+    expect(await screen.findByText('Categoría "Jardín" eliminada.')).toBeInTheDocument();
+    expect(categoriasGuardadas()).toEqual(['Madera']);
   });
 
-  it('no elimina si la persona cancela la confirmación', () => {
+  it('no elimina si la persona cancela la confirmación', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(false);
-    mostrar();
+    await mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Eliminar Jardín' }));
-    expect(JSON.parse(localStorage.getItem('ep1-categories'))).toEqual(['Madera', 'Jardín']);
+    expect(categoriasGuardadas()).toEqual(['Madera', 'Jardín']);
   });
 
-  it('avisa si no se pudo guardar', () => {
-    mostrar();
+  it('avisa si el servidor no pudo guardar', async () => {
+    await mostrar();
     fireEvent.change(screen.getByLabelText('Nombre de la nueva categoría'), { target: { value: 'Iluminación' } });
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('lleno'); });
-    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    fallarSiguientePeticion(500, 'No se pudo guardar la categoría.');
     fireEvent.click(screen.getByRole('button', { name: 'Agregar categoría' }));
-    expect(screen.getByText('No se pudo guardar la categoría.')).toBeInTheDocument();
+    expect(await screen.findByText('No se pudo guardar la categoría.')).toBeInTheDocument();
+    expect(categoriasGuardadas()).toEqual(['Madera', 'Jardín']);
   });
 });

@@ -43,9 +43,9 @@ describe('AdminPerfilContainer', () => {
     mockAuthApi.me.mockResolvedValue(vendedor);
   });
 
-  it('muestra el perfil de la sesión activa', () => {
+  it('muestra el perfil de la sesión activa', async () => {
     render(<MemoryRouter><AuthProvider><AdminPerfilContainer /></AuthProvider></MemoryRouter>);
-    expect(screen.getByRole('heading', { name: 'Vera Vende' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Vera Vende' })).toBeInTheDocument();
     expect(screen.getByText('vera@duoc.cl')).toBeInTheDocument();
   });
 });

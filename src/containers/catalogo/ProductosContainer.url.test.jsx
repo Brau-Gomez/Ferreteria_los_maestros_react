@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { CartProvider } from '@/context/CartProvider.jsx';
 import ProductosContainer from '@/containers/catalogo/ProductosContainer.jsx';
 
 const catalogo = [
@@ -8,29 +7,27 @@ const catalogo = [
   { codigo: 'M1', nombre: 'Tabla de pino', marca: 'X', unidad: 'U', categoria: 'Madera', precioVenta: 1000, stock: 10, stockMinimo: 3 },
 ];
 
-function mostrar(ruta, propiedades) {
-  localStorage.clear();
+async function mostrar(ruta, propiedades, textoEsperado) {
   localStorage.setItem('ep1-products', JSON.stringify(catalogo));
-  return render(
+  render(
     <MemoryRouter initialEntries={[ruta]}>
-      <CartProvider>
-        <ProductosContainer {...propiedades} />
-      </CartProvider>
+      <ProductosContainer {...propiedades} />
     </MemoryRouter>,
   );
+  await screen.findByText(textoEsperado);
 }
 
 describe('ProductosContainer: búsqueda por URL y categoría inicial', () => {
-  it('aplica el texto de ?q= como filtro', () => {
-    mostrar('/productos?q=martillo');
+  it('aplica el texto de ?q= como filtro', async () => {
+    await mostrar('/productos?q=martillo', {}, 'Martillo carpintero');
     expect(screen.getByLabelText('Buscar por nombre, marca o código')).toHaveValue('martillo');
     expect(screen.getByText('Martillo carpintero')).toBeInTheDocument();
     expect(screen.queryByText('Tabla de pino')).not.toBeInTheDocument();
   });
 
-  it('usa la categoría inicial recibida', () => {
-    mostrar('/categorias/Madera', { categoriaInicial: 'Madera' });
-    expect(screen.getByLabelText('Categoría')).toHaveValue('Madera');
+  it('usa la categoría inicial recibida', async () => {
+    await mostrar('/categorias/Madera', { categoriaInicial: 'Madera' }, 'Tabla de pino');
+    expect(await screen.findByDisplayValue('Madera')).toBeInTheDocument();
     expect(screen.queryByText('Martillo carpintero')).not.toBeInTheDocument();
   });
 });

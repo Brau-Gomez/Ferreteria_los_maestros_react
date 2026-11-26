@@ -6,7 +6,8 @@ export async function listarProductos(params = {}) {
   let page = 0;
   const size = 100;
   while (true) {
-    const { data } = await apiClient.get('/products', { params: { ...params, page, size } });
+    // El backend desactiva (no borra) los productos eliminados: solo se listan los activos.
+    const { data } = await apiClient.get('/products', { params: { soloActivas: true, ...params, page, size } });
     const pageData = data?.content ? data : null;
     if (!pageData || pageData.content.length === 0) break;
     allProducts.push(...pageData.content.map(normalizarProducto));
@@ -21,49 +22,83 @@ export async function obtenerProducto(codigo) {
   return normalizarProducto(data);
 }
 
+// El backend identifica productos y categorías por su id (UUID); el panel
+// trabaja con el código del producto y el nombre de la categoría.
+async function idDeProducto(codigo) {
+  const { data } = await apiClient.get(`/products/code/${encodeURIComponent(codigo)}`);
+  return data.id;
+}
+
+async function categoriasActivas() {
+  const { data } = await apiClient.get('/categories/activas');
+  return Array.isArray(data) ? data : data?.content || [];
+}
+
+const nombreCategoria = (categoria) => (typeof categoria === 'string'
+  ? categoria
+  : categoria.name || categoria.nombre);
+
+async function buscarCategoria(nombre) {
+  const categoria = (await categoriasActivas()).find((item) => nombreCategoria(item) === nombre);
+  if (!categoria) throw new Error(`La categoría "${nombre}" no existe.`);
+  return categoria;
+}
+
 export async function crearProducto(producto) {
-  const { data } = await apiClient.post('/products', convertirProducto(producto));
+  const categoria = await buscarCategoria(producto.categoria);
+  const { data } = await apiClient.post('/products', convertirProducto(producto, categoria.id));
   return normalizarProducto(data);
 }
 
 export async function actualizarProducto(codigo, producto) {
-  const { data } = await apiClient.patch(`/products/code/${encodeURIComponent(codigo)}`, convertirProducto(producto));
+  const [id, categoria] = await Promise.all([idDeProducto(codigo), buscarCategoria(producto.categoria)]);
+  const { data } = await apiClient.put(`/products/${id}`, convertirProducto(producto, categoria.id));
   return normalizarProducto(data);
 }
 
 export async function eliminarProducto(codigo) {
-  await apiClient.delete(`/products/code/${encodeURIComponent(codigo)}`);
+  const id = await idDeProducto(codigo);
+  await apiClient.delete(`/products/${id}`);
 }
 
 export async function listarCategorias() {
-  const { data } = await apiClient.get('/categories/activas');
-  const categorias = Array.isArray(data) ? data : data?.content || [];
-  return categorias.map((categoria) => typeof categoria === 'string'
-    ? categoria
-    : categoria.name || categoria.nombre);
+  return (await categoriasActivas()).map(nombreCategoria);
 }
 
 export async function crearCategoria(categoria) {
-  const { data } = await apiClient.post('/categorias', categoria);
+  const { data } = await apiClient.post('/categories', { name: categoria.nombre, active: true });
   return data;
 }
 
 export async function actualizarCategoria(nombreAntiguo, nombreNuevo) {
-  const { data } = await apiClient.patch(`/categorias/${encodeURIComponent(nombreAntiguo)}`, { nombre: nombreNuevo });
+  const categoria = await buscarCategoria(nombreAntiguo);
+  const { data } = await apiClient.put(`/categories/${categoria.id}`, {
+    name: nombreNuevo,
+    description: categoria.description,
+    imageUrl: categoria.imageUrl,
+    sortOrder: categoria.sortOrder,
+    active: true,
+  });
   return data;
 }
 
 export async function eliminarCategoria(nombre) {
-  await apiClient.delete(`/categorias/${encodeURIComponent(nombre)}`);
+  const categoria = await buscarCategoria(nombre);
+  await apiClient.delete(`/categories/${categoria.id}`);
 }
 
+// El backend guarda la referencia (URL) de la imagen, no el archivo: se registra
+// la ruta del catálogo según el código, donde se publica la imagen del producto.
 export async function subirImagen(codigo, archivo) {
-  const formData = new FormData();
-  formData.append('file', archivo);
-  const { data } = await apiClient.post(`/products/code/${encodeURIComponent(codigo)}/images`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+  const id = await idDeProducto(codigo);
+  const extension = String(archivo?.name || '').split('.').pop()?.toLowerCase() || 'svg';
+  const url = `assets/img/productos/${String(codigo).toUpperCase()}.${extension}`;
+  const { data } = await apiClient.post(`/products/${id}/images`, {
+    url,
+    altText: archivo?.name || codigo,
+    primary: true,
   });
-  return data;
+  return { ...data, url };
 }
 
 function imagenPorCodigo(codigo) {
@@ -93,7 +128,7 @@ export function normalizarProducto(producto) {
   };
 }
 
-function convertirProducto(producto) {
+function convertirProducto(producto, categoryId) {
   return {
     code: producto.codigo,
     name: producto.nombre,
@@ -105,7 +140,7 @@ function convertirProducto(producto) {
     minStock: producto.stockMinimo ?? 0,
     maxStock: producto.stockMaximo || null,
     weightKg: producto.pesoKg || null,
-    categoryId: producto.categoryId,
+    categoryId: categoryId ?? producto.categoryId,
     active: producto.activo ?? true,
     featured: producto.enOferta ?? false,
   };

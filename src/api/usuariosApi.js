@@ -18,23 +18,49 @@ export async function listarUsuarios(params = {}) {
   return page.content.map(normalizarUsuario);
 }
 
+// El backend identifica usuarios por id (UUID); el panel trabaja con el RUN.
+async function buscarPorRun(run) {
+  const usuario = (await listarUsuarios({ size: 100 })).find((item) => item.run === run);
+  if (!usuario) {
+    const error = new Error('Usuario no encontrado.');
+    error.response = { status: 404, data: { mensaje: 'Usuario no encontrado.' } };
+    throw error;
+  }
+  return usuario;
+}
+
+const ROL_POR_TIPO = { Administrador: 'ADMIN', Vendedor: 'VENDEDOR', Cliente: 'CLIENTE', Contratista: 'CONTRATISTA' };
+
+function usuarioParaApi(usuario, anterior = {}) {
+  const nombreCompleto = `${usuario.nombre || ''} ${usuario.apellidos || ''}`.trim();
+  const tipo = usuario.esContratista && usuario.tipoUsuario === 'Cliente' ? 'Contratista' : usuario.tipoUsuario;
+  return {
+    email: usuario.correo,
+    nombreCompleto,
+    rut: usuario.run,
+    telefono: usuario.telefono ?? anterior.telefono ?? null,
+    rol: ROL_POR_TIPO[tipo] || anterior.rol || 'CLIENTE',
+  };
+}
+
 export async function obtenerUsuario(run) {
-  const { data } = await apiClient.get(`/users/${encodeURIComponent(run)}`);
-  return normalizarUsuario(data);
+  return buscarPorRun(run);
 }
 
 export async function crearUsuario(usuario) {
-  const { data } = await apiClient.post('/users', usuario);
+  const { data } = await apiClient.post('/users', usuarioParaApi(usuario));
   return normalizarUsuario(data);
 }
 
 export async function actualizarUsuario(run, usuario) {
-  const { data } = await apiClient.patch(`/users/${encodeURIComponent(run)}`, usuario);
+  const anterior = await buscarPorRun(run);
+  const { data } = await apiClient.put(`/users/${anterior.id}`, usuarioParaApi(usuario, anterior));
   return normalizarUsuario(data);
 }
 
 export async function eliminarUsuario(run) {
-  await apiClient.delete(`/users/${encodeURIComponent(run)}`);
+  const anterior = await buscarPorRun(run);
+  await apiClient.delete(`/users/${anterior.id}`);
 }
 
 export async function obtenerCuentaCorriente(run) {
@@ -51,6 +77,14 @@ export async function obtenerMiCuentaCorriente() {
 export async function crearAbono(run, abono) {
   const { data } = await apiClient.post(`/users/${encodeURIComponent(run)}/deposits`, abono);
   return data;
+}
+
+// Sin roles (datos ya normalizados) se conserva el tipo que venga.
+function tipoSegunRoles(roles, tipoActual) {
+  if (roles.includes('ADMIN')) return 'Administrador';
+  if (roles.includes('VENDEDOR')) return 'Vendedor';
+  if (roles.length) return 'Cliente';
+  return tipoActual || 'Cliente';
 }
 
 export function normalizarUsuario(usuario) {
@@ -70,8 +104,6 @@ export function normalizarUsuario(usuario) {
     activo: usuario.activo ?? (usuario.estado ? usuario.estado === 'ACTIVO' : true),
     // El contratista compra como cliente, pero además tiene cuenta corriente.
     esContratista: usuario.esContratista ?? roles.includes('CONTRATISTA'),
-    tipoUsuario: roles.includes('ADMIN') || roles.includes('VENDEDOR')
-      ? (roles.includes('ADMIN') ? 'Administrador' : 'Vendedor')
-      : 'Cliente',
+    tipoUsuario: tipoSegunRoles(roles, usuario.tipoUsuario),
   };
 }

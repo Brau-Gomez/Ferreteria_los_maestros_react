@@ -71,10 +71,13 @@ describe('IngresoContainer', () => {
   });
 
   it('un botón demo completa correo y clave', () => {
+    // La clave demo se configura con VITE_DEMO_PASSWORD (ver .env.example).
+    vi.stubEnv('VITE_DEMO_PASSWORD', 'demo123');
     mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Administrador' }));
     expect(screen.getByLabelText('Correo electrónico')).toHaveValue('admin@duoc.cl');
     expect(screen.getByLabelText('Contraseña')).toHaveValue('demo123');
+    vi.unstubAllEnvs();
   });
 
   it('muestra un aviso si las credenciales son incorrectas', async () => {

@@ -6,7 +6,7 @@ import FormularioRegistro from '@/components/organisms/registro/FormularioRegist
 import { useRegiones, useComunas } from '@/hooks/useCatalogo.js';
 import { register as apiRegister } from '@/api/authApi.js';
 import { normalizarRun, runValido } from '@/utils/run.js';
-import { validarClave, validarTexto } from '@/utils/validaciones/comunes.js';
+import { validarClaveNueva, validarTexto } from '@/utils/validaciones/comunes.js';
 import { validarUsuario } from '@/utils/validaciones/usuarios.js';
 import { useUsuarios } from '@/hooks/useUsuarios.js';
 
@@ -37,7 +37,7 @@ function validar(valores, usuarios, regiones) {
     region: regiones[0]?.nombre || 'Región de Coquimbo',
   };
   const actuales = validarUsuario(normalizados, usuarios, '');
-  actuales.clave = validarClave(valores.clave);
+  actuales.clave = validarClaveNueva(valores.clave);
   actuales.confirmacion = valores.clave === valores.confirmacion
     ? ''
     : 'Las contraseñas deben coincidir.';

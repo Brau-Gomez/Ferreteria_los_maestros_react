@@ -3,6 +3,7 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthProvider.jsx';
 import { CartProvider } from '@/context/CartProvider.jsx';
 import HeaderContainer from '@/containers/layout/HeaderContainer.jsx';
+import { categoriasProducto } from '@/data/categorias.js';
 
 function Ubicacion() {
   const { pathname, search } = useLocation();
@@ -10,7 +11,8 @@ function Ubicacion() {
 }
 
 function mostrar() {
-  localStorage.clear();
+  // El backend entrega las categorías oficiales.
+  localStorage.setItem('ep1-categories', JSON.stringify(categoriasProducto));
   return render(
     <MemoryRouter initialEntries={['/']}>
       <AuthProvider>
@@ -44,10 +46,10 @@ describe('Header: búsqueda, categorías y ofertas', () => {
     expect(screen.getByRole('link', { name: 'Ofertas' })).toHaveAttribute('href', '/ofertas');
   });
 
-  it('el menú Categorías lista todas las categorías', () => {
+  it('el menú Categorías lista las categorías de la API', async () => {
     mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Categorías' }));
     expect(screen.getByRole('link', { name: 'Todas las categorías' })).toHaveAttribute('href', '/categorias');
-    expect(screen.getByRole('link', { name: 'Electricidad' })).toHaveAttribute('href', '/categorias/Electricidad');
+    expect(await screen.findByRole('link', { name: 'Electricidad' })).toHaveAttribute('href', '/categorias/Electricidad');
   });
 });

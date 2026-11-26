@@ -21,17 +21,16 @@ import Ofertas from '@/pages/catalogo/Ofertas.jsx';
 
 const admin = { run: '123456785', nombre: 'Admin', apellidos: 'Duoc', correo: 'admin@duoc.cl', tipoUsuario: 'Administrador', activo: true };
 const producto = { codigo: 'MC001', nombre: 'Cemento gris 25 kg', marca: 'Polpaico', unidad: 'Saco', categoria: 'Materiales', precioVenta: 5990, stock: 10, stockMinimo: 1 };
-const pedido = { id: 'PED-1', runUsuario: admin.run, total: 5990, delivery: false, productos: [{ ...producto, cantidad: 1 }] };
+const pedido = { id: 'PED-1', customerEmail: admin.correo, total: 5990, notes: 'Retiro en tienda', createdAt: '2026-11-01T12:00:00Z', items: [{ productCode: 'MC001', productName: producto.nombre, unitPrice: 5990, quantity: 1 }] };
 
 // Pruebas de humo de las páginas delgadas: cada una se monta con su ruta y
 // sus providers y debe mostrar al menos un encabezado (la lógica de cada
 // pantalla se prueba a fondo en su contenedor y su organismo).
 function mostrar(rutaReal, patron, elemento) {
-  localStorage.clear();
   localStorage.setItem('ep1-users', JSON.stringify([admin]));
   localStorage.setItem('ep1-products', JSON.stringify([producto]));
   localStorage.setItem('ep1-orders', JSON.stringify([pedido]));
-  localStorage.setItem('ep1-user', JSON.stringify({ run: admin.run }));
+  localStorage.setItem('ep1-user', JSON.stringify(admin));
   return render(
     <MemoryRouter initialEntries={[rutaReal]}>
       <AuthProvider>
@@ -67,8 +66,9 @@ const casos = [
 ];
 
 describe('páginas delgadas (pruebas de humo)', () => {
-  it.each(casos)('%s se monta y muestra un encabezado', (_nombre, ruta, patron, elemento) => {
+  it.each(casos)('%s se monta y muestra un encabezado', async (_nombre, ruta, patron, elemento) => {
     mostrar(ruta, patron, elemento);
-    expect(screen.getAllByRole('heading').length).toBeGreaterThan(0);
+    // Los datos llegan de la API: se espera a que aparezca el encabezado.
+    expect((await screen.findAllByRole('heading')).length).toBeGreaterThan(0);
   });
 });

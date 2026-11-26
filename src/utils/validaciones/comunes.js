@@ -29,6 +29,14 @@ export function validarClave(clave) {
   return '';
 }
 
+// Contraseña de una cuenta nueva: auth-service exige al menos 8 caracteres y
+// el enunciado admite hasta 10, así que se piden entre 8 y 10.
+export function validarClaveNueva(clave) {
+  if (clave.length < 8 || clave.length > 10)
+    return 'La contraseña debe tener entre 8 y 10 caracteres.';
+  return '';
+}
+
 export function validarTexto(valor, nombre, maximo, obligatorio) {
   if (obligatorio && !valor.trim()) return nombre + ' es obligatorio.';
   if (valor.trim().length > maximo)

@@ -20,10 +20,9 @@ const producto = { codigo: 'MC001', nombre: 'Cemento gris 25 kg', marca: 'Polpai
 // Prueba de humo: cada página se renderiza completa, con sus providers y su
 // ruta, y se comprueba que muestra su encabezado principal.
 function mostrar(ruta) {
-  localStorage.clear();
   localStorage.setItem('ep1-users', JSON.stringify([cliente]));
   localStorage.setItem('ep1-products', JSON.stringify([producto]));
-  localStorage.setItem('ep1-user', JSON.stringify({ run: cliente.run }));
+  localStorage.setItem('ep1-user', JSON.stringify(cliente));
   return render(
     <MemoryRouter initialEntries={[ruta]}>
       <AuthProvider>
@@ -52,15 +51,15 @@ describe('páginas (pruebas de humo)', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Ferretería Los Maestros' })).toBeInTheDocument();
   });
 
-  it('Productos muestra el catálogo', () => {
+  it('Productos muestra el catálogo', async () => {
     mostrar('/productos');
     expect(screen.getByRole('heading', { level: 1, name: 'Encuentra lo que necesites' })).toBeInTheDocument();
-    expect(screen.getByText('Cemento gris 25 kg')).toBeInTheDocument();
+    expect(await screen.findByText('Cemento gris 25 kg')).toBeInTheDocument();
   });
 
-  it('ProductoDetalle muestra la ficha del producto de la URL', () => {
+  it('ProductoDetalle muestra la ficha del producto de la URL', async () => {
     mostrar('/productos/MC001');
-    expect(screen.getByRole('heading', { level: 1, name: 'Cemento gris 25 kg' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Cemento gris 25 kg' })).toBeInTheDocument();
   });
 
   it('Carrito muestra el carrito vacío', () => {
@@ -79,9 +78,9 @@ describe('páginas (pruebas de humo)', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Crear una cuenta' })).toBeInTheDocument();
   });
 
-  it('Cuenta muestra el perfil del usuario con sesión', () => {
+  it('Cuenta muestra el perfil del usuario con sesión', async () => {
     mostrar('/cuenta');
-    expect(screen.getByRole('heading', { level: 1, name: 'Mi cuenta' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Mi cuenta' })).toBeInTheDocument();
   });
 
   it('Contacto muestra el formulario y los datos de la tienda', () => {

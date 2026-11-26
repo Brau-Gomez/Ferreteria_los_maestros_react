@@ -56,7 +56,7 @@ function FormularioUsuarioAdmin({
             <Col md={6}>{campo('fechaNacimiento', 'Fecha de nacimiento', { type: 'date' })}</Col>
             <Col md={6}>
               <Form.Group className="mb-3" controlId="admin-usuario-region">
-                <Form.Label>Región *</Form.Label>
+                <Form.Label>Región</Form.Label>
                 <Form.Select value={datos.region} isInvalid={Boolean(errores.region)} onChange={(evento) => onCambiarRegion(evento.target.value)}>
                   {regiones.map((region) => <option key={region}>{region}</option>)}
                 </Form.Select>
@@ -65,7 +65,7 @@ function FormularioUsuarioAdmin({
             </Col>
             <Col md={6}>
               <Form.Group className="mb-3" controlId="admin-usuario-comuna">
-                <Form.Label>Comuna *</Form.Label>
+                <Form.Label>Comuna</Form.Label>
                 <Form.Select value={datos.comuna} isInvalid={Boolean(errores.comuna)} onChange={(evento) => onCambiar('comuna', evento.target.value)}>
                   <option value="">Selecciona una comuna</option>
                   {comunas.map((comuna) => <option key={comuna}>{comuna}</option>)}
@@ -73,7 +73,7 @@ function FormularioUsuarioAdmin({
                 <Form.Control.Feedback type="invalid">{errores.comuna}</Form.Control.Feedback>
               </Form.Group>
             </Col>
-            <Col xs={12}>{campo('direccion', 'Dirección *', { as: 'textarea', rows: 2, required: true, maxLength: 300 })}</Col>
+            <Col xs={12}>{campo('direccion', 'Dirección', { as: 'textarea', rows: 2, maxLength: 300 })}</Col>
           </Row>
           {mensaje && <Alert variant="danger" role="alert">{mensaje}</Alert>}
           <div className="admin-form-footer">

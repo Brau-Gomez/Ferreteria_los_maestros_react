@@ -3,16 +3,16 @@ import { MemoryRouter } from 'react-router-dom';
 import AdminOrdenesContainer from '@/containers/admin/AdminOrdenesContainer.jsx';
 
 const usuarios = [{ run: '123456785', nombre: 'Ana', apellidos: 'Pérez', correo: 'ana@gmail.com', tipoUsuario: 'Cliente', activo: true }];
-const pedidos = [
-  { id: 'PED-1700000000000', runUsuario: '123456785', total: 5990, delivery: 'Retiro en tienda', productos: [] },
-  { id: 'PED-1800000000000', runUsuario: '999999999', total: 11980, delivery: 'Despacho', productos: [] },
+// Órdenes tal como las devuelve order-service: el cliente viaja por correo.
+const ordenes = [
+  { id: 'PED-A', customerEmail: 'ana@gmail.com', total: 5990, notes: 'Retiro en tienda', createdAt: '2026-11-01T12:00:00Z', items: [] },
+  { id: 'PED-B', customerEmail: 'otro@gmail.com', total: 11980, notes: 'Despacho', createdAt: '2026-11-02T12:00:00Z', items: [] },
 ];
 
-function mostrar(listaPedidos) {
-  localStorage.clear();
+function mostrar(lista) {
   localStorage.setItem('ep1-users', JSON.stringify(usuarios));
-  if (listaPedidos) localStorage.setItem('ep1-orders', JSON.stringify(listaPedidos));
-  return render(
+  if (lista) localStorage.setItem('ep1-orders', JSON.stringify(lista));
+  render(
     <MemoryRouter>
       <AdminOrdenesContainer />
     </MemoryRouter>,
@@ -20,17 +20,17 @@ function mostrar(listaPedidos) {
 }
 
 describe('AdminOrdenesContainer', () => {
-  it('lista las órdenes con la más reciente primero y el cliente resuelto', () => {
-    mostrar(pedidos);
+  it('lista las órdenes con la más reciente primero y el cliente resuelto por correo', async () => {
+    mostrar(ordenes);
+    expect(await screen.findByText('Ana Pérez')).toBeInTheDocument();
     const filas = screen.getAllByRole('row');
-    expect(filas[1]).toHaveTextContent('PED-1800000000000');
-    expect(filas[2]).toHaveTextContent('PED-1700000000000');
-    expect(screen.getByText('Ana Pérez')).toBeInTheDocument();
-    expect(screen.getByText('Cliente no registrado (999999999)')).toBeInTheDocument();
+    expect(filas[1]).toHaveTextContent('PED-B');
+    expect(filas[2]).toHaveTextContent('PED-A');
+    expect(screen.getByText('Cliente no registrado (otro@gmail.com)')).toBeInTheDocument();
   });
 
-  it('muestra el estado vacío sin pedidos guardados', () => {
+  it('muestra el estado vacío sin órdenes', async () => {
     mostrar();
-    expect(screen.getByText('Todavía no hay órdenes registradas.')).toBeInTheDocument();
+    expect(await screen.findByText('Todavía no hay órdenes registradas.')).toBeInTheDocument();
   });
 });

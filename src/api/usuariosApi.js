@@ -6,10 +6,6 @@ export async function obtenerPerfil() {
   return normalizarUsuario(data);
 }
 
-export async function actualizarPerfil(datos) {
-  const { data } = await apiClient.patch('/users/me', datos);
-  return normalizarUsuario(data);
-}
 
 export async function listarUsuarios(params = {}) {
   const { data } = await apiClient.get('/users', { params });
@@ -63,10 +59,6 @@ export async function eliminarUsuario(run) {
   await apiClient.delete(`/users/${anterior.id}`);
 }
 
-export async function obtenerCuentaCorriente(run) {
-  const { data } = await apiClient.get(`/users/${encodeURIComponent(run)}/current-account`);
-  return data;
-}
 
 // Cuenta corriente del usuario autenticado (contratista).
 export async function obtenerMiCuentaCorriente() {
@@ -74,10 +66,6 @@ export async function obtenerMiCuentaCorriente() {
   return data;
 }
 
-export async function crearAbono(run, abono) {
-  const { data } = await apiClient.post(`/users/${encodeURIComponent(run)}/deposits`, abono);
-  return data;
-}
 
 // Sin roles (datos ya normalizados) se conserva el tipo que venga.
 function tipoSegunRoles(roles, tipoActual) {

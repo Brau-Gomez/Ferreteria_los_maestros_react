@@ -54,7 +54,11 @@ apiClient.interceptors.response.use(
       error.response.data.mensaje = getErrorMessage(error);
     }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Un 401 en login, registro o refresh significa datos incorrectos, no sesión vencida:
+    // no se intenta renovar el token y el error llega directo a la pantalla.
+    const esRutaDeSesion = /\/auth\/(login|register|refresh)$/.test(originalRequest?.url || '');
+
+    if (error.response?.status === 401 && !originalRequest._retry && !esRutaDeSesion) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });

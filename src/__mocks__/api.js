@@ -61,14 +61,11 @@ export const mockOrdenesApi = {
 
 export const mockUsuariosApi = {
   obtenerPerfil: vi.fn(async () => currentUser),
-  actualizarPerfil: vi.fn(),
   listarUsuarios: vi.fn(async () => mockUsuarios),
   obtenerUsuario: vi.fn(async (run) => mockUsuarios.find(u => u.run === run)),
   crearUsuario: vi.fn(),
   actualizarUsuario: vi.fn(),
   eliminarUsuario: vi.fn(),
-  obtenerCuentaCorriente: vi.fn(),
-  crearAbono: vi.fn(),
 };
 
 export const mockCatalogoApi = {

@@ -2,14 +2,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   obtenerPerfil, 
-  actualizarPerfil, 
   listarUsuarios, 
   obtenerUsuario, 
   crearUsuario, 
   actualizarUsuario, 
   eliminarUsuario,
-  obtenerCuentaCorriente,
-  crearAbono
 } from '../api/usuariosApi.js';
 
 export function useUsuarios(params = {}) {
@@ -43,16 +40,6 @@ export function usePerfil() {
   return { perfil, isLoading, error, refetch };
 }
 
-export function useActualizarPerfil() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: actualizarPerfil,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['perfil'] });
-      queryClient.invalidateQueries({ queryKey: ['usuarios'] });
-    },
-  });
-}
 
 export function useCrearUsuario() {
   const queryClient = useQueryClient();
@@ -81,27 +68,6 @@ export function useEliminarUsuario() {
     mutationFn: eliminarUsuario,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['usuarios'] });
-    },
-  });
-}
-
-export function useCuentaCorriente(run) {
-  const { data: cuenta, isLoading, error, refetch } = useQuery({
-    queryKey: ['cuentaCorriente', run],
-    queryFn: () => obtenerCuentaCorriente(run),
-    enabled: !!run,
-    staleTime: 2 * 60 * 1000,
-  });
-
-  return { cuenta, isLoading, error, refetch };
-}
-
-export function useCrearAbono() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ run, abono }) => crearAbono(run, abono),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cuentaCorriente'] });
     },
   });
 }

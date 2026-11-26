@@ -45,6 +45,11 @@ export function CartProvider({ children }) {
 
   // Mutación optimista: agregar al carrito
   async function agregar(codigo, cantidad) {
+    // El carrito vive en cart-service y exige token: sin sesión no se llama a la API
+    // (respondería 401) y se le explica al visitante qué hacer.
+    if (!isAuthenticated) {
+      return { ok: false, mensaje: 'Inicia sesión para agregar productos al carrito.' };
+    }
     let pedidas = Number(cantidad);
     if (!Number.isFinite(pedidas) || pedidas < 1) pedidas = 1;
     pedidas = Math.floor(pedidas);

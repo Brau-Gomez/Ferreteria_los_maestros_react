@@ -65,4 +65,11 @@ describe('ProductosContainer', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Agregar' })[0]);
     expect(await screen.findByText('Producto agregado al carrito.')).toBeInTheDocument();
   });
+
+  it('pide iniciar sesión si un visitante intenta agregar al carrito', async () => {
+    localStorage.removeItem('ep1-user');
+    await mostrar();
+    fireEvent.click(screen.getAllByRole('button', { name: 'Agregar' })[0]);
+    expect(await screen.findByText('Inicia sesión para agregar productos al carrito.')).toBeInTheDocument();
+  });
 });

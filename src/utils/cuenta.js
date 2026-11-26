@@ -21,8 +21,13 @@ export function fechaPedido(pedido) {
   return fechaDesdeMarca(marca);
 }
 
-export function pedidosDeUsuario(pedidos, run) {
-  return pedidos.filter((pedido) => pedido.runUsuario === run);
+// Pedidos de un usuario: la API guarda el correo de quien compró; los pedidos
+// antiguos guardaban su RUN.
+export function pedidosDeUsuario(pedidos, usuario) {
+  const run = typeof usuario === 'string' ? usuario : usuario?.run;
+  const correo = typeof usuario === 'string' ? '' : String(usuario?.correo || '').toLowerCase();
+  return pedidos.filter((pedido) => (run && pedido.runUsuario === run)
+    || (correo && String(pedido.customerEmail || '').toLowerCase() === correo));
 }
 
 // Convierte compras y abonos en movimientos cronológicos para acumular saldo.

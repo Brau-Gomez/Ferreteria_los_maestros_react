@@ -29,7 +29,7 @@ function AdminProductoFormContainer({ modo }) {
   const navigate = useNavigate();
   
   // Usar hooks de TanStack Query
-  const { productos, isLoading: productosLoading } = useProductos();
+  const { productos, isLoading: productosLoading, refetch: refetchProductos } = useProductos();
   const { categorias, isLoading: categoriasLoading } = useCategorias();
   const crearProductoMutation = useCrearProducto();
   const actualizarProductoMutation = useActualizarProducto();
@@ -122,6 +122,9 @@ function AdminProductoFormContainer({ modo }) {
         subcategoria: producto?.subcategoria || '',
         marca: producto?.marca || '',
         unidad: producto?.unidad || '',
+        // Se conservan la oferta y el precio anterior: el formulario no los edita.
+        precioAnterior: producto?.precioAnterior || 0,
+        enOferta: producto?.enOferta ?? false,
         imagen,
       };
 

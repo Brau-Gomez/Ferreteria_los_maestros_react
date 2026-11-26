@@ -5,6 +5,8 @@ import { useSesion } from '@/hooks/useSesion.js';
 
 function AdminPerfilContainer() {
   const { usuario } = useSesion();
+  // Mientras se restaura la sesión todavía no hay perfil que mostrar.
+  if (!usuario) return null;
   return <PerfilAdmin usuario={usuario} />;
 }
 

@@ -9,7 +9,8 @@ import { useUsuarios } from '@/hooks/useUsuarios.js';
 import { useOrdenes } from '@/hooks/useOrdenes.js';
 import { useEliminarUsuario } from '@/hooks/useUsuarios.js';
 import { ordenarPedidos } from '@/utils/boleta.js';
-import { fechaDesdeMarca, marcaPedido, pedidosDeUsuario } from '@/utils/cuenta.js';
+import { fechaPedido, pedidosDeUsuario } from '@/utils/cuenta.js';
+import AvisoNoEncontradoAdmin from '@/components/organisms/admin/AvisoNoEncontradoAdmin.jsx';
 
 function AdminUsuarioDetalleContainer() {
   const { run } = useParams();
@@ -28,9 +29,9 @@ function AdminUsuarioDetalleContainer() {
   const loading = authLoading || usuariosLoading || ordenesLoading;
 
   const compras = usuario
-    ? ordenarPedidos(pedidosDeUsuario(ordenes, usuario.run)).map((pedido) => ({
+    ? ordenarPedidos(pedidosDeUsuario(ordenes, usuario)).map((pedido) => ({
         id: pedido.id,
-        fecha: fechaDesdeMarca(marcaPedido(pedido.id)),
+        fecha: fechaPedido(pedido),
         entrega: pedido.delivery,
         total: Number(pedido.total) || 0,
       }))
@@ -42,7 +43,10 @@ function AdminUsuarioDetalleContainer() {
       setError('No se pudo verificar la sesión.');
       return;
     }
-    if (usuario.run === sesion.run) {
+    // La sesión viene de auth-service (sin RUN): se compara por correo.
+    const esLaSesion = (sesion.correo && usuario.correo === sesion.correo)
+      || (sesion.run && usuario.run === sesion.run);
+    if (esLaSesion) {
       setError('No puedes eliminar el perfil con el que tienes iniciada la sesión.');
       return;
     }
@@ -66,8 +70,19 @@ function AdminUsuarioDetalleContainer() {
     }
   }
 
-  if (loading || !usuario) {
-    return null; // o un skeleton
+  if (loading) {
+    return null;
+  }
+
+  if (!usuario) {
+    return (
+      <AvisoNoEncontradoAdmin
+        titulo="Usuario no encontrado"
+        texto="Vuelve al listado para seleccionar un perfil existente."
+        ruta="/admin/usuarios"
+        etiquetaRuta="Volver a usuarios"
+      />
+    );
   }
 
   return (

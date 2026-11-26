@@ -44,7 +44,7 @@ function DatosAccesoRegistro({ datos, errores, onCambio }) {
             etiqueta="Contraseña *"
             error={errores.clave}
             type="password"
-            minLength={4}
+            minLength={8}
             maxLength={10}
             autoComplete="new-password"
             value={datos.clave}
@@ -58,7 +58,7 @@ function DatosAccesoRegistro({ datos, errores, onCambio }) {
             etiqueta="Confirmar contraseña *"
             error={errores.confirmacion}
             type="password"
-            minLength={4}
+            minLength={8}
             maxLength={10}
             autoComplete="new-password"
             value={datos.confirmacion}

@@ -13,7 +13,9 @@ import { validarUsuario } from '@/utils/validaciones/usuarios.js';
 import { useCrearUsuario, useActualizarUsuario } from '@/hooks/useUsuarios.js';
 
 const roles = ['Administrador', 'Vendedor', 'Cliente'];
-const vacio = { run: '', nombre: '', apellidos: '', correo: '', fechaNacimiento: '', tipoUsuario: '', region: '', comuna: '', direccion: '' };
+// La tienda despacha solo en la Región de Coquimbo, la única opción del select:
+// se deja elegida desde el inicio para que el valor coincida con lo que se ve.
+const vacio = { run: '', nombre: '', apellidos: '', correo: '', fechaNacimiento: '', tipoUsuario: '', region: 'Región de Coquimbo', comuna: '', direccion: '' };
 
 function AdminUsuarioFormContainer({ modo }) {
   const { run } = useParams();
@@ -36,9 +38,9 @@ function AdminUsuarioFormContainer({ modo }) {
     correo: usuarioOriginal.correo,
     fechaNacimiento: usuarioOriginal.fechaNacimiento || '',
     tipoUsuario: usuarioOriginal.tipoUsuario,
-    region: usuarioOriginal.region,
-    comuna: usuarioOriginal.comuna,
-    direccion: usuarioOriginal.direccion,
+    region: usuarioOriginal.region || 'Región de Coquimbo',
+    comuna: usuarioOriginal.comuna || '',
+    direccion: usuarioOriginal.direccion || '',
   } : vacio);
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState('');
@@ -56,9 +58,9 @@ function AdminUsuarioFormContainer({ modo }) {
         correo: usuarioOriginal.correo,
         fechaNacimiento: usuarioOriginal.fechaNacimiento || '',
         tipoUsuario: usuarioOriginal.tipoUsuario,
-        region: usuarioOriginal.region,
-        comuna: usuarioOriginal.comuna,
-        direccion: usuarioOriginal.direccion,
+        region: usuarioOriginal.region || 'Región de Coquimbo',
+        comuna: usuarioOriginal.comuna || '',
+        direccion: usuarioOriginal.direccion || '',
       });
     }
   }, [usuarioOriginal, modo]);
@@ -92,6 +94,11 @@ function AdminUsuarioFormContainer({ modo }) {
       correo: datos.correo.trim().toLowerCase(),
     };
     const actuales = validarUsuario(normalizados, usuarios, runOriginal);
+    // user-service no guarda región, comuna ni dirección: en el panel son
+    // opcionales (si no, nunca se podría editar un perfil ya existente).
+    actuales.region = '';
+    actuales.comuna = '';
+    actuales.direccion = '';
     setErrores(actuales);
     if (Object.values(actuales).some(Boolean)) return;
 
@@ -112,7 +119,8 @@ function AdminUsuarioFormContainer({ modo }) {
       await refetchUsuarios();
       
       // Actualizar sesión si es el propio usuario
-      if (usuarioOriginal && usuarioSesion && usuarioOriginal.run === usuarioSesion.run) {
+      // La sesión viene de auth-service (sin RUN): se compara por correo.
+      if (usuarioOriginal && usuarioSesion && usuarioOriginal.correo === usuarioSesion.correo) {
         const ok = actualizarSesion(runOriginal, actualizado);
         if (!ok) {
           setMensaje('El perfil se guardó, pero no se pudo actualizar la sesión. Cierra sesión y vuelve a ingresar.');

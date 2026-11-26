@@ -9,6 +9,7 @@ import { useSesion } from '@/hooks/useSesion.js';
 import { useCrearOrden } from '@/hooks/useOrdenes.js';
 import { useRegiones, useComunas } from '@/hooks/useCatalogo.js';
 import { hayErrores, validarCheckout } from '@/utils/validaciones/checkout.js';
+import { simularPago } from '@/api/pagosApi.js';
 
 const REGION = 'Región de Coquimbo';
 const sinErrores = {};
@@ -87,6 +88,14 @@ function CheckoutContainer() {
 
     try {
       setMensajeError('');
+      // Primero el banco simulado aprueba o rechaza la tarjeta; solo con el pago
+      // aprobado se crea la orden (así una tarjeta rechazada no genera pedido).
+      const pago = await simularPago({ numeroTarjeta: datos.tarjeta, monto: total, moneda: 'CLP' });
+      if (!pago?.aprobado) {
+        setMensajeError(pago?.mensaje || 'El banco rechazó la tarjeta.');
+        setEstado('error');
+        return;
+      }
       // Generar idempotency key para evitar duplicados
       const idempotencyKey = uuidv4();
       // El backend simula el pago al crear la orden y devuelve la boleta.

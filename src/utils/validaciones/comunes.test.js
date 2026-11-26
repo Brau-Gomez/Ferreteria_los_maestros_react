@@ -1,4 +1,4 @@
-import { validarClave, validarCorreo, validarTexto } from './comunes.js';
+import { validarClave, validarClaveNueva, validarCorreo, validarTexto } from './comunes.js';
 
 describe('validarCorreo', () => {
   it('devuelve texto vacío con un correo permitido', () => {
@@ -48,5 +48,17 @@ describe('validarTexto', () => {
     expect(validarTexto('abcdef', 'El nombre', 5, true)).toBe(
       'El nombre admite hasta 5 caracteres.',
     );
+  });
+});
+describe('validarClaveNueva', () => {
+  it('acepta entre 8 y 10 caracteres, como exige auth-service', () => {
+    expect(validarClaveNueva('abcd1234')).toBe('');
+    expect(validarClaveNueva('abcd123456')).toBe('');
+  });
+
+  it('rechaza claves de menos de 8 o más de 10 caracteres', () => {
+    const mensaje = 'La contraseña debe tener entre 8 y 10 caracteres.';
+    expect(validarClaveNueva('abcd123')).toBe(mensaje);
+    expect(validarClaveNueva('abcd1234567')).toBe(mensaje);
   });
 });

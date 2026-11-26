@@ -21,13 +21,12 @@ function completarCliente() {
   escribir('Comuna *', 'La Serena');
   escribir('Dirección *', 'Calle 123');
   escribir('Correo *', 'ana@gmail.com');
-  escribir('Contraseña *', 'abcd1');
-  escribir('Confirmar contraseña *', 'abcd1');
+  escribir('Contraseña *', 'abcd1234');
+  escribir('Confirmar contraseña *', 'abcd1234');
 }
 
 describe('RegistroContainer', () => {
   beforeEach(() => {
-    localStorage.clear();
     localStorage.setItem('ep1-users', JSON.stringify([]));
   });
 
@@ -39,7 +38,7 @@ describe('RegistroContainer', () => {
 
   it('avisa si las contraseñas no coinciden', () => {
     mostrar();
-    escribir('Contraseña *', 'abcd1');
+    escribir('Contraseña *', 'abcd1234');
     escribir('Confirmar contraseña *', 'otra');
     expect(screen.getByText('Las contraseñas deben coincidir.')).toBeInTheDocument();
   });
@@ -57,15 +56,22 @@ describe('RegistroContainer', () => {
     expect(JSON.parse(localStorage.getItem('ep1-users'))).toHaveLength(0);
   });
 
-  it('crea la cuenta, guarda la huella de la clave y limpia el formulario', async () => {
+  it('rechaza una contraseña de menos de 8 caracteres (regla de auth-service)', () => {
     mostrar();
+    escribir('Contraseña *', 'abcd123');
+    expect(screen.getByText('La contraseña debe tener entre 8 y 10 caracteres.')).toBeInTheDocument();
+  });
+
+  it('crea la cuenta en el backend y limpia el formulario', async () => {
+    mostrar();
+    await screen.findByRole('option', { name: 'La Serena' });
     completarCliente();
     fireEvent.click(screen.getByRole('button', { name: 'Registrarme' }));
     expect(await screen.findByText(/Cuenta creada/)).toBeInTheDocument();
     const usuarios = JSON.parse(localStorage.getItem('ep1-users'));
     expect(usuarios).toHaveLength(1);
     expect(usuarios[0].correo).toBe('ana@gmail.com');
-    expect(usuarios[0].claveHuella).toBeTruthy();
+    // La contraseña la guarda (hasheada) el backend; nunca queda en el navegador.
     expect(usuarios[0].clave).toBeUndefined();
     expect(screen.getByLabelText('Nombre *')).toHaveValue('');
   });

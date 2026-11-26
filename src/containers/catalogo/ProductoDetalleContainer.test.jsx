@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useParams } from 'react-router-dom';
-import { CartProvider } from '@/context/CartProvider.jsx';
 import ProductoDetalleContainer from '@/containers/catalogo/ProductoDetalleContainer.jsx';
 
 const catalogo = [
@@ -13,54 +12,55 @@ function Ruta() {
   return <ProductoDetalleContainer key={codigo} codigo={codigo} />;
 }
 
-function mostrar(ruta) {
-  return render(
+// Espera a que el producto (o el aviso) llegue desde la API.
+async function mostrar(ruta, textoEsperado = 'Cemento gris 25 kg') {
+  render(
     <MemoryRouter initialEntries={[ruta]}>
-      <CartProvider>
-        <Routes>
-          <Route path="/productos/:codigo" element={<Ruta />} />
-        </Routes>
-      </CartProvider>
+      <Routes>
+        <Route path="/productos/:codigo" element={<Ruta />} />
+      </Routes>
     </MemoryRouter>,
   );
+  await screen.findAllByText(textoEsperado);
 }
 
 describe('ProductoDetalleContainer', () => {
   beforeEach(() => {
-    localStorage.clear();
     localStorage.setItem('ep1-products', JSON.stringify(catalogo));
+    // El carrito exige sesión iniciada.
+    localStorage.setItem('ep1-user', JSON.stringify({ run: '222222222', nombre: 'Ana', apellidos: 'Demo', correo: 'cliente@gmail.com', tipoUsuario: 'Cliente', activo: true }));
   });
 
-  it('muestra el producto que indica la URL', () => {
-    mostrar('/productos/MC001');
+  it('muestra el producto que indica la URL', async () => {
+    await mostrar('/productos/MC001');
     expect(screen.getByText('Cemento gris 25 kg')).toBeInTheDocument();
     expect(screen.getByText('Stock disponible: 3')).toBeInTheDocument();
   });
 
-  it('encuentra el producto aunque el código venga en minúsculas', () => {
-    mostrar('/productos/mc001');
+  it('encuentra el producto aunque el código venga en minúsculas', async () => {
+    await mostrar('/productos/mc001');
     expect(screen.getByText('Cemento gris 25 kg')).toBeInTheDocument();
   });
 
-  it('muestra "Producto no encontrado" si el código no existe', () => {
-    mostrar('/productos/ZZZ999');
+  it('muestra "Producto no encontrado" si el código no existe', async () => {
+    await mostrar('/productos/ZZZ999', 'Producto no encontrado');
     expect(screen.getByText('Producto no encontrado')).toBeInTheDocument();
   });
 
   it('agrega al carrito y muestra el aviso', async () => {
-    mostrar('/productos/MC001');
+    await mostrar('/productos/MC001');
     fireEvent.click(screen.getByRole('button', { name: 'Agregar al carrito' }));
     expect(await screen.findByText('Producto agregado al carrito.')).toBeInTheDocument();
   });
 
-  it('bloquea la compra cuando todo el stock ya está en el carrito', () => {
-    localStorage.setItem('ep1-cart', JSON.stringify([{ ...catalogo[0], cantidad: 3 }]));
-    mostrar('/productos/MC001');
-    expect(screen.getByRole('button', { name: 'Stock completo en el carrito' })).toBeDisabled();
+  it('bloquea la compra cuando todo el stock ya está en el carrito', async () => {
+    localStorage.setItem('ep1-cart', JSON.stringify([{ codigo: 'MC001', cantidad: 3 }]));
+    await mostrar('/productos/MC001');
+    expect(await screen.findByRole('button', { name: 'Stock completo en el carrito' })).toBeDisabled();
   });
 
-  it('pone el nombre del producto en el título de la pestaña', () => {
-    mostrar('/productos/MC001');
+  it('pone el nombre del producto en el título de la pestaña', async () => {
+    await mostrar('/productos/MC001');
     expect(document.title).toBe('Cemento gris 25 kg | Ferretería Los Maestros');
   });
 });

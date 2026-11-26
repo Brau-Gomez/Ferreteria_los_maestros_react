@@ -3,8 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import AdminInicioContainer from '@/containers/admin/AdminInicioContainer.jsx';
 
 describe('AdminInicioContainer', () => {
-  it('calcula productos, usuarios y stock crítico desde el almacenamiento', () => {
-    localStorage.clear();
+  it('calcula productos, usuarios y stock crítico con los datos de la API', async () => {
     localStorage.setItem('ep1-products', JSON.stringify([
       { codigo: 'A', nombre: 'A', categoria: 'Madera', precioVenta: 1, stock: 1, stockMinimo: 2 },
       { codigo: 'B', nombre: 'B', categoria: 'Madera', precioVenta: 1, stock: 9, stockMinimo: 2 },
@@ -19,8 +18,8 @@ describe('AdminInicioContainer', () => {
         <AdminInicioContainer />
       </MemoryRouter>,
     );
-    expect(screen.getByText('3')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(await screen.findByText('3')).toBeInTheDocument();
+    expect(await screen.findByText('2')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
   });
 });

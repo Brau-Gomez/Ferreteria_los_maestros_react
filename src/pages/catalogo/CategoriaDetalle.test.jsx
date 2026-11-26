@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { CartProvider } from '@/context/CartProvider.jsx';
 import CategoriaDetalle from '@/pages/catalogo/CategoriaDetalle.jsx';
 
 const catalogo = [
@@ -9,35 +8,32 @@ const catalogo = [
 ];
 
 function mostrar(ruta) {
-  localStorage.clear();
   localStorage.setItem('ep1-products', JSON.stringify(catalogo));
-  return render(
+  render(
     <MemoryRouter initialEntries={[ruta]}>
-      <CartProvider>
-        <Routes>
-          <Route path="/categorias/:categoria" element={<CategoriaDetalle />} />
-        </Routes>
-      </CartProvider>
+      <Routes>
+        <Route path="/categorias/:categoria" element={<CategoriaDetalle />} />
+      </Routes>
     </MemoryRouter>,
   );
 }
 
 describe('CategoriaDetalle', () => {
-  it('muestra solo los productos de la categoría de la URL', () => {
+  it('muestra solo los productos de la categoría de la URL', async () => {
     mostrar('/categorias/Madera');
-    expect(screen.getByRole('heading', { level: 1, name: 'Madera' })).toBeInTheDocument();
-    expect(screen.getByText('Tabla de pino')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Madera' })).toBeInTheDocument();
+    expect(await screen.findByText('Tabla de pino')).toBeInTheDocument();
     expect(screen.queryByText('Pala de jardín')).not.toBeInTheDocument();
   });
 
-  it('decodifica categorías con tilde en la URL', () => {
+  it('decodifica categorías con tilde en la URL', async () => {
     mostrar('/categorias/' + encodeURIComponent('Jardín'));
-    expect(screen.getByText('Pala de jardín')).toBeInTheDocument();
+    expect(await screen.findByText('Pala de jardín')).toBeInTheDocument();
   });
 
-  it('avisa cuando la categoría no existe', () => {
+  it('avisa cuando la categoría no existe', async () => {
     mostrar('/categorias/Inventada');
-    expect(screen.getByText('Categoría no encontrada')).toBeInTheDocument();
+    expect(await screen.findByText('Categoría no encontrada')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Ver todas las categorías' })).toHaveAttribute('href', '/categorias');
   });
 });

@@ -13,24 +13,24 @@ const catalogo = [
   { codigo: 'MC001', nombre: 'Cemento gris 25 kg', marca: 'Polpaico', unidad: 'Saco', categoria: 'Materiales', precioVenta: 5990, stock: 80, stockMinimo: 20 },
 ];
 
-function mostrar() {
-  return render(
+async function mostrar() {
+  render(
     <MemoryRouter>
       <ProductosContainer />
     </MemoryRouter>,
   );
+  await screen.findByText('Cemento gris 25 kg');
 }
 
 describe('ProductosContainer con useCarrito simulado', () => {
   beforeEach(() => {
-    localStorage.clear();
     localStorage.setItem('ep1-products', JSON.stringify(catalogo));
   });
 
   it('llama a agregar con el código del producto', async () => {
     const agregar = vi.fn(() => ({ ok: true, mensaje: 'Producto agregado al carrito.' }));
     useCarrito.mockReturnValue({ agregar });
-    mostrar();
+    await mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Agregar' }));
     expect(agregar).toHaveBeenCalledWith('MC001');
     expect(await screen.findByText('Producto agregado al carrito.')).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe('ProductosContainer con useCarrito simulado', () => {
   it('muestra el aviso de error que devuelva el carrito', async () => {
     const agregar = vi.fn(() => ({ ok: false, mensaje: 'Ya agregaste todo el stock disponible.' }));
     useCarrito.mockReturnValue({ agregar });
-    mostrar();
+    await mostrar();
     fireEvent.click(screen.getByRole('button', { name: 'Agregar' }));
     expect(await screen.findByText('Ya agregaste todo el stock disponible.')).toBeInTheDocument();
   });

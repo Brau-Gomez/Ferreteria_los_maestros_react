@@ -1,28 +1,24 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { CartProvider } from '@/context/CartProvider.jsx';
 import CategoriaDetalleContainer from '@/containers/catalogo/CategoriaDetalleContainer.jsx';
 
 function mostrar(ruta) {
-  localStorage.clear();
   localStorage.setItem('ep1-categories', JSON.stringify(['Pinturas']));
   localStorage.setItem('ep1-products', JSON.stringify([]));
   return render(
     <MemoryRouter initialEntries={[ruta]}>
-      <CartProvider>
-        <Routes><Route path="/categorias/:categoria" element={<CategoriaDetalleContainer />} /></Routes>
-      </CartProvider>
+      <Routes><Route path="/categorias/:categoria" element={<CategoriaDetalleContainer />} /></Routes>
     </MemoryRouter>,
   );
 }
 
 describe('CategoriaDetalleContainer', () => {
-  it('con categoría existente muestra su título', () => {
+  it('con categoría existente muestra su título', async () => {
     mostrar('/categorias/Pinturas');
-    expect(screen.getByRole('heading', { level: 1, name: 'Pinturas' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Pinturas' })).toBeInTheDocument();
   });
-  it('con categoría inexistente muestra el aviso', () => {
+  it('con categoría inexistente muestra el aviso', async () => {
     mostrar('/categorias/Inventada');
-    expect(screen.getByRole('heading', { name: 'Categoría no encontrada' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Categoría no encontrada' })).toBeInTheDocument();
   });
 });

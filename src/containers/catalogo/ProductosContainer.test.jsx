@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { CartProvider } from '@/context/CartProvider.jsx';
 import ProductosContainer from '@/containers/catalogo/ProductosContainer.jsx';
 
 const catalogo = [
@@ -9,30 +8,31 @@ const catalogo = [
   { codigo: 'HE002', nombre: 'Martillo carpintero', marca: 'Stanley', unidad: 'Unidad', categoria: 'Herramientas', precioVenta: 8990, stock: 10, stockMinimo: 3 },
 ];
 
-function mostrar() {
-  return render(
+// Espera a que el catálogo llegue desde la API antes de interactuar.
+async function mostrar() {
+  render(
     <MemoryRouter>
-      <CartProvider>
-        <ProductosContainer />
-      </CartProvider>
+      <ProductosContainer />
     </MemoryRouter>,
   );
+  await screen.findByText('Cemento gris 25 kg');
 }
 
 describe('ProductosContainer', () => {
   beforeEach(() => {
-    localStorage.clear();
     localStorage.setItem('ep1-products', JSON.stringify(catalogo));
+    // El carrito exige sesión iniciada.
+    localStorage.setItem('ep1-user', JSON.stringify({ run: '222222222', nombre: 'Ana', apellidos: 'Demo', correo: 'cliente@gmail.com', tipoUsuario: 'Cliente', activo: true }));
   });
 
-  it('muestra todos los productos del catálogo al inicio', () => {
-    mostrar();
+  it('muestra todos los productos del catálogo al inicio', async () => {
+    await mostrar();
     expect(screen.getByText(/3 productos/)).toBeInTheDocument();
     expect(screen.getByText('Cemento gris 25 kg')).toBeInTheDocument();
   });
 
-  it('filtra por el texto de búsqueda', () => {
-    mostrar();
+  it('filtra por el texto de búsqueda', async () => {
+    await mostrar();
     fireEvent.change(screen.getByLabelText('Buscar por nombre, marca o código'), {
       target: { value: 'martillo' },
     });
@@ -41,8 +41,8 @@ describe('ProductosContainer', () => {
     expect(screen.queryByText('Cemento gris 25 kg')).not.toBeInTheDocument();
   });
 
-  it('filtra por categoría y por "Sólo con stock"', () => {
-    mostrar();
+  it('filtra por categoría y por "Sólo con stock"', async () => {
+    await mostrar();
     fireEvent.change(screen.getByLabelText('Categoría'), {
       target: { value: 'Herramientas' },
     });
@@ -52,8 +52,8 @@ describe('ProductosContainer', () => {
     expect(screen.getByText('Martillo carpintero')).toBeInTheDocument();
   });
 
-  it('muestra "Sin resultados" si nada coincide', () => {
-    mostrar();
+  it('muestra "Sin resultados" si nada coincide', async () => {
+    await mostrar();
     fireEvent.change(screen.getByLabelText('Buscar por nombre, marca o código'), {
       target: { value: 'zzz' },
     });
@@ -61,7 +61,7 @@ describe('ProductosContainer', () => {
   });
 
   it('avisa que el producto fue agregado al carrito', async () => {
-    mostrar();
+    await mostrar();
     fireEvent.click(screen.getAllByRole('button', { name: 'Agregar' })[0]);
     expect(await screen.findByText('Producto agregado al carrito.')).toBeInTheDocument();
   });
